@@ -1,4 +1,18 @@
-singleQuote: true
-semi: false
 printWidth: 100
-trailingComma: none
+tabWidth: 4
+useTabs: false
+singleQuote: true
+bracketSameLine: true
+arrowParens: avoid
+endOfLine: crlf
+singleAttributePerLine: true
+
+overrides:
+  - files:
+      - '*.json'
+      - '*.tsx'
+      - '*.cjs'
+      - '*.yaml'
+      - '*.yml'
+    options:
+      tabWidth: 2
