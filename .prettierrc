@@ -1,0 +1,19 @@
+{
+  "plugins": ["prettier-plugin-css-order"],
+  "printWidth": 100,
+  "tabWidth": 4,
+  "useTabs": false,
+  "singleQuote": true,
+  "bracketSameLine": true,
+  "arrowParens": "avoid",
+  "endOfLine": "crlf",
+  "singleAttributePerLine": true,
+  "overrides": [
+    {
+      "files": ["*.json", "*.tsx", "*.cjs", "*.yaml", "*.yml"],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}
