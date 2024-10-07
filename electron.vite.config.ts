@@ -19,6 +19,13 @@ export default defineConfig({
         resolve: {
             alias: {
                 '@renderer': resolve('src'),
+                '@assets': resolve('src/assets'),
+                '@components': resolve('src/components'),
+                '@context': resolve('src/context'),
+                '@data': resolve('src/data'),
+                '@hooks': resolve('src/hooks'),
+                '@layouts': resolve('src/layouts'),
+                '@utils': resolve('src/utils'),
             },
         },
         plugins: [react()],
