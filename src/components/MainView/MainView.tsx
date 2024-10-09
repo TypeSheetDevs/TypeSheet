@@ -1,5 +1,7 @@
+import './MainView.styles.css';
+
 function MainView() {
-  return <div>MainView</div>;
+  return <div id="main-view">MainView</div>;
 }
 
 export default MainView;
