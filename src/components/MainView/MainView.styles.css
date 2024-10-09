@@ -1,5 +1,12 @@
+@import '@assets/root.css';
+
 #main-view {
-    background-color: gray;
+    background-color: var(--main-view-background-color);
     height: 100%;
-    font-size: 60px;
+    font-size: var(--main-view-font-size);
+    font-family: Bravura;
+}
+
+.stave {
+    display: inline;
 }
