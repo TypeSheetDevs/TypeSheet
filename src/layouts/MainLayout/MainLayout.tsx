@@ -1,6 +1,6 @@
 import './main.css';
-import MainView from '@renderer/components/MainView/MainView';
-import TopBar from '@renderer/components/TopBar/TopBar';
+import MainView from '@layouts/MainView/MainView';
+import TopBar from '@components/TopBar/TopBar';
 
 function MainLayout(): JSX.Element {
   return (

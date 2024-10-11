@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './MainView.styles.css';
-import { ViewType } from './MainView.types';
-import PagedView from '@components/PagedView/PagedView';
-import ScrollableView from '@components/ScrollableView/ScrollableView';
+import { ViewType } from '@layouts/MainView/MainView.types';
+import PagedView from '@layouts/PagedView/PagedView';
+import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(ViewType.Paged);
@@ -16,6 +16,7 @@ function MainView() {
         Change View
       </button>
       {GetViewComponent(currentView)}
+      <div>{'\uE8E0\uE8E1'}</div>
     </>
   );
 }

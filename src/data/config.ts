@@ -1,3 +1,3 @@
-import { ViewType } from '@renderer/components/MainView/MainView.types';
+import { ViewType } from '@renderer/layouts/MainView/MainView.types';
 
 export const startingView: ViewType = ViewType.Paged;
