@@ -18,7 +18,6 @@ export default defineConfig({
         },
         resolve: {
             alias: {
-                '@renderer': resolve('src'),
                 '@assets': resolve('src/assets'),
                 '@components': resolve('src/components'),
                 '@context': resolve('src/context'),
