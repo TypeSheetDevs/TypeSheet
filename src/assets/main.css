@@ -4,16 +4,9 @@
     padding: 0;
 }
 
-html {
+html,
+body,
+#root {
     display: flex;
     min-height: 100%;
-}
-
-body {
-    display: flex;
-    flex: 1;
-}
-
-#root {
-    flex: 1;
 }
