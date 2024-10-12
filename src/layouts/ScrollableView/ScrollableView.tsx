@@ -1,10 +1,11 @@
-import StaveComponent from '@components/StaveComponent/StaveComponent';
+import NoteViewRenderer from '@components/NoteViewRenderer/NoteViewRenderer';
+import './ScrollableView.styles.css';
 
 function ScrollableView() {
   return (
-    <>
-      <StaveComponent />
-    </>
+    <div id="scrollableView">
+      <NoteViewRenderer />
+    </div>
   );
 }
 

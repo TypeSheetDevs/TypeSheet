@@ -2,6 +2,7 @@
 
 #mainView {
     display: flex;
+    flex-direction: column;
     background-color: var(--main-view-background-color);
     height: 100%;
     font-size: var(--main-view-font-size);

@@ -1,4 +1,4 @@
-import './main.css';
+import './MainLayout.styles.css';
 import MainView from '@layouts/MainView/MainView';
 import TopBar from '@components/TopBar/TopBar';
 
