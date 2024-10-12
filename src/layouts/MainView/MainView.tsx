@@ -8,7 +8,7 @@ function MainView() {
   const [currentView, setCurrentView] = useState(ViewType.Paged);
 
   return (
-    <>
+    <div id="mainView">
       <button
         onClick={() =>
           setCurrentView(currentView == ViewType.Paged ? ViewType.Scrollable : ViewType.Paged)
@@ -16,8 +16,7 @@ function MainView() {
         Change View
       </button>
       {GetViewComponent(currentView)}
-      <div>{'\uE8E0\uE8E1'}</div>
-    </>
+    </div>
   );
 }
 

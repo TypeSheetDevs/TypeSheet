@@ -1,26 +1,34 @@
+import { useWindowSize } from '@hooks/useWindowSize';
 import { useEffect, useRef } from 'react';
 import { Renderer, Stave } from 'vexflow';
 
 function StaveComponent() {
-  const container = useRef<HTMLCanvasElement | null>(null);
-  const rendererRef = useRef<Renderer | null>(null);
+  const [width, height] = useWindowSize();
+  const canvas = useRef<HTMLCanvasElement>(null!);
+  const container = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
-    if (container.current == null) {
-      return;
-    }
-    if (rendererRef.current == null) {
-      rendererRef.current = new Renderer(container.current, Renderer.Backends.CANVAS);
-    }
-    const renderer = rendererRef.current;
-    renderer.resize(700, 700);
+    console.log(canvas.current.height);
+    console.log(canvas.current.width);
+    const renderer = new Renderer(canvas.current, Renderer.Backends.CANVAS);
+    renderer.resize(
+      container.current.getBoundingClientRect().width,
+      container.current.getBoundingClientRect().height,
+    );
     const context = renderer.getContext();
     context.setFont('Arial', 10);
 
-    const stave = new Stave(10, 40, 700);
+    const stave = new Stave(10, 0, container.current.getBoundingClientRect().width - 30);
     stave.setContext(context).draw();
-  }, []);
-  return <canvas ref={container}></canvas>;
+    return () => renderer.getContext().clear();
+  }, [width, height]);
+  return (
+    <div
+      id="temp"
+      ref={container}>
+      <canvas ref={canvas}></canvas>
+    </div>
+  );
 }
 
 export default StaveComponent;

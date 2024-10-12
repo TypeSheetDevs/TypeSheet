@@ -1,6 +1,7 @@
 @import '@assets/root.css';
 
-#main-view {
+#mainView {
+    display: flex;
     background-color: var(--main-view-background-color);
     height: 100%;
     font-size: var(--main-view-font-size);

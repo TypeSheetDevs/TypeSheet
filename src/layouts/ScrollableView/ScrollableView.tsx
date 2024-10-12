@@ -1,7 +1,11 @@
 import StaveComponent from '@components/StaveComponent/StaveComponent';
 
 function ScrollableView() {
-  return <StaveComponent />;
+  return (
+    <>
+      <StaveComponent />
+    </>
+  );
 }
 
 export default ScrollableView;
