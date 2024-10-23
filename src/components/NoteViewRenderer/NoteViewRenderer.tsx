@@ -1,28 +1,26 @@
+import { useLayoutEffect, useRef } from 'react';
+import { NoteRenderer } from '@services/noteRenderer/NoteRenderer';
+import { Renderer } from 'vexflow';
 import { useWindowSize } from '@hooks/useWindowSize';
-import { useEffect, useLayoutEffect, useRef } from 'react';
-import { Renderer, Stave } from 'vexflow';
 
 function NoteViewRenderer() {
-  const [width, height] = useWindowSize();
-  const canvas = useRef<HTMLCanvasElement>(null!);
   const container = useRef<HTMLDivElement>(null!);
+  const [width, height] = useWindowSize();
+
   useLayoutEffect(() => {
-    canvas.current.width = (container.current.clientWidth * 90) / 100;
-    canvas.current.height = (container.current.clientHeight * 90) / 100;
-    const renderer = new Renderer(canvas.current, Renderer.Backends.CANVAS);
+    container.current.innerHTML = '';
+    const renderer = new Renderer(container.current, Renderer.Backends.SVG);
     const context = renderer.getContext();
-    context.setFont('Arial', 10);
-    const stave = new Stave(10, 0, canvas.current.clientWidth - 20);
-    stave.setContext(context).draw();
-    return () => renderer.getContext().clear();
+    const containerWidth = container.current.clientWidth;
+    const noteRenderer = new NoteRenderer(context, containerWidth);
+
+    noteRenderer.Draw();
   }, [width, height]);
 
   return (
     <div
-      id="temp"
-      ref={container}>
-      <canvas ref={canvas}></canvas>
-    </div>
+      id="container"
+      ref={container}></div>
   );
 }
 
