@@ -1,21 +1,28 @@
-let instance;
+import { Stave } from 'vexflow';
 
 class Music {
-    bars: string[] = ['1', '2', '3'];
+    static _instance: Music = null!;
+    static getInstance() {
+        return Music._instance || new Music();
+    }
+
+    bars: Stave[] = [];
     redraw: (() => void) | null = null;
 
     constructor() {
-        if (instance) {
-            throw new Error('Notes instance already exists');
-        }
-        instance = this;
+        this.bars = [new Stave(0, 0, 0)];
+
+        if (Music._instance === null) {
+            Music._instance = this;
+            return this;
+        } else return Music._instance;
     }
 
-    setRedrawFunction(f: () => void) {
+    SetRedrawFunction(f: () => void) {
         this.redraw = f;
     }
 
-    clearRedrawFunction() {
+    ClearRedrawFunction() {
         this.redraw = null;
     }
 
@@ -26,8 +33,11 @@ class Music {
 
         this.redraw();
     }
+
+    AddBar() {
+        this.bars.push(new Stave(0, 0, 0));
+        this.Redraw();
+    }
 }
 
-const MusicSingleton = Object.freeze(new Music());
-
-export default MusicSingleton;
+export default Music;

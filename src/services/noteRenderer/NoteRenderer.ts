@@ -1,19 +1,33 @@
-import MusicSingleton from '@services/core/Notes';
-import { RenderContext, Stave } from 'vexflow';
+import { barsPerStave, staveMinimumHeightDistance } from '@data/config';
+import { RenderContext } from 'vexflow';
+import Music from '@services/core/Notes';
 
 export class NoteRenderer {
     context: RenderContext;
     Width: number;
+    Clear: () => void;
 
-    constructor(context: RenderContext, containerWidth: number) {
+    MusicInstance: Music;
+
+    constructor(context: RenderContext, containerWidth: number, clearFunction: () => void) {
         this.context = context;
         this.Width = containerWidth;
+        this.Clear = clearFunction;
 
-        MusicSingleton.setRedrawFunction(this.Draw);
+        this.MusicInstance = Music.getInstance();
+        this.MusicInstance.SetRedrawFunction(() => this.Draw());
     }
 
     Draw() {
-        const stave = new Stave(10, 0, this.Width - 22);
-        stave.setContext(this.context).draw();
+        this.Clear();
+        const margin = 10;
+        const barLenght = (this.Width - margin * 2) / barsPerStave;
+        const barHeight = this.MusicInstance.bars.forEach((bar, i) => {
+            bar.setX(margin + barLenght * (i % barsPerStave));
+            bar.setY((bar.getHeight() + staveMinimumHeightDistance) * Math.trunc(i / barsPerStave));
+            bar.setWidth(barLenght);
+
+            bar.setContext(this.context).draw();
+        });
     }
 }
