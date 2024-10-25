@@ -1,6 +1,6 @@
 import { barsPerStave, staveMinimumHeightDistance } from '@data/config';
 import { RenderContext } from 'vexflow';
-import Music from '@services/core/Notes';
+import Music from '@services/core/Music';
 
 export class NoteRenderer {
     context: RenderContext;
