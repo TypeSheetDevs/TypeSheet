@@ -24,6 +24,7 @@
       "@layouts/*": ["src/layouts/*"],
       "@utils/*": ["src/utils/*"],
       "@services/*": ["src/services/*"],
-    }
+    },
+    "strict": true
   }
 }
