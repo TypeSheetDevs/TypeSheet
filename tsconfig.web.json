@@ -15,8 +15,6 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@renderer/*": ["src/*"],
-      
       "@pages/*": ["src/layouts/*"],
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
@@ -25,6 +23,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@layouts/*": ["src/layouts/*"],
       "@utils/*": ["src/utils/*"],
-    }
+      "@services/*": ["src/services/*"],
+    },
+    "strict": true
   }
 }

@@ -1,0 +1,37 @@
+#mainLayout {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1px solid;
+    width: 100vw;
+    min-width: 0;
+    height: 100vh;
+    min-height: 0;
+}
+
+#topbar {
+    flex: 0 0 20%;
+}
+
+#mainView {
+    display: flex;
+    flex: 8 1 0;
+    flex-direction: column;
+    min-width: 0;
+    font-size: var(--main-view-font-size);
+    font-family: Bravura;
+}
+
+#scrollableView {
+    display: flex;
+    flex: 1 1 0;
+}
+#scrollableView > div {
+    margin: 20px;
+    width: 100%;
+}
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}

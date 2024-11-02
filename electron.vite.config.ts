@@ -18,7 +18,6 @@ export default defineConfig({
         },
         resolve: {
             alias: {
-                '@renderer': resolve('src'),
                 '@assets': resolve('src/assets'),
                 '@components': resolve('src/components'),
                 '@context': resolve('src/context'),
@@ -26,6 +25,7 @@ export default defineConfig({
                 '@hooks': resolve('src/hooks'),
                 '@layouts': resolve('src/layouts'),
                 '@utils': resolve('src/utils'),
+                '@services': resolve('src/services'),
             },
         },
         plugins: [react()],

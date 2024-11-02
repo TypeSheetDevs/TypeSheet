@@ -1,5 +1,5 @@
 function TopBar() {
-  return <div>TopBar</div>;
+  return <div id="topbar">TopBar</div>;
 }
 
 export default TopBar;
