@@ -1,9 +1,12 @@
-import { barsPerStave, staveMinimumHeightDistance } from '@data/config';
-import { BarlineType, RenderContext } from 'vexflow';
-import Music from '@services/core/Music';
+import { RenderContext } from 'vexflow';
 import RenderableStave from './RenderableStave';
 
 export class NotationRenderer {
+    static _instance: NotationRenderer = null!;
+    static getInstance() {
+        return NotationRenderer._instance || new NotationRenderer();
+    }
+
     context: RenderContext | null;
     width: number;
     height: number;
@@ -13,6 +16,11 @@ export class NotationRenderer {
         this.width = 0;
         this.height = 0;
         this.context = null;
+
+        if (NotationRenderer._instance === null) {
+            NotationRenderer._instance = this;
+            return this;
+        } else return NotationRenderer._instance;
     }
 
     setContext(context: RenderContext) {
@@ -24,15 +32,29 @@ export class NotationRenderer {
     Resize(width, height) {
         this.width = width;
         this.height = height;
-        this.staves.pop();
-        this.staves.push(new RenderableStave(width - 2));
 
         this.Render();
     }
 
+    GetStavePositionY(index: number) {
+        if (index <= 0) return 0;
+        return this.staves[index - 1].currentPositionY;
+    }
+
+    AddNewStave(numberOfBars?: number) {
+        this.staves.push(new RenderableStave(numberOfBars));
+        this.Render();
+    }
+
     Render() {
-        if (this.context === null) return;
+        if (this.context === null) {
+            return;
+        }
+
         this.context.clear();
-        this.staves.forEach(stave => stave.Draw(this.context));
+        this.staves.forEach((stave, idx) =>
+            stave.Draw(this.context!, this.width - 1, this.GetStavePositionY(idx)),
+        );
+        console.log(this.staves);
     }
 }

@@ -4,7 +4,7 @@ import { Renderer } from 'vexflow';
 
 function NoteViewRenderer() {
   const container = useRef<HTMLCanvasElement>(null!);
-  const noteRenderer = useRef<NotationRenderer>(new NotationRenderer());
+  const noteRenderer = useRef<NotationRenderer>(NotationRenderer.getInstance());
   useLayoutEffect(() => {
     const renderer = new Renderer(container.current, Renderer.Backends.CANVAS);
     const context = renderer.getContext();

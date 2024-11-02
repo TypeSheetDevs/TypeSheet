@@ -3,7 +3,7 @@ import './MainView.styles.css';
 import { ViewType } from '@layouts/MainView/MainView.types';
 import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
-import Music from '@services/core/Music';
+import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(ViewType.Paged);
@@ -16,7 +16,10 @@ function MainView() {
         }>
         Change View
       </button>
-      <button onClick={() => Music.getInstance().AddBar()}>Add Bar</button>
+      <button
+        onClick={() => NotationRenderer.getInstance().AddNewStave(Math.floor(Math.random() * 7))}>
+        Add Bar
+      </button>
       {GetViewComponent(currentView)}
     </div>
   );
