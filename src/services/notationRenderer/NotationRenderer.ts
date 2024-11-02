@@ -4,26 +4,35 @@ import Music from '@services/core/Music';
 import RenderableStave from './RenderableStave';
 
 export class NotationRenderer {
-    context: RenderContext;
+    context: RenderContext | null;
     width: number;
-    Clear: () => void;
+    height: number;
     staves: RenderableStave[] = [];
 
-    constructor(context: RenderContext, containerWidth: number, clearFunction: () => void) {
-        this.context = context;
-        this.width = containerWidth;
-        this.Clear = clearFunction;
+    constructor() {
+        this.width = 0;
+        this.height = 0;
+        this.context = null;
+    }
 
-        for (let i = 0; i < 10; i++)
-            this.staves.push(
-                new RenderableStave(containerWidth, i > 0 ? this.staves[i - 1] : undefined),
-            );
+    setContext(context: RenderContext) {
+        this.context = context;
+
+        this.Render();
+    }
+
+    Resize(width, height) {
+        this.width = width;
+        this.height = height;
+        this.staves.pop();
+        this.staves.push(new RenderableStave(width - 2));
+
+        this.Render();
     }
 
     Render() {
-        this.Clear();
-        const margin = 10;
-        const barLenght = (this.width - margin * 2) / barsPerStave;
+        if (this.context === null) return;
+        this.context.clear();
         this.staves.forEach(stave => stave.Draw(this.context));
     }
 }

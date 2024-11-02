@@ -7,7 +7,6 @@
     min-width: 0;
     height: 100vh;
     min-height: 0;
-    overflow: hidden;
 }
 
 #topbar {
@@ -27,13 +26,12 @@
     display: flex;
     flex: 1 1 0;
 }
-
-#container {
-    flex: 1 1 0;
-    margin: 0 20px;
-}
-
-#container > * {
+#scrollableView > div {
+    margin: 20px;
     width: 100%;
-    height: 100%;
+}
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
 }
