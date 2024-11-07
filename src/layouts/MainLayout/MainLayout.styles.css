@@ -30,8 +30,3 @@
     margin: 20px;
     width: 100%;
 }
-canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-}

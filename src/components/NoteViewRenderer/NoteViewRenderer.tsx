@@ -1,3 +1,4 @@
+import './NoteViewRenderer.styles.css';
 import { useLayoutEffect, useRef } from 'react';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { Renderer } from 'vexflow';

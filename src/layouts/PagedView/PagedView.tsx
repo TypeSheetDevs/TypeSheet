@@ -1,5 +1,7 @@
+import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRenderer';
+
 function PagedView() {
-  return <div>PagedView</div>;
+  return <NoteViewSVGRenderer />;
 }
 
 export default PagedView;
