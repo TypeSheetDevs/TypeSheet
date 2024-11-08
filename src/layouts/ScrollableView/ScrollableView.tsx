@@ -2,12 +2,10 @@ import NoteViewRenderer from '@components/NoteViewRenderer/NoteViewRenderer';
 
 function ScrollableView() {
   return (
-    <>
+    <div id="scrollableView">
       Scrollable
-      <div id="scrollableView">
-        <NoteViewRenderer />
-      </div>
-    </>
+      <NoteViewRenderer />
+    </div>
   );
 }
 

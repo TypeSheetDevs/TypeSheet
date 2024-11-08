@@ -2,12 +2,10 @@ import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRend
 
 function PagedView() {
   return (
-    <>
+    <div id="pagedView">
       Paged
-      <div id="pagedView">
-        <NoteViewSVGRenderer />
-      </div>
-    </>
+      <NoteViewSVGRenderer />
+    </div>
   );
 }
 

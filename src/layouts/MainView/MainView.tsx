@@ -4,9 +4,10 @@ import { ViewType } from '@layouts/MainView/MainView.types';
 import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import { startingView } from '@data/config';
 
 function MainView() {
-  const [currentView, setCurrentView] = useState(ViewType.Paged);
+  const [currentView, setCurrentView] = useState(startingView);
 
   return (
     <div id="mainView">
