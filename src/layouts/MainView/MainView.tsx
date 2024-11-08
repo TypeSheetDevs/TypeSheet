@@ -17,7 +17,10 @@ function MainView() {
         Change View
       </button>
       <button
-        onClick={() => NotationRenderer.getInstance().AddNewStave(Math.floor(Math.random() * 7))}>
+        onClick={() => {
+          NotationRenderer.getInstance().AddNewStave(Math.floor(Math.random() * 7));
+          NotationRenderer.getInstance().Render();
+        }}>
         Add Bar
       </button>
       {GetViewComponent(currentView)}

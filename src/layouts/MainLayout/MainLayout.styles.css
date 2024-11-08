@@ -22,11 +22,20 @@
     font-family: Bravura;
 }
 
-#scrollableView {
+#scrollableView,
+#pagedView {
     display: flex;
     flex: 1 1 0;
 }
-#scrollableView > div {
+#scrollableView > div,
+#pagedView > div {
     margin: 20px;
     width: 100%;
+}
+
+svg {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%;
 }

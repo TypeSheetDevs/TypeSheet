@@ -10,8 +10,12 @@ function NoteViewSVGRenderer() {
     const context = renderer.getContext();
     noteRenderer.current.setContext(context);
     const checkResize = () => {
-      renderer.resize(container.current.clientWidth, container.current.clientHeight);
-      noteRenderer.current.Resize(container.current.clientWidth, container.current.clientHeight);
+      const width = container.current.clientWidth;
+      const height = container.current.clientHeight;
+      renderer.resize(width, 0);
+      renderer.resize(width, container.current.clientHeight);
+      noteRenderer.current.Resize(width, height);
+      noteRenderer.current.Render();
     };
     checkResize();
     window.addEventListener('resize', checkResize);

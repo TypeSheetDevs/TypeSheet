@@ -4,18 +4,19 @@ import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { Renderer } from 'vexflow';
 
 function NoteViewRenderer() {
-  const container = useRef<HTMLCanvasElement>(null!);
+  const canvas = useRef<HTMLCanvasElement>(null!);
   const noteRenderer = useRef<NotationRenderer>(NotationRenderer.getInstance());
   useLayoutEffect(() => {
-    const renderer = new Renderer(container.current, Renderer.Backends.CANVAS);
+    const renderer = new Renderer(canvas.current, Renderer.Backends.CANVAS);
     const context = renderer.getContext();
     noteRenderer.current.setContext(context);
 
     const checkResize = () => {
-      container.current.height = 0;
-      container.current.width = container.current.clientWidth;
-      container.current.height = container.current.clientHeight;
-      noteRenderer.current.Resize(container.current.width, container.current.height);
+      canvas.current.height = 0;
+      canvas.current.width = canvas.current.clientWidth;
+      canvas.current.height = canvas.current.clientHeight;
+      noteRenderer.current.Resize(canvas.current.width, canvas.current.height);
+      noteRenderer.current.Render();
     };
     checkResize();
     window.addEventListener('resize', checkResize);
@@ -25,8 +26,8 @@ function NoteViewRenderer() {
   return (
     <div>
       <canvas
-        id="container"
-        ref={container}></canvas>
+        id="canvas"
+        ref={canvas}></canvas>
     </div>
   );
 }

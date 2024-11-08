@@ -32,8 +32,6 @@ export class NotationRenderer {
     Resize(width, height) {
         this.width = width;
         this.height = height;
-
-        this.Render();
     }
 
     GetStavePositionY(index: number) {
@@ -43,7 +41,6 @@ export class NotationRenderer {
 
     AddNewStave(numberOfBars?: number) {
         this.staves.push(new RenderableStave(numberOfBars));
-        this.Render();
     }
 
     Render() {
@@ -56,5 +53,6 @@ export class NotationRenderer {
             stave.Draw(this.context!, this.width - 1, this.GetStavePositionY(idx)),
         );
         console.log(this.staves);
+        console.log(this.height, this.width);
     }
 }
