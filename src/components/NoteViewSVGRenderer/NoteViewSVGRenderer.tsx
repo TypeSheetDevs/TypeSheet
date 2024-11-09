@@ -8,19 +8,19 @@ function NoteViewSVGRenderer() {
   useLayoutEffect(() => {
     const renderer = new Renderer(container.current, Renderer.Backends.SVG);
     const context = renderer.getContext();
-    noteRenderer.current.setContext(context);
     const checkResize = () => {
       const width = container.current.clientWidth;
       const height = container.current.clientHeight;
       renderer.resize(width, 0);
       renderer.resize(width, container.current.clientHeight);
-      noteRenderer.current.Resize(width, height);
-      noteRenderer.current.Render();
+      noteRenderer.current.Render(context, width, height);
     };
     checkResize();
     window.addEventListener('resize', checkResize);
+    document.addEventListener('needRender', checkResize);
     return () => {
       window.removeEventListener('resize', checkResize);
+      document.removeEventListener('needRender', checkResize);
       container.current.firstChild?.remove();
     };
   }, []);

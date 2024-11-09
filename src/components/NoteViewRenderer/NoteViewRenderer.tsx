@@ -9,18 +9,20 @@ function NoteViewRenderer() {
   useLayoutEffect(() => {
     const renderer = new Renderer(canvas.current, Renderer.Backends.CANVAS);
     const context = renderer.getContext();
-    noteRenderer.current.setContext(context);
 
     const checkResize = () => {
       canvas.current.height = 0;
       canvas.current.width = canvas.current.clientWidth;
       canvas.current.height = canvas.current.clientHeight;
-      noteRenderer.current.Resize(canvas.current.width, canvas.current.height);
-      noteRenderer.current.Render();
+      noteRenderer.current.Render(context, canvas.current.width, canvas.current.height);
     };
     checkResize();
     window.addEventListener('resize', checkResize);
-    return () => window.removeEventListener('resize', checkResize);
+    document.addEventListener('needRender', checkResize);
+    return () => {
+      window.removeEventListener('resize', checkResize);
+      document.removeEventListener('needRender', checkResize);
+    };
   }, []);
 
   return (

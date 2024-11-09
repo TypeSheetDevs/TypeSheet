@@ -1,5 +1,6 @@
-import { RenderContext } from 'vexflow';
+import { RenderContext, Stave } from 'vexflow';
 import RenderableStave from './RenderableStave';
+import { staveMinimumHeightDistance } from '@data/config';
 
 export class NotationRenderer {
     static _instance: NotationRenderer = null!;
@@ -7,31 +8,24 @@ export class NotationRenderer {
         return NotationRenderer._instance || new NotationRenderer();
     }
 
-    context: RenderContext | null;
-    width: number;
-    height: number;
     staves: RenderableStave[] = [];
 
     constructor() {
-        this.width = 0;
-        this.height = 0;
-        this.context = null;
-
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
             return this;
         } else return NotationRenderer._instance;
     }
 
-    setContext(context: RenderContext) {
-        this.context = context;
-
-        this.Render();
+    private GetMaximumVisibleStavesAmount(height: number) {
+        const tempStave = new Stave(0, 0, 10);
+        const staveHeight = tempStave.getHeight() + staveMinimumHeightDistance;
+        return Math.floor(height / staveHeight);
     }
 
-    Resize(width, height) {
-        this.width = width;
-        this.height = height;
+    get PagesAmount() {
+        return 0;
+        //return Math.floor(this.staves.length / this.GetMaximumVisibleStavesAmount());
     }
 
     GetStavePositionY(index: number) {
@@ -41,18 +35,21 @@ export class NotationRenderer {
 
     AddNewStave(numberOfBars?: number) {
         this.staves.push(new RenderableStave(numberOfBars));
+        document.dispatchEvent(
+            new CustomEvent<number>('notePagesAmountChanged', {
+                detail: this.PagesAmount,
+            }),
+        );
+        document.dispatchEvent(new CustomEvent<never>('needRender'));
     }
 
-    Render() {
-        if (this.context === null) {
-            return;
-        }
-
-        this.context.clear();
+    Render(context: RenderContext, width: number, height: number) {
+        context.clear();
         this.staves.forEach((stave, idx) =>
-            stave.Draw(this.context!, this.width - 1, this.GetStavePositionY(idx)),
+            stave.Draw(context, width - 1, this.GetStavePositionY(idx)),
         );
-        console.log(this.staves);
-        console.log(this.height, this.width);
+        console.log('Staves: ', this.staves);
+        console.log('Height: ', height, 'Width: ', width);
+        console.log('GetMaximumVisibleStavesAmount: ', this.GetMaximumVisibleStavesAmount(height));
     }
 }
