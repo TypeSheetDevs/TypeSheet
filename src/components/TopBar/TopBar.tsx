@@ -4,28 +4,51 @@ import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
-  let buttonsGroupProps: ButtonsGroupProps = {
+  let logoButtonGroup: ButtonsGroupProps = {
     buttons: [
       {
         iconPath: '../../assets/icons/music_note.svg',
         onClick: () => {
-          console.log('skibidi');
-        },
-      },
-      {
-        iconPath: '../../assets/icons/music_note.svg',
-        onClick: () => {
-          console.log('toilet');
+          console.log('logo');
         },
       },
     ],
   };
 
+  let playButtonsGroup: ButtonsGroupProps = {
+    buttons: [
+      {
+        iconPath: '../../assets/icons/skip_previous.svg',
+        onClick: () => {
+          console.log('skip previous');
+        },
+      },
+      {
+        iconPath: '../../assets/icons/play_arrow.svg',
+        onClick: () => {
+          console.log('play');
+        },
+      },
+      {
+        iconPath: '../../assets/icons/skip_next.svg',
+        onClick: () => {
+          console.log('skip next');
+        },
+      },
+    ],
+  };
+
+  let buttonsGroupArray: ButtonsGroupProps[] = [logoButtonGroup, playButtonsGroup];
+
   return (
     <div
       className="top-bar"
       style={{ backgroundColor: topBarColor }}>
-      <ButtonsGroup buttons={buttonsGroupProps.buttons} />
+      {buttonsGroupArray.map((buttonsGroup, index) => (
+        <ButtonsGroup
+          key={index}
+          buttons={buttonsGroup.buttons}></ButtonsGroup>
+      ))}
     </div>
   );
 }
