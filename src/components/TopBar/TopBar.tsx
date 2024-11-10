@@ -4,6 +4,7 @@ import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
+  // hardcoded for now, but will be read from config later on
   let logoButtonGroup: ButtonsGroupProps = {
     buttons: [
       {
@@ -45,9 +46,13 @@ function TopBar() {
       className="top-bar"
       style={{ backgroundColor: topBarColor }}>
       {buttonsGroupArray.map((buttonsGroup, index) => (
-        <ButtonsGroup
-          key={index}
-          buttons={buttonsGroup.buttons}></ButtonsGroup>
+        <>
+          <ButtonsGroup
+            key={index}
+            buttons={buttonsGroup.buttons}
+          />
+          {index < buttonsGroupArray.length - 1 && <div className="separator" />}
+        </>
       ))}
     </div>
   );

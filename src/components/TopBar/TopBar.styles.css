@@ -1,11 +1,12 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 .top-bar {
     display: flex;
     flex-direction: row;
     width: 100%;
+}
+
+.separator {
+    margin: 2px 4px;
+    background-color: #ccc;
+    width: 2px;
+    height: auto;
 }
