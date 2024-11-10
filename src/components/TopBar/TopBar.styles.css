@@ -6,6 +6,7 @@
 
 .separator {
     margin: 2px 4px;
+    /* TODO: config extraction */
     background-color: #ccc;
     width: 2px;
     height: auto;

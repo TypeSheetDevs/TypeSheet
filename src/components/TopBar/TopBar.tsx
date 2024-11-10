@@ -4,7 +4,7 @@ import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
-  // hardcoded for now, but will be read from config later on
+  /* TODO: config extraction */
   let logoButtonGroup: ButtonsGroupProps = {
     buttons: [
       {
