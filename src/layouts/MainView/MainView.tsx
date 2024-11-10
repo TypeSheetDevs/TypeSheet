@@ -20,7 +20,6 @@ function MainView() {
       <button
         onClick={() => {
           NotationRenderer.getInstance().AddNewStave(Math.floor(Math.random() * 7) + 1);
-          //NotationRenderer.getInstance().Render();
         }}>
         Add Bar
       </button>

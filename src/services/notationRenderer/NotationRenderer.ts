@@ -28,8 +28,8 @@ export class NotationRenderer {
         //return Math.floor(this.staves.length / this.GetMaximumVisibleStavesAmount());
     }
 
-    GetStavePositionY(index: number) {
-        if (index <= 0) return 0;
+    GetStavePositionY(index: number, defaultValue: number = 0) {
+        if (index <= 0) return defaultValue;
         return this.staves[index - 1].currentPositionY;
     }
 
@@ -43,11 +43,21 @@ export class NotationRenderer {
         document.dispatchEvent(new CustomEvent<never>('needRender'));
     }
 
-    Render(context: RenderContext, width: number, height: number) {
+    Render(
+        context: RenderContext,
+        width: number,
+        height: number,
+        startingHeight: number,
+        startingStaveIndex: number,
+        lastStaveIndex: number,
+    ) {
         context.clear();
-        this.staves.forEach((stave, idx) =>
-            stave.Draw(context, width - 1, this.GetStavePositionY(idx)),
-        );
+        for (let i = startingStaveIndex; i <= lastStaveIndex && i < this.staves.length; i++)
+            this.staves[i].Draw(
+                context,
+                width - 1,
+                i == startingStaveIndex ? startingHeight : this.staves[i - 1].currentPositionY,
+            );
         console.log('Staves: ', this.staves);
         console.log('Height: ', height, 'Width: ', width);
         console.log('GetMaximumVisibleStavesAmount: ', this.GetMaximumVisibleStavesAmount(height));

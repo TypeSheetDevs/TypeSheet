@@ -4,7 +4,11 @@ function PagedView() {
   return (
     <div id="pagedView">
       Paged
-      <NoteViewSVGRenderer />
+      <NoteViewSVGRenderer
+        lastStaveIndex={5}
+        startingHeight={0}
+        startingStaveIndex={0}
+      />
     </div>
   );
 }
