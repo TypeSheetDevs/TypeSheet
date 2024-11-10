@@ -1,0 +1,4 @@
+.buttons-group {
+    display: flex;
+    flex-direction: row;
+}
