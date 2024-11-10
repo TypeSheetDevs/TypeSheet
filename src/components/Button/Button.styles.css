@@ -1,0 +1,16 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.button {
+    transition: background-color 0.2s ease;
+    border: none;
+    border-radius: 10%;
+    background-color: transparent;
+}
+
+.button:hover {
+    background-color: rgba(122, 122, 122, 0.7);
+}
