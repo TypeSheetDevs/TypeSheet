@@ -5,7 +5,7 @@ import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
-  // Export to config, also add saving the order to config
+  /* TODO: config extraction */
   const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupProps[]>([
     {
       buttons: [
@@ -47,13 +47,13 @@ function TopBar() {
     setDraggedIndex(index);
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>, index: number) => {
+  const handleDragOver = (event: DragEvent<HTMLDivElement>, index: number) => {
     if (index !== 0) {
       event.preventDefault();
     }
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>, index: number) => {
+  const handleDrop = (event: DragEvent<HTMLDivElement>, index: number) => {
     event.preventDefault();
     if (draggedIndex !== null && draggedIndex !== index && index !== 0) {
       const updatedButtonsGroupArray = [...buttonsGroupArray];
