@@ -1,5 +1,6 @@
-import { RenderContext } from 'vexflow';
+import { RenderContext, Stave } from 'vexflow';
 import RenderableStave from './RenderableStave';
+import { staveMinimumHeightDistance } from '@data/config';
 
 export class NotationRenderer {
     static _instance: NotationRenderer = null!;
@@ -7,54 +8,47 @@ export class NotationRenderer {
         return NotationRenderer._instance || new NotationRenderer();
     }
 
-    context: RenderContext | null;
-    width: number;
-    height: number;
     staves: RenderableStave[] = [];
 
     constructor() {
-        this.width = 0;
-        this.height = 0;
-        this.context = null;
-
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
             return this;
         } else return NotationRenderer._instance;
     }
 
-    setContext(context: RenderContext) {
-        this.context = context;
-
-        this.Render();
+    get StaveHeight() {
+        const tempStave = new Stave(0, 0, 10);
+        return tempStave.getHeight() + staveMinimumHeightDistance;
     }
 
-    Resize(width, height) {
-        this.width = width;
-        this.height = height;
-
-        this.Render();
-    }
-
-    GetStavePositionY(index: number) {
-        if (index <= 0) return 0;
+    GetStavePositionY(index: number, defaultValue: number = 0) {
+        if (index <= 0) return defaultValue;
         return this.staves[index - 1].currentPositionY;
     }
 
     AddNewStave(numberOfBars?: number) {
         this.staves.push(new RenderableStave(numberOfBars));
-        this.Render();
+        document.dispatchEvent(new CustomEvent<never>('numberOfStavesChanged'));
+        document.dispatchEvent(new CustomEvent<never>('needRender'));
     }
 
-    Render() {
-        if (this.context === null) {
-            return;
-        }
-
-        this.context.clear();
-        this.staves.forEach((stave, idx) =>
-            stave.Draw(this.context!, this.width - 1, this.GetStavePositionY(idx)),
-        );
-        console.log(this.staves);
+    Render(
+        context: RenderContext,
+        width: number,
+        height: number,
+        startingHeight: number,
+        startingStaveIndex: number,
+        lastStaveIndex: number,
+    ) {
+        context.clear();
+        for (let i = startingStaveIndex; i <= lastStaveIndex && i < this.staves.length; i++)
+            this.staves[i].Draw(
+                context,
+                width - 1,
+                i == startingStaveIndex ? startingHeight : this.staves[i - 1].currentPositionY,
+            );
+        console.log('Staves: ', this.staves);
+        console.log('Height: ', height, 'Width: ', width);
     }
 }

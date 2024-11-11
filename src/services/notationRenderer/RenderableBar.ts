@@ -1,5 +1,6 @@
 import { RenderContext, Stave } from 'vexflow';
 import { IRenderable } from './IRenderable';
+import { staveMinimumHeightDistance } from '@data/config';
 
 class RenderableBar implements IRenderable {
     ratio: number;
@@ -14,7 +15,7 @@ class RenderableBar implements IRenderable {
         let bar = new Stave(positionX, positionY, length);
         bar.setContext(context).draw();
         this.currentPosX = bar.getX() + bar.getWidth();
-        this.currentPosY = bar.getY() + bar.getHeight();
+        this.currentPosY = bar.getY() + bar.getHeight() + staveMinimumHeightDistance;
     }
 }
 
