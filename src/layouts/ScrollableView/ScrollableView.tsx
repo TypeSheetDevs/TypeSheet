@@ -1,5 +1,4 @@
 import NoteViewRenderer from '@components/NoteViewRenderer/NoteViewRenderer';
-import { useState } from 'react';
 
 function ScrollableView() {
   return (

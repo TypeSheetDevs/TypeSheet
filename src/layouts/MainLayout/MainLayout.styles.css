@@ -27,14 +27,14 @@
     display: flex;
     flex: 1 1 0;
 }
-#scrollableView > div,
-#pagedView > div {
-    margin: 20px;
-    width: 100%;
-}
 
 svg {
     display: block;
     width: 100% !important;
     max-height: 100%;
+}
+
+#container {
+    margin: 20px;
+    width: 100%;
 }

@@ -9,10 +9,11 @@ function NoteViewRenderer(props: NoteViewRendererProps) {
   const renderArgs = useRef<RenderArguments>(props);
   renderArgs.current = props;
 
+  document.dispatchEvent(new CustomEvent<never>('needRender'));
+
   useLayoutEffect(() => {
     const renderer = new Renderer(canvas.current, Renderer.Backends.CANVAS);
     const context = renderer.getContext();
-    console.log('effectstart');
     const checkResize = () => {
       console.log('resize');
       canvas.current.height = 0;
@@ -37,7 +38,7 @@ function NoteViewRenderer(props: NoteViewRendererProps) {
   }, []);
 
   return (
-    <div>
+    <div id="container">
       <canvas
         id="canvas"
         ref={canvas}></canvas>

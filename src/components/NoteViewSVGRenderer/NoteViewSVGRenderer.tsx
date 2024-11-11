@@ -8,6 +8,8 @@ function NoteViewSVGRenderer(props: NoteViewSVGRendererProps) {
   const renderArgs = useRef<RenderArguments>(props);
   renderArgs.current = props;
 
+  document.dispatchEvent(new CustomEvent<never>('needRender'));
+
   useLayoutEffect(() => {
     const renderer = new Renderer(container.current, Renderer.Backends.SVG);
     const context = renderer.getContext();

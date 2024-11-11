@@ -17,15 +17,9 @@ export class NotationRenderer {
         } else return NotationRenderer._instance;
     }
 
-    private GetMaximumVisibleStavesAmount(height: number) {
+    get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
-        const staveHeight = tempStave.getHeight() + staveMinimumHeightDistance;
-        return Math.floor(height / staveHeight);
-    }
-
-    get PagesAmount() {
-        return 0;
-        //return Math.floor(this.staves.length / this.GetMaximumVisibleStavesAmount());
+        return tempStave.getHeight() + staveMinimumHeightDistance;
     }
 
     GetStavePositionY(index: number, defaultValue: number = 0) {
@@ -35,11 +29,7 @@ export class NotationRenderer {
 
     AddNewStave(numberOfBars?: number) {
         this.staves.push(new RenderableStave(numberOfBars));
-        document.dispatchEvent(
-            new CustomEvent<number>('notePagesAmountChanged', {
-                detail: this.PagesAmount,
-            }),
-        );
+        document.dispatchEvent(new CustomEvent<never>('numberOfStavesChanged'));
         document.dispatchEvent(new CustomEvent<never>('needRender'));
     }
 
@@ -60,6 +50,5 @@ export class NotationRenderer {
             );
         console.log('Staves: ', this.staves);
         console.log('Height: ', height, 'Width: ', width);
-        console.log('GetMaximumVisibleStavesAmount: ', this.GetMaximumVisibleStavesAmount(height));
     }
 }
