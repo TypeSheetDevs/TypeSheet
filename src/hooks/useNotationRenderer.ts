@@ -16,6 +16,7 @@ function useNotationRenderer(
     useLayoutEffect(() => {
         const renderer = new Renderer(container.current, backend);
         const context = renderer.getContext();
+
         const checkResize = () => {
             renderer.resize(container.current.clientWidth, 0);
             renderer.resize(container.current.clientWidth, container.current.clientHeight);
@@ -28,9 +29,12 @@ function useNotationRenderer(
                 renderArgs.current.lastStaveIndex,
             );
         };
+
         checkResize();
+
         window.addEventListener('resize', checkResize);
         document.addEventListener('needRender', checkResize);
+
         return () => {
             window.removeEventListener('resize', checkResize);
             document.removeEventListener('needRender', checkResize);

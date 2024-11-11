@@ -1,50 +1,19 @@
 import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRenderer';
 import { stavesPerPage } from '@data/config';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
-import { useEffect, useState } from 'react';
+import usePages from './usePages';
 
 function PagedView() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [maxPages, setMaxPages] = useState(1);
+  const [currentPage, maxPages, prevPage, nextPage] = usePages(1);
   const startingStaveIndex = currentPage * stavesPerPage - stavesPerPage;
   const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
-
-  useEffect(() => {
-    const setPages = () => {
-      setMaxPages(
-        Math.max(1, Math.ceil(NotationRenderer.getInstance().staves.length / stavesPerPage)),
-      );
-    };
-    setPages();
-
-    document.addEventListener('numberOfStavesChanged', setPages);
-    return () => {
-      document.removeEventListener('numberOfStavesChanged', setPages);
-    };
-  }, []);
 
   return (
     <div id="pagedView">
       <div id="nav">
-        <button
-          onClick={() => {
-            if (currentPage > 1) {
-              setCurrentPage(currentPage - 1);
-              document.dispatchEvent(new CustomEvent<never>('needRender'));
-            }
-          }}>
-          left
-        </button>
+        <button onClick={prevPage}>left</button>
         {currentPage} / {maxPages}
-        <button
-          onClick={() => {
-            if (currentPage < maxPages) {
-              setCurrentPage(currentPage + 1);
-              document.dispatchEvent(new CustomEvent<never>('needRender'));
-            }
-          }}>
-          right
-        </button>
+        <button onClick={nextPage}>right</button>
       </div>
       <div
         style={{
