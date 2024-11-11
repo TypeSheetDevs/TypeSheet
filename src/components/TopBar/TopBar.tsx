@@ -68,16 +68,18 @@ function TopBar() {
       className="top-bar"
       style={{ backgroundColor: topBarColor }}>
       {buttonsGroupArray.map((buttonsGroup, index) => (
-        <div
-          className="draggable-component"
-          key={index}
-          draggable
-          onDragStart={() => handleDragStart(index)}
-          onDragOver={event => handleDragOver(event, index)}
-          onDrop={event => handleDrop(event, index)}>
-          <ButtonsGroup buttons={buttonsGroup.buttons} />
+        <>
+          <div
+            className="draggable-component"
+            key={index}
+            draggable
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={event => handleDragOver(event, index)}
+            onDrop={event => handleDrop(event, index)}>
+            <ButtonsGroup buttons={buttonsGroup.buttons} />
+          </div>
           {index < buttonsGroupArray.length - 1 && <div className="separator" />}
-        </div>
+        </>
       ))}
     </div>
   );
