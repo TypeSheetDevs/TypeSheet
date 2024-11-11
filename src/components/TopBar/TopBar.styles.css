@@ -4,6 +4,10 @@
     width: 100%;
 }
 
+.draggable-component {
+    padding: 0px 5px;
+}
+
 .separator {
     margin: 2px 4px;
     /* TODO: config extraction */
