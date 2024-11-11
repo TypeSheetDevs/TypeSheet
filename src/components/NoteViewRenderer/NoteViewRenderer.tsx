@@ -1,47 +1,18 @@
 import './NoteViewRenderer.styles.css';
-import { useLayoutEffect, useRef } from 'react';
-import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { Renderer } from 'vexflow';
+import { useRef } from 'react';
+import useNotationRenderer from '@hooks/useNotationRenderer';
 
 function NoteViewRenderer(props: NoteViewRendererProps) {
-  const canvas = useRef<HTMLCanvasElement>(null!);
-  const noteRenderer = useRef<NotationRenderer>(NotationRenderer.getInstance());
-  const renderArgs = useRef<RenderArguments>(props);
-  renderArgs.current = props;
+  const container = useRef<HTMLCanvasElement>(null!);
 
-  document.dispatchEvent(new CustomEvent<never>('needRender'));
-
-  useLayoutEffect(() => {
-    const renderer = new Renderer(canvas.current, Renderer.Backends.CANVAS);
-    const context = renderer.getContext();
-    const checkResize = () => {
-      console.log('resize');
-      canvas.current.height = 0;
-      canvas.current.width = canvas.current.clientWidth;
-      canvas.current.height = canvas.current.clientHeight;
-      noteRenderer.current.Render(
-        context,
-        canvas.current.width,
-        canvas.current.height,
-        renderArgs.current.startingHeight,
-        renderArgs.current.startingStaveIndex,
-        renderArgs.current.lastStaveIndex,
-      );
-    };
-    checkResize();
-    window.addEventListener('resize', checkResize);
-    document.addEventListener('needRender', checkResize);
-    return () => {
-      window.removeEventListener('resize', checkResize);
-      document.removeEventListener('needRender', checkResize);
-    };
-  }, []);
+  useNotationRenderer(props, container, Renderer.Backends.CANVAS);
 
   return (
     <div id="container">
       <canvas
         id="canvas"
-        ref={canvas}></canvas>
+        ref={container}></canvas>
     </div>
   );
 }
