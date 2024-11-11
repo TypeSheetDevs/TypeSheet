@@ -9,6 +9,7 @@
 }
 
 .draggable-component:hover {
+    /* TODO: config extraction */
     background-color: #010d4e;
 }
 
