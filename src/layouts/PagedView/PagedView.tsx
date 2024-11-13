@@ -2,6 +2,7 @@ import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRend
 import { stavesPerPage } from '@data/config';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import usePages from './usePages';
+import styles from './PagedView.styles.module.css';
 
 function PagedView() {
   const [currentPage, maxPages, prevPage, nextPage] = usePages(1);
@@ -9,8 +10,8 @@ function PagedView() {
   const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
 
   return (
-    <div id="pagedView">
-      <div id="nav">
+    <div id={styles.pagedView}>
+      <div id={styles.nav}>
         <button onClick={prevPage}>left</button>
         {currentPage} / {maxPages}
         <button onClick={nextPage}>right</button>

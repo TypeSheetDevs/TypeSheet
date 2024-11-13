@@ -1,9 +1,9 @@
-import './Button.styles.css';
+import styles from './Button.styles.module.css';
 
 function Button({ iconPath, onClick }) {
   return (
     <button
-      className="button"
+      className={styles.button}
       onClick={onClick}>
       <img src={iconPath} />
     </button>
