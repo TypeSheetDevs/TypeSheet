@@ -1,4 +1,13 @@
 class EventNotifier {
+    private static handlerMap = new Map<string, (e: Event) => void>();
+
+    private static CreateKey<T extends NotationEventName>(
+        eventName: T,
+        handler: Handlers[T],
+    ): string {
+        return `${eventName}-${handler.toString()}`;
+    }
+
     static Notify<N extends NotationEventName>(
         name: N,
         ...[params]: Extract<NotationEvent, { name: N }> extends { params: infer P } ? [P] : []
@@ -8,21 +17,28 @@ class EventNotifier {
     }
 
     static AddListener<T extends NotationEventName>(eventName: T, handler: Handlers[T]): void {
-        const wrappedHandler = (event: CustomEvent) => {
-            const params = event.detail as EventParams<T>;
+        const key = EventNotifier.CreateKey(eventName, handler);
+
+        const wrappedHandler = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            const params = customEvent.detail as EventParams<T>;
             handler(params);
         };
 
-        window.addEventListener(eventName, wrappedHandler as EventListener);
+        window.addEventListener(eventName, wrappedHandler);
+        this.handlerMap.set(key, wrappedHandler);
     }
 
     static RemoveListener<T extends NotationEventName>(eventName: T, handler: Handlers[T]): void {
-        const wrappedHandler = (event: CustomEvent) => {
-            const params = event.detail as Parameters<Handlers[T]>[0];
-            handler(params);
-        };
+        const key = EventNotifier.CreateKey(eventName, handler);
+        const wrappedHandler = this.handlerMap.get(key);
 
-        window.removeEventListener(eventName, wrappedHandler as EventListener);
+        if (!wrappedHandler) {
+            return;
+        }
+
+        window.removeEventListener(eventName, wrappedHandler);
+        this.handlerMap.delete(key);
     }
 }
 
