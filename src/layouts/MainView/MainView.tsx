@@ -10,7 +10,7 @@ function MainView() {
   const [currentView, setCurrentView] = useState(startingView);
 
   return (
-    <div id={styles.mainView}>
+    <div className={styles.mainView}>
       <button
         onClick={() =>
           setCurrentView(currentView == ViewType.Paged ? ViewType.Scrollable : ViewType.Paged)

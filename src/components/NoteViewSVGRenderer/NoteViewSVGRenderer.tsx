@@ -10,7 +10,7 @@ export function NoteViewSVGRenderer(props: NoteViewSVGRendererProps) {
 
   return (
     <div
-      id={styles.container}
+      className={styles.container}
       ref={container}></div>
   );
 }

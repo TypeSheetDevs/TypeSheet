@@ -3,7 +3,7 @@ import styles from './ScrollableView.styles.module.css';
 
 function ScrollableView() {
   return (
-    <div id={styles.scrollableView}>
+    <div className={styles.scrollableView}>
       Scrollable
       <NoteViewRenderer
         lastStaveIndex={3}

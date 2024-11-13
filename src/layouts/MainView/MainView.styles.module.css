@@ -1,6 +1,6 @@
 @import '@assets/root.css';
 
-#mainView {
+.mainView {
     display: flex;
     flex: 8 1 0;
     flex-direction: column;

@@ -9,9 +9,9 @@ function NoteViewRenderer(props: NoteViewRendererProps) {
   useNotationRenderer(props, container, Renderer.Backends.CANVAS);
 
   return (
-    <div id={styles.container}>
+    <div className={styles.container}>
       <canvas
-        id={styles.canvas}
+        className={styles.canvas}
         ref={container}></canvas>
     </div>
   );

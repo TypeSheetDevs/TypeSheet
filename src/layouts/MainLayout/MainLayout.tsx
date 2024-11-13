@@ -4,7 +4,7 @@ import TopBar from '@components/TopBar/TopBar';
 
 function MainLayout(): JSX.Element {
   return (
-    <div id={styles.mainLayout}>
+    <div className={styles.mainLayout}>
       <TopBar></TopBar>
       <MainView></MainView>
     </div>

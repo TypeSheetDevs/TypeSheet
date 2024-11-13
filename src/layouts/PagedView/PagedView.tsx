@@ -10,8 +10,8 @@ function PagedView() {
   const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
 
   return (
-    <div id={styles.pagedView}>
-      <div id={styles.nav}>
+    <div className={styles.pagedView}>
+      <div className={styles.nav}>
         <button onClick={prevPage}>left</button>
         {currentPage} / {maxPages}
         <button onClick={nextPage}>right</button>
