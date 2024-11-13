@@ -12,8 +12,6 @@ function useNotationRenderer(
     const renderArgs = useRef<RenderArguments>(props);
     renderArgs.current = props;
 
-    EventNotifier.Notify('needsRender');
-
     useEffect(() => {
         const renderer = new Renderer(container.current, backend);
         const context = renderer.getContext();
@@ -31,17 +29,19 @@ function useNotationRenderer(
             );
         };
 
-        checkResize();
+        const resizeObserver = new ResizeObserver(checkResize);
+        resizeObserver.observe(container.current);
 
-        window.addEventListener('resize', checkResize);
         EventNotifier.AddListener('needsRender', checkResize);
 
         return () => {
-            window.removeEventListener('resize', checkResize);
+            resizeObserver.disconnect();
             EventNotifier.RemoveListener('needsRender', checkResize);
             container.current?.firstChild?.remove();
         };
     }, []);
+
+    EventNotifier.Notify('needsRender');
 }
 
 export default useNotationRenderer;
