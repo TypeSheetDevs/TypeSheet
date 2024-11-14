@@ -1,6 +1,6 @@
-import './TopBar.styles.css';
+import styles from './TopBar.styles.module.css';
 import { useState, DragEvent } from 'react';
-import { topBarColor } from '../../data/config';
+import { topBarColor } from '@data/config';
 import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
@@ -66,12 +66,12 @@ function TopBar() {
 
   return (
     <div
-      className="top-bar"
+      className={styles.topBar}
       style={{ backgroundColor: topBarColor }}>
       {buttonsGroupArray.map((buttonsGroup, index) => (
         <>
           <div
-            className="draggable-component"
+            className={styles.draggableComponent}
             key={index}
             draggable={index !== 0}
             onDragStart={() => handleDragStart(index)}
@@ -79,7 +79,7 @@ function TopBar() {
             onDrop={event => handleDrop(event, index)}>
             <ButtonsGroup buttons={buttonsGroup.buttons} />
           </div>
-          {index < buttonsGroupArray.length - 1 && <div className="separator" />}
+          {index < buttonsGroupArray.length - 1 && <div className={styles.separator} />}
         </>
       ))}
     </div>
