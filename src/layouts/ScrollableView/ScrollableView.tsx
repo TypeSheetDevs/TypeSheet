@@ -1,8 +1,9 @@
 import NoteViewRenderer from '@components/NoteViewRenderer/NoteViewRenderer';
+import styles from './ScrollableView.styles.module.css';
 
 function ScrollableView() {
   return (
-    <div id="scrollableView">
+    <div className={styles.scrollableView}>
       Scrollable
       <NoteViewRenderer
         lastStaveIndex={3}
