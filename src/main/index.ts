@@ -76,11 +76,15 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+// IPC handler for getting global filePath
+ipcMain.handle('get-global-path', async (_, { filePath }: { filePath: string }) => {
+    const relativePath = path.resolve(__dirname, '../../', filePath);
+    return relativePath;
+});
+
 // IPC handler for reading a file
-// filePath relative to out//preload
 ipcMain.handle('read-file', async (_, { filePath }: { filePath: string }) => {
-    const relativePath = path.resolve(__dirname, filePath);
-    const content = fs.readFileSync(relativePath, 'utf-8');
+    const content = fs.readFileSync(filePath, 'utf-8');
     return content;
 });
 
@@ -92,7 +96,3 @@ ipcMain.handle(
         return { success: true };
     },
 );
-
-ipcMain.handle('top-level-path', async _ => {
-    return path.resolve(__dirname, '../..');
-});

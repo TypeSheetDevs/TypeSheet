@@ -4,6 +4,9 @@ import { electronAPI } from '@electron-toolkit/preload';
 
 // Custom APIs for renderer
 const api = {
+    getGlobalPath: (filePath: string): Promise<string> => {
+        return ipcRenderer.invoke('get-global-path', { filePath });
+    },
     readFile: (filePath: string): Promise<string> => {
         return ipcRenderer.invoke('read-file', { filePath });
     },
@@ -12,9 +15,6 @@ const api = {
         content: string,
     ): Promise<{ success: boolean; error?: string }> => {
         return ipcRenderer.invoke('save-file', { filePath, content });
-    },
-    getTopLevelPath(): Promise<string> {
-        return ipcRenderer.invoke('top-level-path');
     },
 };
 

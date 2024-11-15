@@ -1,8 +1,6 @@
-import * as fs from 'fs';
-
 export class ConfigService {
     private static _instance: ConfigService | null = null;
-    private _configFilePath: string = '../../src/data/configJson.json';
+    private _configFilePath: string = '';
     private _appConfig: AppConfig | null = null;
 
     public static async getInstance(): Promise<ConfigService> {
@@ -14,19 +12,17 @@ export class ConfigService {
         return ConfigService._instance;
     }
 
-    public async loadConfig(): Promise<AppConfig> {
+    public async loadConfig(): Promise<void> {
+        this._configFilePath = await window.api.getGlobalPath('src/data/configJson.json');
         const response = await window.api.readFile(this._configFilePath);
-        const config: AppConfig = JSON.parse(response);
-        this._appConfig = config;
-        return config;
+
+        this._appConfig = JSON.parse(response) as AppConfig;
     }
 
-    // not working
     public async saveConfig(): Promise<void> {
         try {
             const content = JSON.stringify(this._appConfig, null, 2);
             const result = await window.api.saveFile(this._configFilePath, content);
-
             if (!result.success) {
                 throw new Error(result.error || 'Unknown error occurred while saving the config');
             }
