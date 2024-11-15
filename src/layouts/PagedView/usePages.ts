@@ -31,7 +31,16 @@ function usePages(currentPageDefault: number) {
         }
     };
 
-    return [currentPage, maxPages, prevPage, nextPage] as const;
+    const setPage = (page: number) => {
+        if (page <= 1) {
+            page = 1;
+        } else if (page >= maxPages) {
+            page = maxPages;
+        }
+        setCurrentPage(page);
+    };
+
+    return [currentPage, maxPages, prevPage, nextPage, setPage] as const;
 }
 
 export default usePages;

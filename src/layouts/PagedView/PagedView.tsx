@@ -5,7 +5,7 @@ import usePages from './usePages';
 import styles from './PagedView.styles.module.css';
 
 function PagedView() {
-  const [currentPage, maxPages, prevPage, nextPage] = usePages(1);
+  const [currentPage, maxPages, prevPage, nextPage, setPage] = usePages(1);
   const startingStaveIndex = currentPage * stavesPerPage - stavesPerPage;
   const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
 
@@ -13,7 +13,12 @@ function PagedView() {
     <div className={styles.pagedView}>
       <div className={styles.nav}>
         <button onClick={prevPage}>left</button>
-        {currentPage} / {maxPages}
+        <input
+          type="number"
+          value={currentPage}
+          onChange={e => setPage(Number.parseInt(e.target.value))}
+        />
+        / {maxPages}
         <button onClick={nextPage}>right</button>
       </div>
       <div
