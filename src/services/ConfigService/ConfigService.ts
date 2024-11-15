@@ -1,15 +1,14 @@
 import * as fs from 'fs';
-import * as path from 'path';
 
 export class ConfigService {
     private static _instance: ConfigService | null = null;
-    private _configPath: string = '';
-    private _config: AppConfig | null = null;
+    private _configFilePath: string = '../../data/configJson.json';
+    private _appConfig: AppConfig | null = null;
 
-    public static getInstance(): ConfigService {
+    public static async getInstance(): Promise<ConfigService> {
         if (!ConfigService._instance) {
             ConfigService._instance = new ConfigService();
-            ConfigService._instance.loadConfig();
+            await ConfigService._instance.loadConfig();
         }
 
         return ConfigService._instance;
@@ -19,49 +18,54 @@ export class ConfigService {
         this.loadConfig();
     }
 
-    public loadConfig(): void {
+    public async loadConfig(): Promise<AppConfig | null> {
         try {
-            const configData = fs.readFileSync(this._configPath, 'utf-8');
-            this._config = JSON.parse(configData) as AppConfig;
-            console.log('Configuration loaded successfully.');
+            const response = await fetch(this._configFilePath);
+            console.log(response);
+            if (!response.ok) throw new Error('Unable to read config file');
+
+            const config = (await response.json()) as AppConfig;
+            this._appConfig = config;
+            return config;
         } catch (error) {
             console.error('Error loading configuration:', error);
-            this._config = { configs: [] };
+            return null;
         }
     }
 
     public getConfig(): AppConfig | null {
-        return this._config;
+        return this._appConfig;
     }
 
+    public getConfigValue(name: string): string | null {
+        const config = this._appConfig?.configs.find(config => config.name === name);
+        return config ? config.value : null;
+    }
+
+    // not working
     public saveConfig(config: AppConfig): void {
         try {
-            fs.writeFileSync(this._configPath, JSON.stringify(config, null, 2), 'utf-8');
-            this._config = config;
-            console.log('Configuration saved successfully.');
+            fs.writeFileSync(this._configFilePath, JSON.stringify(config, null, 2), 'utf-8');
+            this._appConfig = config;
         } catch (error) {
             console.error('Error saving configuration:', error);
         }
     }
 
+    // not working
     public updateConfig(name: string, value: string): void {
-        if (!this._config) {
-            this._config = { configs: [] };
+        if (!this._appConfig) {
+            this._appConfig = { configs: [] };
         }
 
-        const existingConfig = this._config.configs.find(config => config.name === name);
+        const existingConfig = this._appConfig.configs.find(config => config.name === name);
 
         if (existingConfig) {
             existingConfig.value = value;
         } else {
-            this._config.configs.push({ name, value });
+            this._appConfig.configs.push({ name, value });
         }
 
-        this.saveConfig(this._config);
-    }
-
-    public getConfigValue(name: string): string | null {
-        const config = this._config?.configs.find(config => config.name === name);
-        return config ? config.value : null;
+        this.saveConfig(this._appConfig);
     }
 }

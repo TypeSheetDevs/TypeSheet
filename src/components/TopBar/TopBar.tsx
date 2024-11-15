@@ -6,15 +6,7 @@ import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
-  const [topBarColor, setTopBarColor] = useState<string>('#0e0b52'); // Domyślny kolor
-
-  useEffect(() => {
-    const configService = ConfigService.getInstance();
-    const color = configService.getConfigValue(ConfigKeys.topBarColor);
-    if (color) {
-      setTopBarColor(color);
-    }
-  }, []);
+  const [topBarColor, setTopBarColor] = useState<string>('#0E0B52');
 
   const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupProps[]>([
     {
@@ -52,6 +44,19 @@ function TopBar() {
   ]);
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      const configService = await ConfigService.getInstance();
+      const color = configService.getConfigValue(ConfigKeys.topBarColor);
+      console.log(color);
+      if (color) {
+        setTopBarColor(color);
+      }
+    };
+
+    loadConfig().catch(console.error);
+  }, []);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
