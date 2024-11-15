@@ -1,11 +1,21 @@
 import './TopBar.styles.css';
-import { useState, DragEvent } from 'react';
-import { topBarColor } from '../../data/config';
+import { useState, useEffect, DragEvent } from 'react';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { ConfigKeys } from '@services/ConfigService/ConfigKeys';
 import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
-  /* TODO: config extraction */
+  const [topBarColor, setTopBarColor] = useState<string>('#0e0b52'); // Domyślny kolor
+
+  useEffect(() => {
+    const configService = ConfigService.getInstance();
+    const color = configService.getConfigValue(ConfigKeys.topBarColor);
+    if (color) {
+      setTopBarColor(color);
+    }
+  }, []);
+
   const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupProps[]>([
     {
       buttons: [

@@ -1,0 +1,28 @@
+{
+  "configs": [
+    {
+      "name": "startingView",
+      "value": "home"
+    },
+    {
+      "name": "barsPerStave",
+      "value": "4"
+    },
+    {
+      "name": "staveMinimumHeightDistance",
+      "value": "10"
+    },
+    {
+      "name": "mainViewMargin",
+      "value": "20"
+    },
+    {
+      "name": "stavesPerPage",
+      "value": "5"
+    },
+    {
+      "name": "topBarColor",
+      "value": "#FF5733"
+    }
+  ]
+}
