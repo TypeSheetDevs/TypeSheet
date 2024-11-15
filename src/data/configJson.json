@@ -6,23 +6,23 @@
     },
     {
       "name": "barsPerStave",
-      "value": "4"
+      "value": "7"
     },
     {
       "name": "staveMinimumHeightDistance",
-      "value": "10"
+      "value": "40"
     },
     {
       "name": "mainViewMargin",
-      "value": "20"
+      "value": "10"
     },
     {
       "name": "stavesPerPage",
-      "value": "5"
+      "value": "4"
     },
     {
       "name": "topBarColor",
-      "value": "#FF5733"
+      "value": "#0E0B52"
     }
   ]
 }

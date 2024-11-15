@@ -33,8 +33,17 @@ export class ConfigService {
         }
     }
 
-    public getConfig(): AppConfig | null {
-        return this._appConfig;
+    // not working
+    public saveConfig(): void {
+        try {
+            fs.writeFileSync(
+                this._configFilePath,
+                JSON.stringify(this._appConfig, null, 2),
+                'utf-8',
+            );
+        } catch (error) {
+            console.error('Error saving configuration:', error);
+        }
     }
 
     public getConfigValue(name: string): string | null {
@@ -42,17 +51,6 @@ export class ConfigService {
         return config ? config.value : null;
     }
 
-    // not working
-    public saveConfig(config: AppConfig): void {
-        try {
-            fs.writeFileSync(this._configFilePath, JSON.stringify(config, null, 2), 'utf-8');
-            this._appConfig = config;
-        } catch (error) {
-            console.error('Error saving configuration:', error);
-        }
-    }
-
-    // not working
     public updateConfig(name: string, value: string): void {
         if (!this._appConfig) {
             this._appConfig = { configs: [] };
@@ -62,10 +60,6 @@ export class ConfigService {
 
         if (existingConfig) {
             existingConfig.value = value;
-        } else {
-            this._appConfig.configs.push({ name, value });
         }
-
-        this.saveConfig(this._appConfig);
     }
 }
