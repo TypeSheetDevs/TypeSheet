@@ -13,11 +13,8 @@ function ScrollableView() {
       className={styles.scrollableView}
       ref={scrollableBox}>
       <div
-        style={{
-          height: `${containerHeight}px`,
-          display: 'flex',
-          flex: '1 1 0',
-        }}>
+        className={styles.container}
+        style={{ height: `${containerHeight}px` }}>
         <NoteViewSVGRenderer
           startingHeight={stavesStartingHeight}
           startingStaveIndex={firstStaveIndex}
