@@ -14,10 +14,6 @@ export class ConfigService {
         return ConfigService._instance;
     }
 
-    private constructor() {
-        this.loadConfig();
-    }
-
     public async loadConfig(): Promise<AppConfig | null> {
         try {
             const response = await fetch(this._configFilePath);
@@ -52,11 +48,7 @@ export class ConfigService {
     }
 
     public updateConfig(name: string, value: string): void {
-        if (!this._appConfig) {
-            this._appConfig = { configs: [] };
-        }
-
-        const existingConfig = this._appConfig.configs.find(config => config.name === name);
+        const existingConfig = this._appConfig?.configs.find(config => config.name === name);
 
         if (existingConfig) {
             existingConfig.value = value;
