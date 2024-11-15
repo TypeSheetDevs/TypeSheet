@@ -1,7 +1,8 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
-import { join } from 'path';
+import path, { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
+import * as fs from 'fs';
 
 function createWindow(): void {
     // Create the browser window.
@@ -74,3 +75,24 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+// IPC handler for reading a file
+// filePath relative to out//preload
+ipcMain.handle('read-file', async (_, { filePath }: { filePath: string }) => {
+    const relativePath = path.resolve(__dirname, filePath);
+    const content = fs.readFileSync(relativePath, 'utf-8');
+    return content;
+});
+
+// IPC handler for saving a file
+ipcMain.handle(
+    'save-file',
+    async (_, { filePath, content }: { filePath: string; content: string }) => {
+        fs.writeFileSync(filePath, content, 'utf8');
+        return { success: true };
+    },
+);
+
+ipcMain.handle('top-level-path', async _ => {
+    return path.resolve(__dirname, '../..');
+});

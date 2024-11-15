@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 export class ConfigService {
     private static _instance: ConfigService | null = null;
-    private _configFilePath: string = '../../data/configJson.json';
+    private _configFilePath: string = '../../src/data/configJson.json';
     private _appConfig: AppConfig | null = null;
 
     public static async getInstance(): Promise<ConfigService> {
@@ -14,35 +14,30 @@ export class ConfigService {
         return ConfigService._instance;
     }
 
-    public async loadConfig(): Promise<AppConfig | null> {
-        try {
-            const response = await fetch(this._configFilePath);
-            console.log(response);
-            if (!response.ok) throw new Error('Unable to read config file');
-
-            const config = (await response.json()) as AppConfig;
-            this._appConfig = config;
-            return config;
-        } catch (error) {
-            console.error('Error loading configuration:', error);
-            return null;
-        }
+    public async loadConfig(): Promise<AppConfig> {
+        const response = await window.api.readFile(this._configFilePath);
+        const config: AppConfig = JSON.parse(response);
+        this._appConfig = config;
+        return config;
     }
 
     // not working
-    public saveConfig(): void {
+    public async saveConfig(): Promise<void> {
         try {
-            fs.writeFileSync(
-                this._configFilePath,
-                JSON.stringify(this._appConfig, null, 2),
-                'utf-8',
-            );
+            const content = JSON.stringify(this._appConfig, null, 2);
+            const result = await window.api.saveFile(this._configFilePath, content);
+
+            if (!result.success) {
+                throw new Error(result.error || 'Unknown error occurred while saving the config');
+            }
+
+            console.log('Configuration saved successfully.');
         } catch (error) {
             console.error('Error saving configuration:', error);
         }
     }
 
-    public getConfigValue(name: string): string | null {
+    public getValue(name: string): string | null {
         const config = this._appConfig?.configs.find(config => config.name === name);
         return config ? config.value : null;
     }

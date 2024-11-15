@@ -48,7 +48,7 @@ function TopBar() {
   useEffect(() => {
     const loadConfig = async () => {
       const configService = await ConfigService.getInstance();
-      const color = configService.getConfigValue(ConfigKeys.topBarColor);
+      const color = configService.getValue(ConfigKeys.topBarColor);
       if (color) {
         setTopBarColor(color);
       }
