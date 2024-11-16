@@ -13,10 +13,29 @@ export class ConfigService {
     }
 
     public async loadConfig(): Promise<void> {
-        this._configFilePath = await window.api.getGlobalPath('src/data/configJson.json');
-        const response = await window.api.readFile(this._configFilePath);
+        const globalPathResponse = await window.api.getGlobalPath('src/data/configJson.json');
 
-        this._appConfig = JSON.parse(response) as AppConfig;
+        if (!globalPathResponse.success || !globalPathResponse.path) {
+            throw new Error(
+                `Failed to get global path: ${globalPathResponse.error || 'Unknown error'}`,
+            );
+        }
+
+        this._configFilePath = globalPathResponse.path;
+
+        const readFileResponse = await window.api.readFile(this._configFilePath);
+
+        if (!readFileResponse.success || !readFileResponse.content) {
+            throw new Error(
+                `Failed to read config file: ${readFileResponse.error || 'Unknown error'}`,
+            );
+        }
+
+        try {
+            this._appConfig = JSON.parse(readFileResponse.content) as AppConfig;
+        } catch (error) {
+            throw new Error(`Failed to parse config file: ${(error as Error).message}`);
+        }
     }
 
     public async saveConfig(): Promise<void> {

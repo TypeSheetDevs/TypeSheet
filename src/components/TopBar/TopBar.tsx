@@ -49,11 +49,9 @@ function TopBar() {
     const loadConfig = async () => {
       const configService = await ConfigService.getInstance();
       const color = configService.getValue(ConfigKeys.topBarColor);
-      configService.updateConfig(ConfigKeys.topBarColor, '#FFFFFF');
       if (color) {
         setTopBarColor(color);
       }
-      configService.saveConfig();
     };
 
     loadConfig().catch(console.error);

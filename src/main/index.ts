@@ -76,23 +76,42 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+function getErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+        return error.message;
+    }
+    return String(error);
+}
+
 // IPC handler for getting global filePath
 ipcMain.handle('get-global-path', async (_, { filePath }: { filePath: string }) => {
-    const relativePath = path.resolve(__dirname, '../../', filePath);
-    return relativePath;
+    try {
+        const relativePath = path.resolve(__dirname, '../../', filePath);
+        return { success: true, path: relativePath };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
 });
 
 // IPC handler for reading a file
 ipcMain.handle('read-file', async (_, { filePath }: { filePath: string }) => {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    return content;
+    try {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        return { success: true, content };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
 });
 
 // IPC handler for saving a file
 ipcMain.handle(
     'save-file',
     async (_, { filePath, content }: { filePath: string; content: string }) => {
-        fs.writeFileSync(filePath, content, 'utf8');
-        return { success: true };
+        try {
+            fs.writeFileSync(filePath, content, 'utf8');
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: getErrorMessage(error) };
+        }
     },
 );

@@ -4,10 +4,14 @@ import { electronAPI } from '@electron-toolkit/preload';
 
 // Custom APIs for renderer
 const api = {
-    getGlobalPath: (filePath: string): Promise<string> => {
+    getGlobalPath: (
+        filePath: string,
+    ): Promise<{ success: boolean; path?: string; error?: string }> => {
         return ipcRenderer.invoke('get-global-path', { filePath });
     },
-    readFile: (filePath: string): Promise<string> => {
+    readFile: (
+        filePath: string,
+    ): Promise<{ success: boolean; content?: string; error?: string }> => {
         return ipcRenderer.invoke('read-file', { filePath });
     },
     saveFile: (
