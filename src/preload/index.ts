@@ -1,8 +1,26 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
+// import path from 'path';
 
 // Custom APIs for renderer
-const api = {};
+const api = {
+    getGlobalPath: (
+        filePath: string,
+    ): Promise<{ success: boolean; path?: string; error?: string }> => {
+        return ipcRenderer.invoke('get-global-path', { filePath });
+    },
+    readFile: (
+        filePath: string,
+    ): Promise<{ success: boolean; content?: string; error?: string }> => {
+        return ipcRenderer.invoke('read-file', { filePath });
+    },
+    saveFile: (
+        filePath: string,
+        content: string,
+    ): Promise<{ success: boolean; error?: string }> => {
+        return ipcRenderer.invoke('save-file', { filePath, content });
+    },
+};
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
