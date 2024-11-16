@@ -49,7 +49,7 @@ function TopBar() {
     const loadConfig = async () => {
       const configService = await ConfigService.getInstance();
       const color = await configService.getValue(ConfigKey.TopBarColor);
-      if (color) {
+      if (color && ConfigService.isValidHexColor(color)) {
         setTopBarColor(color);
       }
     };
