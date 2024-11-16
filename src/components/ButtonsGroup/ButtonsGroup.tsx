@@ -1,6 +1,5 @@
 import Button from '@components/Button/Button';
 import styles from './ButtonsGroup.styles.module.css';
-import { ButtonsGroupType } from './ButtonsGroup.types';
 
 function ButtonsGroup({ buttons }: ButtonsGroupType) {
   return (

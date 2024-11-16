@@ -1,5 +1,4 @@
 import styles from './Button.styles.module.css';
-import ButtonType from './Button.types';
 
 function Button({ iconPath, onClick }: ButtonType) {
   return (

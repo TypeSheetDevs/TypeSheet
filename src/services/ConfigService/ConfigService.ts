@@ -2,15 +2,11 @@ export class ConfigService {
     private static _instance: ConfigService | null = null;
     private _configFilePath: string = '';
     private _appConfig: AppConfig | null = null;
-    private _configLoaded: Promise<void> | null = null;
 
-    public static async getInstance(): Promise<ConfigService> {
+    public static getInstance(): ConfigService {
         if (!ConfigService._instance) {
             ConfigService._instance = new ConfigService();
-            ConfigService._instance._configLoaded = ConfigService._instance.loadConfig();
         }
-
-        await ConfigService._instance._configLoaded;
 
         return ConfigService._instance;
     }
@@ -46,8 +42,7 @@ export class ConfigService {
         }
     }
 
-    public async getValue(configName: string): Promise<string | null> {
-        await this._configLoaded;
+    public getValue(configName: string): string | null {
         if (!this._appConfig) {
             console.warn('Config is not loaded or was corrupted.');
             return null;
@@ -58,7 +53,6 @@ export class ConfigService {
     }
 
     public async updateValue(configName: string, value: string): Promise<void> {
-        await this._configLoaded;
         if (!this._appConfig) {
             console.warn('Config is not loaded or was corrupted.');
             return;

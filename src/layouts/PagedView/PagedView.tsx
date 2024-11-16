@@ -2,12 +2,12 @@ import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRend
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import usePages from './usePages';
 import styles from './PagedView.styles.module.css';
-import { useEffect, useState } from 'react';
-import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
+// import { useEffect, useState } from 'react';
+// import { ConfigService } from '@services/ConfigService/ConfigService';
+// import { ConfigKey } from '@services/ConfigService/ConfigKey';
 
 function PagedView() {
-  const [stavesPerPage, setStavesPerPage] = useState(4);
+  const stavesPerPage = 4;
 
   const [currentPage, maxPages, prevPage, nextPage, setPage] = usePages(1);
   const startingStaveIndex = currentPage * stavesPerPage - stavesPerPage;
@@ -15,17 +15,17 @@ function PagedView() {
 
   const containerHeight = NotationRenderer.getInstance().StaveHeight * stavesPerPage;
 
-  useEffect(() => {
-    const loadConfig = async () => {
-      const configService = await ConfigService.getInstance();
-      const value = configService.getValue(ConfigKey.BarsPerStave);
-      if (value && Number(value)) {
-        setStavesPerPage(Number(value));
-      }
-    };
+  // useEffect(() => {
+  //   const loadConfig = async () => {
+  //     const configService = await ConfigService.getInstance();
+  //     const value = configService.getValue(ConfigKey.BarsPerStave);
+  //     if (value && Number(value)) {
+  //       setStavesPerPage(Number(value));
+  //     }
+  //   };
 
-    loadConfig().catch(console.error);
-  }, []);
+  //   loadConfig().catch(console.error);
+  // }, []);
 
   return (
     <div className={styles.pagedView}>

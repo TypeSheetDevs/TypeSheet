@@ -1,5 +1,3 @@
-import ButtonType from '@components/Button/Button.types';
-
-export type ButtonsGroupType = {
+type ButtonsGroupType = {
     buttons: ButtonType[];
 };
