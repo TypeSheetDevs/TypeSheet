@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs", // Required for Jest
+    "esModuleInterop": true, // Simplifies handling default imports in tests
+    "isolatedModules": false, // Required by ts-jest
+    "jsx": "react-jsx", // For React components
+    "types": ["jest"], // Add Jest typings
+    "baseUrl": ".", // Match baseUrl from tsconfig.web.json
+    "paths": {
+      "@pages/*": ["src/layouts/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@context/*": ["src/context/*"],
+      "@data/*": ["src/data/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@utils/*": ["src/utils/*"],
+      "@services/*": ["src/services/*"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*"], // Include source and test files
+  "exclude": ["node_modules"] // Exclude irrelevant files
+}
