@@ -1,8 +1,8 @@
 import Button from '@components/Button/Button';
-import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import styles from './ButtonsGroup.styles.module.css';
+import { ButtonsGroupType } from './ButtonsGroup.types';
 
-function ButtonsGroup({ buttons }: ButtonsGroupProps) {
+function ButtonsGroup({ buttons }: ButtonsGroupType) {
   return (
     <div className={styles.buttonsGroup}>
       {buttons.map((button, index) => (

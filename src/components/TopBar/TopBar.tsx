@@ -2,13 +2,13 @@ import styles from './TopBar.styles.module.css';
 import { useState, useEffect, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { ConfigKey } from '@services/ConfigService/ConfigKey';
-import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
+import { ButtonsGroupType } from '@components/ButtonsGroup/ButtonsGroup.types';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
   const [topBarColor, setTopBarColor] = useState<string>('#0E0B52');
 
-  const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupProps[]>([
+  const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupType[]>([
     {
       buttons: [
         {
