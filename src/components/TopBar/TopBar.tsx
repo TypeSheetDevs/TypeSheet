@@ -1,7 +1,7 @@
 import './TopBar.styles.css';
 import { useState, useEffect, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKeys } from '@services/ConfigService/ConfigKeys';
+import { ConfigKey } from '@services/ConfigService/ConfigKey';
 import ButtonsGroupProps from '@components/PropsInterfaces/ButtonsGroupProps';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
@@ -48,7 +48,7 @@ function TopBar() {
   useEffect(() => {
     const loadConfig = async () => {
       const configService = await ConfigService.getInstance();
-      const color = configService.getValue(ConfigKeys.topBarColor);
+      const color = configService.getValue(ConfigKey.TopBarColor);
       if (color) {
         setTopBarColor(color);
       }

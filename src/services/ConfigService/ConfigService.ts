@@ -52,13 +52,13 @@ export class ConfigService {
         }
     }
 
-    public getValue(name: string): string | null {
-        const config = this._appConfig?.configs.find(config => config.name === name);
+    public getValue(configName: string): string | null {
+        const config = this._appConfig?.configs.find(config => config.name === configName);
         return config ? config.value : null;
     }
 
-    public updateConfig(name: string, value: string): void {
-        const existingConfig = this._appConfig?.configs.find(config => config.name === name);
+    public updateValue(configName: string, value: string): void {
+        const existingConfig = this._appConfig?.configs.find(config => config.name === configName);
 
         if (existingConfig) {
             existingConfig.value = value;
