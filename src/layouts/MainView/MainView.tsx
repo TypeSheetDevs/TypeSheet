@@ -11,16 +11,10 @@ function MainView() {
   const [currentView, setCurrentView] = useState(ViewType.Paged);
 
   useEffect(() => {
-    const loadConfig = async () => {
-      const configService = await ConfigService.getInstance();
-
-      const viewType = await configService.getValue(ConfigKey.StartingView);
-      if (viewType && parseInt(viewType)) {
-        setCurrentView(parseInt(viewType));
-      }
-    };
-
-    loadConfig().catch(console.error);
+    const viewTypeConfig = Number(ConfigService.getInstance().getValue(ConfigKey.StartingView));
+    if (!Number.isNaN(viewTypeConfig)) {
+      setCurrentView(viewTypeConfig);
+    }
   }, []);
 
   return (

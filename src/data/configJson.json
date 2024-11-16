@@ -2,7 +2,7 @@
   "configs": [
     {
       "name": "startingView",
-      "value": "0"
+      "value": "1"
     },
     {
       "name": "barsPerStave",

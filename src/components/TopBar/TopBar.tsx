@@ -1,5 +1,5 @@
 import styles from './TopBar.styles.module.css';
-import { useState, useEffect, DragEvent } from 'react';
+import { useState, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { ConfigKey } from '@services/ConfigService/ConfigKey';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
