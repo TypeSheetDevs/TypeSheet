@@ -1,5 +1,6 @@
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { Renderer, RendererBackends } from 'vexflow';
 
 function useNotationRenderer(
@@ -11,9 +12,7 @@ function useNotationRenderer(
     const renderArgs = useRef<RenderArguments>(props);
     renderArgs.current = props;
 
-    document.dispatchEvent(new CustomEvent<never>('needRender'));
-
-    useLayoutEffect(() => {
+    useEffect(() => {
         const renderer = new Renderer(container.current, backend);
         const context = renderer.getContext();
 
@@ -30,17 +29,19 @@ function useNotationRenderer(
             );
         };
 
-        checkResize();
+        const resizeObserver = new ResizeObserver(checkResize);
+        resizeObserver.observe(container.current);
 
-        window.addEventListener('resize', checkResize);
-        document.addEventListener('needRender', checkResize);
+        EventNotifier.AddListener('needsRender', checkResize);
 
         return () => {
-            window.removeEventListener('resize', checkResize);
-            document.removeEventListener('needRender', checkResize);
-            container.current.firstChild?.remove();
+            resizeObserver.disconnect();
+            EventNotifier.RemoveListener('needsRender', checkResize);
+            container.current?.firstChild?.remove();
         };
     }, []);
+
+    EventNotifier.Notify('needsRender');
 }
 
 export default useNotationRenderer;

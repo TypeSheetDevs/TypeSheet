@@ -1,9 +1,10 @@
 import { RenderContext, Stave } from 'vexflow';
 import RenderableStave from './RenderableStave';
 import { staveMinimumHeightDistance } from '@data/config';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export class NotationRenderer {
-    static _instance: NotationRenderer = null!;
+    private static _instance: NotationRenderer = null!;
     static getInstance() {
         return NotationRenderer._instance || new NotationRenderer();
     }
@@ -29,8 +30,8 @@ export class NotationRenderer {
 
     AddNewStave(numberOfBars?: number) {
         this.staves.push(new RenderableStave(numberOfBars));
-        document.dispatchEvent(new CustomEvent<never>('numberOfStavesChanged'));
-        document.dispatchEvent(new CustomEvent<never>('needRender'));
+        EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+        EventNotifier.Notify('needsRender');
     }
 
     Render(

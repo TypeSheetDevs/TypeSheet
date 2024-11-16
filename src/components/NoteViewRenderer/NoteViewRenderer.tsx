@@ -1,4 +1,4 @@
-import './NoteViewRenderer.styles.css';
+import styles from './NoteViewRenderer.styles.module.css';
 import { Renderer } from 'vexflow';
 import { useRef } from 'react';
 import useNotationRenderer from '@hooks/useNotationRenderer';
@@ -9,9 +9,9 @@ function NoteViewRenderer(props: NoteViewRendererProps) {
   useNotationRenderer(props, container, Renderer.Backends.CANVAS);
 
   return (
-    <div id="container">
+    <div className={styles.container}>
       <canvas
-        id="canvas"
+        className={styles.canvas}
         ref={container}></canvas>
     </div>
   );

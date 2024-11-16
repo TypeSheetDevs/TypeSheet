@@ -1,4 +1,5 @@
 import { stavesPerPage } from '@data/config';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { useState, useEffect } from 'react';
 
@@ -7,19 +8,14 @@ function usePages(currentPageDefault: number) {
     const [maxPages, setMaxPages] = useState(1);
 
     useEffect(() => {
-        const setPages = () => {
-            setMaxPages(
-                Math.max(
-                    1,
-                    Math.ceil(NotationRenderer.getInstance().staves.length / stavesPerPage),
-                ),
-            );
-        };
-        setPages();
+        const setPages = (numberOfStaves: number) =>
+            setMaxPages(Math.max(1, Math.ceil(numberOfStaves / stavesPerPage)));
 
-        document.addEventListener('numberOfStavesChanged', setPages);
+        setPages(NotationRenderer.getInstance().staves.length);
+
+        EventNotifier.AddListener('numberOfStavesChanged', setPages);
         return () => {
-            document.removeEventListener('numberOfStavesChanged', setPages);
+            EventNotifier.RemoveListener('numberOfStavesChanged', setPages);
         };
     }, []);
 
@@ -35,7 +31,16 @@ function usePages(currentPageDefault: number) {
         }
     };
 
-    return [currentPage, maxPages, prevPage, nextPage] as const;
+    const setPage = (page: number) => {
+        if (page <= 1) {
+            page = 1;
+        } else if (page >= maxPages) {
+            page = maxPages;
+        }
+        setCurrentPage(page);
+    };
+
+    return [currentPage, maxPages, prevPage, nextPage, setPage] as const;
 }
 
 export default usePages;

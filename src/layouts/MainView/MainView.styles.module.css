@@ -1,0 +1,10 @@
+@import '@assets/root.css';
+
+.mainView {
+    display: flex;
+    flex: 8 1 0;
+    flex-direction: column;
+    min-width: 0;
+    font-size: var(--main-view-font-size);
+    font-family: Bravura;
+}

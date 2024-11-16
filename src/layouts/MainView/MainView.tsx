@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './MainView.styles.css';
+import styles from './MainView.styles.module.css';
 import { ViewType } from '@layouts/MainView/MainView.types';
 import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
@@ -24,7 +24,7 @@ function MainView() {
   }, []);
 
   return (
-    <div id="mainView">
+    <div className={styles.mainView}>
       <button
         onClick={() =>
           setCurrentView(currentView == ViewType.Paged ? ViewType.Scrollable : ViewType.Paged)

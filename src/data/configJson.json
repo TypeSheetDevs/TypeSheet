@@ -2,7 +2,7 @@
   "configs": [
     {
       "name": "startingView",
-      "value": "1"
+      "value": "0"
     },
     {
       "name": "barsPerStave",
@@ -22,7 +22,7 @@
     },
     {
       "name": "topBarColor",
-      "value": "#FFFFFF"
+      "value": "#0E0B52"
     }
   ]
 }
