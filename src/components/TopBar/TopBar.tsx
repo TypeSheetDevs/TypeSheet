@@ -3,6 +3,7 @@ import { useState, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { ConfigKey } from '@services/ConfigService/ConfigKey';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
+import { ConfigValidators } from '@services/ConfigService/Config.validators';
 
 function TopBar() {
   const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupType[]>([
@@ -41,11 +42,11 @@ function TopBar() {
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  const topBarColorConfig = ConfigService.getInstance().getValue(ConfigKey.TopBarColor);
   const topBarColor =
-    topBarColorConfig && ConfigService.isValidHexColor(topBarColorConfig)
-      ? topBarColorConfig
-      : '#0E0B52';
+    ConfigService.getInstance().getValue(
+      ConfigKey.TopBarColor,
+      ConfigValidators.validateHexColor,
+    ) ?? '#0E0B52';
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);

@@ -1,3 +1,5 @@
+import { ConfigTypes } from './Config.types';
+
 export class ConfigService {
     private static _instance: ConfigService | null = null;
     private _configFilePath: string = '';
@@ -42,14 +44,31 @@ export class ConfigService {
         }
     }
 
-    public getValue(configName: string): string | null {
+    public getValue<K extends keyof ConfigTypes>(
+        configName: K,
+        validator?: (value: ConfigTypes[K]) => boolean,
+    ): ConfigTypes[K] | null {
         if (!this._appConfig) {
             console.warn('Config is not loaded or was corrupted.');
             return null;
         }
 
         const config = this._appConfig.configs.find(config => config.name === configName);
-        return config ? config.value : null;
+        if (config) {
+            try {
+                const value = config.value as ConfigTypes[K];
+
+                if (validator && !validator(value)) {
+                    console.warn(`Validation failed for config "${configName}" with value:`, value);
+                    return null;
+                }
+
+                return value;
+            } catch (error) {
+                console.error(`Failed to parse config value for ${configName}:`, error);
+            }
+        }
+        return null;
     }
 
     public async updateValue(configName: string, value: string): Promise<void> {
@@ -81,10 +100,5 @@ export class ConfigService {
         } catch (error) {
             console.error('Error saving configuration:', error);
         }
-    }
-
-    public static isValidHexColor(color: string): boolean {
-        const hexRegex = /^#([0-9A-Fa-f]{3}){1,2}$/;
-        return hexRegex.test(color);
     }
 }
