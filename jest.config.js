@@ -13,6 +13,7 @@ module.exports = {
         '^@utils/(.*)': '<rootDir>/src/utils/$1',
         '^@services/(.*)': '<rootDir>/src/services/$1',
     },
+    modulePathIgnorePatterns: ['<rootDir>/src/tests/'],
     transform: {
         '^.+.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.web.json' }],
     },
