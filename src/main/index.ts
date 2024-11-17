@@ -1,7 +1,8 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
-import { join } from 'path';
+import path, { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
+import * as fs from 'fs';
 
 function createWindow(): void {
     // Create the browser window.
@@ -21,6 +22,7 @@ function createWindow(): void {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
+        mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.setWindowOpenHandler(details => {
@@ -74,3 +76,43 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+function getErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+        return error.message;
+    }
+    return String(error);
+}
+
+// IPC handler for getting global filePath
+ipcMain.handle('get-global-path', async (_, { filePath }: { filePath: string }) => {
+    try {
+        const relativePath = path.resolve(__dirname, '../../', filePath);
+        return { success: true, path: relativePath };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+});
+
+// IPC handler for reading a file
+ipcMain.handle('read-file', async (_, { filePath }: { filePath: string }) => {
+    try {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        return { success: true, content };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+});
+
+// IPC handler for saving a file
+ipcMain.handle(
+    'save-file',
+    async (_, { filePath, content }: { filePath: string; content: string }) => {
+        try {
+            fs.writeFileSync(filePath, content, 'utf8');
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: getErrorMessage(error) };
+        }
+    },
+);

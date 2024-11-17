@@ -1,6 +1,6 @@
 import styles from './Button.styles.module.css';
 
-function Button({ iconPath, onClick }) {
+function Button({ iconPath, onClick }: ButtonType) {
   return (
     <button
       className={styles.button}
