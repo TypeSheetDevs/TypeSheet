@@ -3,3 +3,7 @@ dist
 out
 .DS_Store
 *.log*
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
