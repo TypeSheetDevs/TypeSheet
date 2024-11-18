@@ -47,7 +47,7 @@ export class ConfigService {
     public getValue<K extends keyof ConfigTypes>(
         configName: K,
         validator?: (value: ConfigTypes[K]) => boolean,
-    ): ConfigTypes[K] | null {
+    ): ConfigTypes[K] {
         const defaultValue = DefaultConfig[configName];
         if (!this._appConfig) {
             console.warn('Config is not loaded or was corrupted.');

@@ -3,7 +3,7 @@ import { useState, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { ConfigKey } from '@services/ConfigService/ConfigKey';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
-import { ConfigValidators } from '@services/ConfigService/Config.validators';
+import { ConfigValidators } from '@services/ConfigService/ConfigService.validators';
 
 function TopBar() {
   const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupType[]>([
