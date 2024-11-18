@@ -1,10 +1,8 @@
-import { ConfigKey } from './ConfigKey';
+type Config = {
+    name: string;
+    value: string;
+};
 
-export type ConfigTypes = {
-    [ConfigKey.StartingView]: string;
-    [ConfigKey.BarsPerStave]: number;
-    [ConfigKey.StaveMinimumHeightDistance]: number;
-    [ConfigKey.MainViewMargin]: number;
-    [ConfigKey.StavesPerPage]: number;
-    [ConfigKey.TopBarColor]: string;
+type AppConfig = {
+    configs: Config[];
 };

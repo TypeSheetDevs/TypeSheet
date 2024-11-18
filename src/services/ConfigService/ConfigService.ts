@@ -1,4 +1,4 @@
-import { ConfigTypes } from './Config.types';
+import { ConfigTypes, DefaultConfig, TypeCasters } from './ConfigService.types';
 
 export class ConfigService {
     private static _instance: ConfigService | null = null;
@@ -48,27 +48,28 @@ export class ConfigService {
         configName: K,
         validator?: (value: ConfigTypes[K]) => boolean,
     ): ConfigTypes[K] | null {
+        const defaultValue = DefaultConfig[configName];
         if (!this._appConfig) {
             console.warn('Config is not loaded or was corrupted.');
-            return null;
+            return defaultValue;
         }
 
         const config = this._appConfig.configs.find(config => config.name === configName);
         if (config) {
-            try {
-                const value = config.value as ConfigTypes[K];
-
-                if (validator && !validator(value)) {
-                    console.warn(`Validation failed for config "${configName}" with value:`, value);
-                    return null;
-                }
-
-                return value;
-            } catch (error) {
-                console.error(`Failed to parse config value for ${configName}:`, error);
+            const castValue = TypeCasters[configName](config.value);
+            if (!castValue) {
+                return defaultValue;
             }
+
+            if (validator && !validator(castValue)) {
+                console.warn(`Validation failed for config "${configName}" with value:`, castValue);
+                return defaultValue;
+            }
+
+            return castValue;
         }
-        return null;
+
+        return defaultValue;
     }
 
     public async updateValue(configName: string, value: string): Promise<void> {
