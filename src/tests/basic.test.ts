@@ -1,15 +1,23 @@
 import { test, expect } from './electron.fixture';
 
-test('is packaged', async ({ electronApp }) => {
+test('app is not packaged', async ({ electronApp }) => {
     const isPackaged = await electronApp.evaluate(async ({ app }) => {
-        // This runs in Electron's main process, parameter here is always
-        // the result of the require('electron') in the main app script.
         return app.isPackaged;
     });
-
     expect(isPackaged).toBe(false);
 });
 
-test('has title', async ({ mainPage }) => {
+test('app launches and has correct title', async ({ mainPage }) => {
     await expect(mainPage).toHaveTitle('Typesheet');
+});
+
+test('load main window and check for elements', async ({ mainPage }) => {
+    const topBar = mainPage.getByTestId('topBar');
+    const buttons = mainPage.locator('button');
+    const changeViewButton = buttons.getByText('Change View');
+    const addBarButton = buttons.getByText('Add Bar');
+
+    await expect(changeViewButton).toBeVisible();
+    await expect(addBarButton).toBeVisible();
+    await expect(topBar).toBeVisible();
 });
