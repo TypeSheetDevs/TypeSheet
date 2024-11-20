@@ -8,6 +8,7 @@ type ElectronFixtures = {
 
 // Extend the base test with Electron-specific fixtures
 export const test = base.extend<ElectronFixtures>({
+    // eslint-disable-next-line no-empty-pattern
     electronApp: async ({}, use) => {
         const electronApp = await electron.launch({ args: ['.'] });
 

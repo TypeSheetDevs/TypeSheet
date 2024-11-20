@@ -1,4 +1,4 @@
 type ButtonType = {
     iconPath: string;
-    onClick: () => any;
+    onClick: () => void;
 };
