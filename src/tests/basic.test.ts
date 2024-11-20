@@ -12,7 +12,7 @@ test('app launches and has correct title', async ({ mainPage }) => {
 });
 
 test('load main window and check for elements', async ({ mainPage }) => {
-    const topBar = mainPage.getByTestId('topBar');
+    const topBar = mainPage.getByTestId('top-bar');
     const buttons = mainPage.locator('button');
     const changeViewButton = buttons.getByText('Change View');
     const addBarButton = buttons.getByText('Add Bar');

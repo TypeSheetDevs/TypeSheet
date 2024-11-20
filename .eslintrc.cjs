@@ -11,4 +11,8 @@ module.exports = {
       version: 'detect',
     },
   },
+  rules: {
+    'prettier/prettier': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+  },
 };

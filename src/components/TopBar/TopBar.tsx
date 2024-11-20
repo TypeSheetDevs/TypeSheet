@@ -71,7 +71,8 @@ function TopBar() {
   return (
     <div
       className={styles.topBar}
-      style={{ backgroundColor: topBarColor }}>
+      style={{ backgroundColor: topBarColor }}
+      data-testid="top-bar">
       {buttonsGroupArray.map((buttonsGroup, index) => (
         <>
           <div

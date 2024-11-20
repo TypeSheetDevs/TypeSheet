@@ -18,4 +18,3 @@ module.exports = {
         '^.+.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.web.json' }],
     },
 };
-
