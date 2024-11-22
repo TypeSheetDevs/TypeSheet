@@ -19,7 +19,7 @@ class RenderableBar implements IRenderable {
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
-        let bar = new Stave(positionX, positionY, length);
+        const bar = new Stave(positionX, positionY, length);
         bar.setContext(context).draw();
         this.currentPosX = bar.getX() + bar.getWidth();
         this.currentPosY = bar.getY() + bar.getHeight() + this.staveMinimumHeightDistance;
