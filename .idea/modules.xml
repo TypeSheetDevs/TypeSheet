@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/TypeSheet.iml" filepath="$PROJECT_DIR$/.idea/TypeSheet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/typesheet.iml" filepath="$PROJECT_DIR$/.idea/typesheet.iml" />
     </modules>
   </component>
 </project>

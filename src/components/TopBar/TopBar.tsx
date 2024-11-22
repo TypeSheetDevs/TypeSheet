@@ -38,6 +38,15 @@ function TopBar() {
         },
       ],
     },
+    {
+      // test buttonGroup
+      buttons: [
+        {
+          iconPath: '../../assets/icons/skip_previous.svg',
+          onClick: () => {},
+        },
+      ],
+    },
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
@@ -71,11 +80,13 @@ function TopBar() {
   return (
     <div
       className={styles.topBar}
-      style={{ backgroundColor: topBarColor }}>
+      style={{ backgroundColor: topBarColor }}
+      data-testid="top-bar">
       {buttonsGroupArray.map((buttonsGroup, index) => (
         <>
           <div
             className={styles.draggableComponent}
+            data-testid={`draggable-component-${index}`}
             key={index}
             draggable={index !== 0}
             onDragStart={() => handleDragStart(index)}
