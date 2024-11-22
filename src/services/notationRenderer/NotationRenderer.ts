@@ -1,7 +1,6 @@
 import { RenderContext, Stave } from 'vexflow';
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 
 export class NotationRenderer {
@@ -16,9 +15,7 @@ export class NotationRenderer {
     constructor() {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
-            const staveConfig = Number(
-                ConfigService.getInstance().getValue(ConfigKey.StaveMinimumHeightDistance),
-            );
+            const staveConfig = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
             if (!Number.isNaN(staveConfig)) {
                 this.staveMinimumHeightDistance = Number(staveConfig);
             }

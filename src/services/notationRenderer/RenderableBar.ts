@@ -1,7 +1,6 @@
 import { RenderContext, Stave } from 'vexflow';
 import { IRenderable } from './IRenderable';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
 
 class RenderableBar implements IRenderable {
     ratio: number;
@@ -12,7 +11,7 @@ class RenderableBar implements IRenderable {
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
         const staveConfig = Number(
-            ConfigService.getInstance().getValue(ConfigKey.StaveMinimumHeightDistance),
+            ConfigService.getInstance().getValue('StaveMinimumHeightDistance'),
         );
         if (!Number.isNaN(staveConfig)) {
             this.staveMinimumHeightDistance = staveConfig;

@@ -1,4 +1,23 @@
 import { ConfigTypes, DefaultConfig, TypeCasters } from './ConfigService.types';
+import { ViewType } from '@pages/MainView/MainView.types';
+import { ConfigKey } from '@services/ConfigService/ConfigKey';
+
+type AppConfig = {
+    configs: SavedParameter[];
+};
+
+type SavedParameter =
+    | {
+          name: 'StartingView';
+          value: ViewType;
+      }
+    | { name: 'BarsPerStave'; value: number;  }
+    | { name: 'StaveMinimumHeightDistance'; value: number }
+    | { name: 'MainViewMargin'; value: number }
+    | { name: 'StavesPerPage'; value: number }
+    | { name: 'TopBarColor'; value: string };
+
+type ValueOf<T extends SavedParameter['name']> = Extract<SavedParameter, { name: T }>['value'];
 
 export class ConfigService {
     private static _instance: ConfigService | null = null;
@@ -44,32 +63,17 @@ export class ConfigService {
         }
     }
 
-    public getValue<K extends keyof ConfigTypes>(
-        configName: K,
-        validator?: (value: ConfigTypes[K]) => boolean,
-    ): ConfigTypes[K] {
-        const defaultValue = DefaultConfig[configName];
-        if (!this._appConfig) {
-            console.warn('Config is not loaded or was corrupted.');
-            return defaultValue;
-        }
+    public getValue<T extends SavedParameter['name']>(name: T): ValueOf<T> {
+        //const defaultValue = DefaultConfig[name];
 
-        const config = this._appConfig.configs.find(config => config.name === configName);
-        if (config) {
-            const castValue = TypeCasters[configName](config.value);
-            if (!castValue) {
-                return defaultValue;
-            }
+        const config = this._appConfig?.configs.find((param) => param.name === name);
 
-            if (validator && !validator(castValue)) {
-                console.warn(`Validation failed for config "${configName}" with value:`, castValue);
-                return defaultValue;
-            }
+        // if (!config) {
+        //     console.warn(`Configuration "${name}" not found. Returning default value.`);
+        //     return DefaultConfig[name]; // Assuming DefaultConfig is defined somewhere
+        // }
 
-            return castValue;
-        }
-
-        return defaultValue;
+        return config.value as ValueOf<T>;
     }
 
     public async updateValue(configName: string, value: string): Promise<void> {

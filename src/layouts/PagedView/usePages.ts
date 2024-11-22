@@ -1,4 +1,4 @@
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
+
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
@@ -8,7 +8,7 @@ function usePages(currentPageDefault: number) {
     const [currentPage, setCurrentPage] = useState(currentPageDefault);
     const [maxPages, setMaxPages] = useState(1);
 
-    const stavesConfig = Number(ConfigService.getInstance().getValue(ConfigKey.StavesPerPage));
+    const stavesConfig = ConfigService.getInstance().getValue('StavesPerPage');
     const stavesPerPage = !Number.isNaN(stavesConfig) ? stavesConfig : 4;
 
     useEffect(() => {

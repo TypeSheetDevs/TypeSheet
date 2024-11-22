@@ -42,10 +42,7 @@ function TopBar() {
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  const topBarColor = ConfigService.getInstance().getValue(
-    ConfigKey.TopBarColor,
-    ConfigValidators.validateHexColor,
-  );
+  const topBarColor = ConfigService.getInstance().getValue('TopBarColor');
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);

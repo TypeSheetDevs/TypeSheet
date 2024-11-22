@@ -2,7 +2,6 @@ import { IRenderable } from './IRenderable';
 import RenderableBar from './RenderableBar';
 import { RenderContext } from 'vexflow';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
 
 class RenderableStave implements IRenderable {
     bars: RenderableBar[] = [];
@@ -11,7 +10,7 @@ class RenderableStave implements IRenderable {
 
     constructor(numberOfBars?: number) {
         const barsPerStaveConfig = Number(
-            ConfigService.getInstance().getValue(ConfigKey.TopBarColor),
+            ConfigService.getInstance().getValue("BarsPerStave"),
         );
         if (!Number.isNaN(barsPerStaveConfig)) {
             this.barsPerStave = barsPerStaveConfig;
