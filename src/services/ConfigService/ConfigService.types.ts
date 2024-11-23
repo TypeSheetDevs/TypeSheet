@@ -1,10 +1,10 @@
-import { ViewType } from '@pages/MainView/MainView.types';
+import { ViewType } from '@layouts/MainView/MainView.types';
 
-type AppConfig = {
+export type AppConfig = {
     configs: SavedParameter[];
 };
 
-type SavedParameter =
+export type SavedParameter =
     | { name: 'StartingView'; value: ViewType }
     | { name: 'BarsPerStave'; value: number }
     | { name: 'StaveMinimumHeightDistance'; value: number }
@@ -12,4 +12,11 @@ type SavedParameter =
     | { name: 'StavesPerPage'; value: number }
     | { name: 'TopBarColor'; value: string };
 
-type ValueOf<T extends SavedParameter['name']> = Extract<SavedParameter, { name: T }>['value'];
+export type ValueOf<T extends SavedParameter['name']> = Extract<
+    SavedParameter,
+    { name: T }
+>['value'];
+
+export type DefaultConfigType = {
+    [K in SavedParameter['name']]: Extract<SavedParameter, { name: K }>['value'];
+};
