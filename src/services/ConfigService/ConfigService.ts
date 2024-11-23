@@ -1,6 +1,11 @@
+// noinspection ExceptionCaughtLocallyJS
+
+import { AppConfig, SavedParameter, ValueOf } from '@services/ConfigService/ConfigService.types';
+import DefaultConfig from '@services/ConfigService/DefaultConfig';
+
 export class ConfigService {
     private static _instance: ConfigService | null = null;
-    private _configFilePath: string = '';
+    private _configFilePath = '';
     private _appConfig: AppConfig | null = null;
 
     public static getInstance(): ConfigService {
@@ -38,31 +43,47 @@ export class ConfigService {
             }
         } catch (error) {
             console.error('Error loading config:', error);
-            throw error;
         }
     }
 
-    public getValue(configName: string): string | null {
-        if (!this._appConfig) {
-            console.warn('Config is not loaded or was corrupted.');
-            return null;
+    public getValue<T extends SavedParameter['name']>(name: T): ValueOf<T> {
+        const config = this._appConfig?.configs?.find(param => param.name === name);
+
+        if (!config || config.value == null) {
+            console.warn(
+                `Configuration "${name}" not found or its value is faulty. Returning default value.`,
+            );
+            return DefaultConfig[name] as ValueOf<T>;
         }
 
-        const config = this._appConfig.configs.find(config => config.name === configName);
-        return config ? config.value : null;
+        return config.value as ValueOf<T>;
     }
 
-    public async updateValue(configName: string, value: string): Promise<void> {
+    public async updateValue<T extends SavedParameter['name']>(
+        name: T,
+        value: ValueOf<T>,
+    ): Promise<void> {
         if (!this._appConfig) {
             console.warn('Config is not loaded or was corrupted.');
             return;
         }
 
-        const existingConfig = this._appConfig.configs.find(config => config.name === configName);
-        if (existingConfig) {
-            existingConfig.value = value;
-            await this.saveConfig();
+        const existingConfig = this._appConfig?.configs?.find(config => config.name === name);
+
+        if (!existingConfig) {
+            console.warn(`Configuration "${name}" not found. No update performed.`);
+            return;
         }
+
+        if (!value) {
+            console.warn(
+                `Provided value for configuration "${name}" is faulty. No update performed.`,
+            );
+            return;
+        }
+
+        existingConfig.value = value;
+        await this.saveConfig();
     }
 
     private async saveConfig(): Promise<void> {
@@ -81,10 +102,5 @@ export class ConfigService {
         } catch (error) {
             console.error('Error saving configuration:', error);
         }
-    }
-
-    public static isValidHexColor(color: string): boolean {
-        const hexRegex = /^#([0-9A-Fa-f]{3}){1,2}$/;
-        return hexRegex.test(color);
     }
 }

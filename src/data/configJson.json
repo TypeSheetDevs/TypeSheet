@@ -1,29 +1,28 @@
 {
   "configs": [
     {
-      "name": "startingView",
-      "value": "1"
+      "name": "StartingView",
+      "value": 0
     },
     {
-      "name": "barsPerStave",
-      "value": "7"
+      "name": "BarsPerStave",
+      "value": 7
     },
     {
-      "name": "staveMinimumHeightDistance",
-      "value": "40"
+      "name": "StaveMinimumHeightDistance",
+      "value": 40
     },
     {
-      "name": "mainViewMargin",
-      "value": "10"
+      "name": "MainViewMargin",
+      "value": 10
     },
     {
-      "name": "stavesPerPage",
-      "value": "4"
+      "name": "StavesPerPage",
+      "value": 4
     },
     {
-      "name": "topBarColor",
+      "name": "TopBarColor",
       "value": "#0E0B52"
     }
   ]
 }
-

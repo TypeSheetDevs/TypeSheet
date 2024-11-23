@@ -3,14 +3,9 @@ import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import usePages from './usePages';
 import styles from './PagedView.styles.module.css';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
 
 function PagedView() {
-  let stavesPerPage = 4;
-  const stavesPerPageConfig = Number(ConfigService.getInstance().getValue(ConfigKey.StavesPerPage));
-  if (!Number.isNaN(stavesPerPageConfig)) {
-    stavesPerPage = stavesPerPageConfig;
-  }
+  const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
 
   const [currentPage, maxPages, prevPage, nextPage, setPage] = usePages(1);
   const startingStaveIndex = currentPage * stavesPerPage - stavesPerPage;

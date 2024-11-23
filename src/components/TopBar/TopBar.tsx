@@ -1,11 +1,10 @@
 import styles from './TopBar.styles.module.css';
 import { useState, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 
 function TopBar() {
-  const [buttonsGroupArray, setButtonsGroupArray] = useState<ButtonsGroupType[]>([
+  const [buttonsGroups, setButtonsGroups] = useState<ButtonsGroupType[]>([
     {
       buttons: [
         {
@@ -50,11 +49,7 @@ function TopBar() {
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  const topBarColorConfig = ConfigService.getInstance().getValue(ConfigKey.TopBarColor);
-  const topBarColor =
-    topBarColorConfig && ConfigService.isValidHexColor(topBarColorConfig)
-      ? topBarColorConfig
-      : '#0E0B52';
+  const topBarColor = ConfigService.getInstance().getValue('TopBarColor');
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -69,10 +64,10 @@ function TopBar() {
   const handleDrop = (event: DragEvent<HTMLDivElement>, index: number) => {
     event.preventDefault();
     if (draggedIndex !== null && draggedIndex !== index && index !== 0) {
-      const updatedButtonsGroupArray = [...buttonsGroupArray];
+      const updatedButtonsGroupArray = [...buttonsGroups];
       const [draggedItem] = updatedButtonsGroupArray.splice(draggedIndex, 1);
       updatedButtonsGroupArray.splice(index, 0, draggedItem);
-      setButtonsGroupArray(updatedButtonsGroupArray);
+      setButtonsGroups(updatedButtonsGroupArray);
     }
     setDraggedIndex(null);
   };
@@ -82,20 +77,21 @@ function TopBar() {
       className={styles.topBar}
       style={{ backgroundColor: topBarColor }}
       data-testid="top-bar">
-      {buttonsGroupArray.map((buttonsGroup, index) => (
-        <>
+      {buttonsGroups.map((buttonsGroup, index) => (
+        <div
+          key={index}
+          className={styles.groupContainer}>
           <div
             className={styles.draggableComponent}
             data-testid={`draggable-component-${index}`}
-            key={index}
             draggable={index !== 0}
             onDragStart={() => handleDragStart(index)}
             onDragOver={event => handleDragOver(event, index)}
             onDrop={event => handleDrop(event, index)}>
             <ButtonsGroup buttons={buttonsGroup.buttons} />
           </div>
-          {index < buttonsGroupArray.length - 1 && <div className={styles.separator} />}
-        </>
+          {index < buttonsGroups.length - 1 && <div className={styles.separator} />}
+        </div>
       ))}
     </div>
   );

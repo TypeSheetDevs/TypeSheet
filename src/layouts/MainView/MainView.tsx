@@ -1,21 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from './MainView.styles.module.css';
 import { ViewType } from '@layouts/MainView/MainView.types';
 import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { ConfigKey } from '@services/ConfigService/ConfigKey';
 
 function MainView() {
-  const [currentView, setCurrentView] = useState(ViewType.Paged);
-
-  useEffect(() => {
-    const viewTypeConfig = Number(ConfigService.getInstance().getValue(ConfigKey.StartingView));
-    if (!Number.isNaN(viewTypeConfig)) {
-      setCurrentView(viewTypeConfig);
-    }
-  }, []);
+  const [currentView, setCurrentView] = useState(
+    ConfigService.getInstance().getValue('StartingView'),
+  );
 
   return (
     <div className={styles.mainView}>
