@@ -5,11 +5,7 @@ import styles from './PagedView.styles.module.css';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 
 function PagedView() {
-  let stavesPerPage = 4;
-  const stavesPerPageConfig = ConfigService.getInstance().getValue('StavesPerPage');
-  if (!Number.isNaN(stavesPerPageConfig)) {
-    stavesPerPage = stavesPerPageConfig;
-  }
+  const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
 
   const [currentPage, maxPages, prevPage, nextPage, setPage] = usePages(1);
   const startingStaveIndex = currentPage * stavesPerPage - stavesPerPage;

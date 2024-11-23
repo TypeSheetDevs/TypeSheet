@@ -5,7 +5,7 @@ import DefaultConfig from '@services/ConfigService/DefaultConfig';
 
 export class ConfigService {
     private static _instance: ConfigService | null = null;
-    private _configFilePath: string = '';
+    private _configFilePath = '';
     private _appConfig: AppConfig | null = null;
 
     public static getInstance(): ConfigService {
@@ -49,7 +49,7 @@ export class ConfigService {
     public getValue<T extends SavedParameter['name']>(name: T): ValueOf<T> {
         const config = this._appConfig?.configs?.find(param => param.name === name);
 
-        if (!config || !config.value) {
+        if (!config || config.value == null) {
             console.warn(
                 `Configuration "${name}" not found or its value is faulty. Returning default value.`,
             );

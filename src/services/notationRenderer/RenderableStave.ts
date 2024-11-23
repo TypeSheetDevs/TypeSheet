@@ -5,17 +5,10 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 
 class RenderableStave implements IRenderable {
     bars: RenderableBar[] = [];
-    currentPositionY: number = 0;
-    barsPerStave: number = 7;
+    currentPositionY = 0;
+    barsPerStave = ConfigService.getInstance().getValue('BarsPerStave');
 
     constructor(numberOfBars?: number) {
-        const barsPerStaveConfig = Number(
-            ConfigService.getInstance().getValue("BarsPerStave"),
-        );
-        if (!Number.isNaN(barsPerStaveConfig)) {
-            this.barsPerStave = barsPerStaveConfig;
-        }
-
         numberOfBars ??= this.barsPerStave;
         for (let i = 0; i < numberOfBars; i++) {
             this.bars.push(new RenderableBar());

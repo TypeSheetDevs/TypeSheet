@@ -10,7 +10,7 @@ export type SavedParameter =
     | { name: 'StaveMinimumHeightDistance'; value: number }
     | { name: 'MainViewMargin'; value: number }
     | { name: 'StavesPerPage'; value: number }
-    | { name: 'TopBarColor'; value: string };
+    | { name: 'TopBarColor'; value: `#${string}` };
 
 export type ValueOf<T extends SavedParameter['name']> = Extract<
     SavedParameter,

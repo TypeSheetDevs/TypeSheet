@@ -10,15 +10,12 @@ export class NotationRenderer {
     }
 
     staves: RenderableStave[] = [];
-    staveMinimumHeightDistance: number = 40;
+    staveMinimumHeightDistance = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
 
     constructor() {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
-            const staveConfig = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
-            if (!Number.isNaN(staveConfig)) {
-                this.staveMinimumHeightDistance = Number(staveConfig);
-            }
+
             return this;
         } else return NotationRenderer._instance;
     }
