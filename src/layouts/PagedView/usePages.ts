@@ -1,7 +1,7 @@
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { useState, useEffect } from 'react';
+import { Notation } from '@services/notationRenderer/Notation';
 
 function usePages(currentPageDefault: number) {
     const [currentPage, setCurrentPage] = useState(currentPageDefault);
@@ -10,10 +10,12 @@ function usePages(currentPageDefault: number) {
     const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
 
     useEffect(() => {
-        const setPages = (numberOfStaves: number) =>
+        const setPages = (numberOfStaves: number) => {
             setMaxPages(Math.max(1, Math.ceil(numberOfStaves / stavesPerPage)));
+            EventNotifier.Notify('needsRender');
+        };
 
-        setPages(NotationRenderer.getInstance().staves.length);
+        setPages(Notation.getInstance().staves.length);
 
         EventNotifier.AddListener('numberOfStavesChanged', setPages);
         return () => {

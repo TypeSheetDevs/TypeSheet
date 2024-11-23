@@ -1,6 +1,7 @@
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { useState, useEffect } from 'react';
+import { Notation } from '@services/notationRenderer/Notation';
 
 function useScrollBox(container: React.RefObject<HTMLDivElement>) {
     const [elementsStartingHeight, setElementsStartingHeight] = useState(0);
@@ -23,7 +24,7 @@ function useScrollBox(container: React.RefObject<HTMLDivElement>) {
             setVisibleElementsCount(Math.ceil(viewportHeight / staveHeight) + 2 * 3);
             setElementsStartingHeight(firstElementIndexHelper * staveHeight);
             setFirstElementIndex(firstElementIndexHelper);
-            setContainerHeight(staveHeight * NotationRenderer.getInstance().staves.length);
+            setContainerHeight(staveHeight * Notation.getInstance().staves.length);
         };
 
         if (container.current) {

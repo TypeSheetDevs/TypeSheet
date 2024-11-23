@@ -3,8 +3,8 @@ import styles from './MainView.styles.module.css';
 import { ViewType } from '@layouts/MainView/MainView.types';
 import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
-import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import { ConfigService } from '@services/ConfigService/ConfigService';
+import { Notation } from '@services/notationRenderer/Notation';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(
@@ -21,7 +21,7 @@ function MainView() {
       </button>
       <button
         onClick={() => {
-          NotationRenderer.getInstance().AddNewStave(Math.floor(Math.random() * 7) + 1);
+          Notation.getInstance().AddNewStave(Math.floor(Math.random() * 7) + 1);
         }}>
         Add Bar
       </button>
