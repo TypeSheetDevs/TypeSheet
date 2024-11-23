@@ -1,6 +1,5 @@
 import { RenderContext, Stave } from 'vexflow';
-import RenderableStave from './RenderableStave';
-import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { Notation } from './Notation';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 
 export class NotationRenderer {
@@ -9,13 +8,14 @@ export class NotationRenderer {
         return NotationRenderer._instance || new NotationRenderer();
     }
 
-    staves: RenderableStave[] = [];
-    staveMinimumHeightDistance = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
+    notation: Notation = Notation.getInstance();
+    readonly staveMinimumHeightDistance: number = ConfigService.getInstance().getValue(
+        'StaveMinimumHeightDistance',
+    );
 
     constructor() {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
-
             return this;
         } else return NotationRenderer._instance;
     }
@@ -23,17 +23,6 @@ export class NotationRenderer {
     get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
         return tempStave.getHeight() + this.staveMinimumHeightDistance;
-    }
-
-    GetStavePositionY(index: number, defaultValue: number = 0) {
-        if (index <= 0) return defaultValue;
-        return this.staves[index - 1].currentPositionY;
-    }
-
-    AddNewStave(numberOfBars?: number) {
-        this.staves.push(new RenderableStave(numberOfBars));
-        EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
-        EventNotifier.Notify('needsRender');
     }
 
     Render(
@@ -45,13 +34,15 @@ export class NotationRenderer {
         lastStaveIndex: number,
     ) {
         context.clear();
-        for (let i = startingStaveIndex; i <= lastStaveIndex && i < this.staves.length; i++)
-            this.staves[i].Draw(
+        const staves = this.notation.getStaves();
+
+        for (let i = startingStaveIndex; i <= lastStaveIndex && i < staves.length; i++)
+            staves[i].Draw(
                 context,
                 width - 1,
-                i == startingStaveIndex ? startingHeight : this.staves[i - 1].currentPositionY,
+                i == startingStaveIndex ? startingHeight : staves[i - 1].currentPositionY,
             );
-        console.log('Staves: ', this.staves);
+        console.log('Staves: ', staves);
         console.log('Height: ', height, 'Width: ', width);
     }
 }
