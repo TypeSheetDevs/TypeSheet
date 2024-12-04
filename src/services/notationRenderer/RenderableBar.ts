@@ -1,15 +1,74 @@
-import { RenderContext, Stave } from 'vexflow';
+import { Formatter, RenderContext, Stave, Voice } from 'vexflow';
 import { IRenderable } from './IRenderable';
 import { ConfigService } from '@services/ConfigService/ConfigService';
+import { VoiceManager } from '@services/notationRenderer/notes/VoiceManager';
+import { VoiceData } from '@services/notationRenderer/notes/Notes.interfaces';
 
 class RenderableBar implements IRenderable {
     ratio: number;
     currentPosX = 0;
     currentPosY = 0;
     staveMinimumHeightDistance = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
+    voiceManager: VoiceManager;
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
+        this.voiceManager = new VoiceManager();
+        const voice1: VoiceData = {
+            numBeats: 4,
+            beatValue: 4,
+            notes: [
+                {
+                    duration: 'q',
+                    keys: [{ key: 'c/4', modifiers: [] }],
+                    modifiers: [],
+                },
+                {
+                    duration: 'q',
+                    keys: [{ key: 'e/4', modifiers: [] }],
+                    modifiers: [],
+                },
+                {
+                    duration: 'q',
+                    keys: [{ key: 'g/4', modifiers: [] }],
+                    modifiers: [],
+                },
+                {
+                    duration: 'q',
+                    keys: [{ key: 'c/5', modifiers: [] }],
+                    modifiers: [],
+                },
+            ],
+        };
+        const voice2: VoiceData = {
+            numBeats: 4,
+            beatValue: 4,
+            notes: [
+                {
+                    duration: 'q',
+                    keys: [{ key: 'a/3', modifiers: [] }],
+                    modifiers: [],
+                },
+                {
+                    duration: 'q',
+                    keys: [{ key: 'c/4', modifiers: [] }],
+                    modifiers: [],
+                },
+                {
+                    duration: 'q',
+                    keys: [{ key: 'e/4', modifiers: [] }],
+                    modifiers: [],
+                },
+                {
+                    duration: 'q',
+                    keys: [{ key: 'a/4', modifiers: [] }],
+                    modifiers: [],
+                },
+            ],
+        };
+
+        this.voiceManager.addVoice(voice1);
+        this.voiceManager.addVoice(voice2);
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
@@ -17,6 +76,12 @@ class RenderableBar implements IRenderable {
         bar.setContext(context).draw();
         this.currentPosX = bar.getX() + bar.getWidth();
         this.currentPosY = bar.getY() + bar.getHeight() + this.staveMinimumHeightDistance;
+        const voices = [
+            this.voiceManager.getAsVexFlowVoice(0),
+            this.voiceManager.getAsVexFlowVoice(1),
+        ];
+        new Formatter().joinVoices(voices).format(voices, length);
+        voices.forEach((voice: Voice) => voice.draw(context, bar));
     }
 }
 
