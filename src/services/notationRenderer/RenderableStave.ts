@@ -25,7 +25,14 @@ class RenderableStave implements IRenderable {
         if (index <= 0) {
             return 0;
         }
-        return this.bars[index - 1].currentPosX;
+        return this.bars[index - 1].NextPositionX;
+    }
+
+    GetClickedBar(positionX: number, positionY: number): number {
+        for (let i = 0; i < this.bars.length; i++) {
+            if (this.bars[i].isClicked(positionX, positionY)) return i;
+        }
+        return -1;
     }
 
     Draw(context: RenderContext, width: number, positionY: number) {
@@ -33,7 +40,7 @@ class RenderableStave implements IRenderable {
         this.bars.forEach((bar, idx) =>
             bar.Draw(context, positionY, this.GetBarPositionX(idx), ratioValue * bar.ratio),
         );
-        this.currentPositionY = this.bars.length != 0 ? this.bars[0].currentPosY : 0;
+        this.currentPositionY = this.bars.length != 0 ? this.bars[0].NextPositionY : 0;
     }
 }
 

@@ -1,6 +1,6 @@
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Renderer, RendererBackends } from 'vexflow';
 
 function useNotationRenderer(
@@ -28,15 +28,30 @@ function useNotationRenderer(
                 renderArgs.current.lastStaveIndex,
             );
         };
+        const onClick = (ev: Event) => {
+            const mouseEvent = ev as MouseEvent;
+
+            const rect = container.current.getBoundingClientRect();
+
+            EventNotifier.Notify('clickedInsideRenderer', {
+                positionY: mouseEvent.y - rect.top,
+                positionX: mouseEvent.x - rect.left,
+                startingStaveIndex: renderArgs.current.startingStaveIndex,
+                lastStaveIndex: renderArgs.current.lastStaveIndex,
+            });
+            ev.preventDefault();
+        };
 
         const resizeObserver = new ResizeObserver(checkResize);
         resizeObserver.observe(container.current);
 
         EventNotifier.AddListener('needsRender', checkResize);
+        container.current.addEventListener('click', onClick);
 
         return () => {
             resizeObserver.disconnect();
             EventNotifier.RemoveListener('needsRender', checkResize);
+            container.current?.removeEventListener('click', onClick);
             container.current?.firstChild?.remove();
         };
     }, []);
