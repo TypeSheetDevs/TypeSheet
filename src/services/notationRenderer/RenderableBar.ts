@@ -9,18 +9,17 @@ class RenderableBar implements IRenderable {
     currentPosX = 0;
     currentPosY = 0;
     staveMinimumHeightDistance = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
-    voiceManager: VoiceManager;
+    voiceManager: VoiceManager = VoiceManager.getInstance();
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
-        this.voiceManager = new VoiceManager();
         const voice1: VoiceData = {
             numBeats: 4,
             beatValue: 4,
             notes: [
                 {
                     duration: 'q',
-                    keys: [{ key: 'c/4', modifiers: [] }],
+                    keys: [{ key: 'e/4', modifiers: [] }],
                     modifiers: [],
                 },
                 {
@@ -45,30 +44,15 @@ class RenderableBar implements IRenderable {
             beatValue: 4,
             notes: [
                 {
-                    duration: 'q',
+                    duration: 'w',
                     keys: [{ key: 'a/3', modifiers: [] }],
-                    modifiers: [],
-                },
-                {
-                    duration: 'q',
-                    keys: [{ key: 'c/4', modifiers: [] }],
-                    modifiers: [],
-                },
-                {
-                    duration: 'q',
-                    keys: [{ key: 'e/4', modifiers: [] }],
-                    modifiers: [],
-                },
-                {
-                    duration: 'q',
-                    keys: [{ key: 'a/4', modifiers: [] }],
                     modifiers: [],
                 },
             ],
         };
 
-        this.voiceManager.addVoice(voice1);
-        this.voiceManager.addVoice(voice2);
+        this.voiceManager.addVoice(this, voice1);
+        this.voiceManager.addVoice(this, voice2);
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
@@ -76,10 +60,7 @@ class RenderableBar implements IRenderable {
         bar.setContext(context).draw();
         this.currentPosX = bar.getX() + bar.getWidth();
         this.currentPosY = bar.getY() + bar.getHeight() + this.staveMinimumHeightDistance;
-        const voices = [
-            this.voiceManager.getAsVexFlowVoice(0),
-            this.voiceManager.getAsVexFlowVoice(1),
-        ];
+        const voices = this.voiceManager.getAsVexFlowVoices(this);
         new Formatter().joinVoices(voices).format(voices, length);
         voices.forEach((voice: Voice) => voice.draw(context, bar));
     }
