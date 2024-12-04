@@ -1,4 +1,4 @@
-import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
+import { VoiceData } from '@services/notationRenderer/notes/Notes.interfaces';
 
 export class VoiceManager {
     private voices: VoiceData[] = [];
