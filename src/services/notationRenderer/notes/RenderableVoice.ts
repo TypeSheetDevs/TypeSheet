@@ -1,6 +1,7 @@
 import { Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
-import { NoteData, VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
+import { NoteData } from '@services/notationRenderer/notes/NoteData';
+import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
 
 export class RenderableVoice implements IRenderable {
     voiceData: VoiceData;

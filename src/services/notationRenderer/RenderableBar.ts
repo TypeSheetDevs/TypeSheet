@@ -1,8 +1,10 @@
 import { RenderContext, Stave } from 'vexflow';
 import { IRenderable } from './IRenderable';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { KeyData, NoteData, VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
+import { NoteData } from '@services/notationRenderer/notes/NoteData';
+import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
+import { KeyData } from '@services/notationRenderer/notes/KeyData';
 
 class RenderableBar implements IRenderable {
     ratio: number;
