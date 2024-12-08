@@ -1,15 +1,15 @@
-import { Formatter, RenderContext, Stave, Voice } from 'vexflow';
+import { RenderContext, Stave } from 'vexflow';
 import { IRenderable } from './IRenderable';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { VoiceManager } from '@services/notationRenderer/notes/VoiceManager';
-import { VoiceData } from '@services/notationRenderer/notes/Notes.interfaces';
+import { VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
+import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
 
 class RenderableBar implements IRenderable {
     ratio: number;
     currentPosX = 0;
     currentPosY = 0;
     staveMinimumHeightDistance = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
-    voiceManager: VoiceManager = VoiceManager.getInstance();
+    voiceDatas: VoiceData[] = [];
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
@@ -50,9 +50,8 @@ class RenderableBar implements IRenderable {
                 },
             ],
         };
-
-        this.voiceManager.addVoice(this, voice1);
-        this.voiceManager.addVoice(this, voice2);
+        this.addVoice(voice1);
+        this.addVoice(voice2);
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
@@ -60,9 +59,20 @@ class RenderableBar implements IRenderable {
         bar.setContext(context).draw();
         this.currentPosX = bar.getX() + bar.getWidth();
         this.currentPosY = bar.getY() + bar.getHeight() + this.staveMinimumHeightDistance;
-        const voices = this.voiceManager.getAsVexFlowVoices(this);
-        new Formatter().joinVoices(voices).format(voices, length);
-        voices.forEach((voice: Voice) => voice.draw(context, bar));
+        RenderableVoice.DrawVoices(this.voiceDatas, context, bar, length);
+    }
+
+    public addVoice(voice: VoiceData): void {
+        if (!this.voiceDatas.find(voiceData => voiceData === voice)) {
+            this.voiceDatas.push(voice);
+        }
+    }
+
+    public removeVoice(index: number): void {
+        if (index < 0 || index >= this.voiceDatas.length) {
+            throw new Error('Index out of bounds.');
+        }
+        this.voiceDatas.splice(index, 1);
     }
 }
 
