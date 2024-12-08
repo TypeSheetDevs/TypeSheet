@@ -9,32 +9,30 @@ export class RenderableVoice implements IRenderable {
         this.voiceData = voiceData;
     }
 
-    static GetAsVexFlowVoices(voiceDatas: VoiceData[]): Voice[] {
-        if (!voiceDatas) {
-            throw new Error('No voices found for the given RenderableBar.');
+    GetAsVexFlowVoice(): Voice {
+        if (!this.voiceData) {
+            throw new Error('No voice data provided.');
         }
 
-        return voiceDatas.map(voiceData => {
-            const voice = new Voice({
-                num_beats: voiceData.numBeats,
-                beat_value: voiceData.beatValue,
-            });
-
-            const notes = voiceData.notes.map(noteData => {
-                return new StaveNote({
-                    keys: noteData.keys.map(keyData => keyData.key),
-                    duration: noteData.duration,
-                });
-            });
-
-            voice.addTickables(notes);
-            return voice;
+        const voice = new Voice({
+            num_beats: this.voiceData.numBeats,
+            beat_value: this.voiceData.beatValue,
         });
+
+        const notes = this.voiceData.notes.map(noteData => {
+            return new StaveNote({
+                keys: noteData.keys.map(keyData => keyData.key),
+                duration: noteData.duration,
+            });
+        });
+
+        voice.addTickables(notes);
+        return voice;
     }
 
     // used for drawing one specific voice, shorter version of one above
     Draw(context: RenderContext, bar: Stave, length: number) {
-        const voice = RenderableVoice.GetAsVexFlowVoices([this.voiceData]);
+        const voice = [this.GetAsVexFlowVoice()];
         new Formatter().joinVoices(voice).format(voice, length - 20);
         voice.forEach((voice: Voice) => voice.draw(context, bar));
     }
