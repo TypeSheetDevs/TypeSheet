@@ -2,13 +2,14 @@ import styles from './TopBar.styles.module.css';
 import { useState, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
+import getButtonIcon from '@assets/icons/getIcon';
 
 function TopBar() {
   const [buttonsGroups, setButtonsGroups] = useState<ButtonsGroupType[]>([
     {
       buttons: [
         {
-          iconPath: '../../assets/icons/music_note.svg',
+          iconPath: getButtonIcon('music_note.svg'),
           onClick: () => {
             console.log('logo');
           },
@@ -18,19 +19,19 @@ function TopBar() {
     {
       buttons: [
         {
-          iconPath: '../../assets/icons/skip_previous.svg',
+          iconPath: getButtonIcon('skip_previous.svg'),
           onClick: () => {
             console.log('skip previous');
           },
         },
         {
-          iconPath: '../../assets/icons/play_arrow.svg',
+          iconPath: getButtonIcon('play_arrow.svg'),
           onClick: () => {
             console.log('play');
           },
         },
         {
-          iconPath: '../../assets/icons/skip_next.svg',
+          iconPath: getButtonIcon('skip_next.svg'),
           onClick: () => {
             console.log('skip next');
           },
@@ -41,7 +42,15 @@ function TopBar() {
       // test buttonGroup
       buttons: [
         {
-          iconPath: '../../assets/icons/skip_previous.svg',
+          iconPath: getButtonIcon('skip_previous.svg'),
+          onClick: () => {},
+        },
+      ],
+    },
+    {
+      buttons: [
+        {
+          iconPath: getButtonIcon('play_arrow.svg'),
           onClick: () => {},
         },
       ],
