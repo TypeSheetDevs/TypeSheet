@@ -9,7 +9,7 @@ class RenderableBar implements IRenderable {
     currentPosX = 0;
     currentPosY = 0;
     staveMinimumHeightDistance = ConfigService.getInstance().getValue('StaveMinimumHeightDistance');
-    voiceDatas: VoiceData[] = [];
+    voices: RenderableVoice[] = [];
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
@@ -50,8 +50,9 @@ class RenderableBar implements IRenderable {
                 },
             ],
         };
-        this.addVoice(voice1);
-        this.addVoice(voice2);
+
+        this.addVoice(new RenderableVoice(voice1));
+        this.addVoice(new RenderableVoice(voice2));
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
@@ -59,20 +60,20 @@ class RenderableBar implements IRenderable {
         bar.setContext(context).draw();
         this.currentPosX = bar.getX() + bar.getWidth();
         this.currentPosY = bar.getY() + bar.getHeight() + this.staveMinimumHeightDistance;
-        RenderableVoice.DrawVoices(this.voiceDatas, context, bar, length);
+        this.voices.forEach(voice => voice.Draw(context, bar, length));
     }
 
-    public addVoice(voice: VoiceData): void {
-        if (!this.voiceDatas.find(voiceData => voiceData === voice)) {
-            this.voiceDatas.push(voice);
+    public addVoice(voice: RenderableVoice): void {
+        if (!this.voices.find(v => v === voice)) {
+            this.voices.push(voice);
         }
     }
 
     public removeVoice(index: number): void {
-        if (index < 0 || index >= this.voiceDatas.length) {
+        if (index < 0 || index >= this.voices.length) {
             throw new Error('Index out of bounds.');
         }
-        this.voiceDatas.splice(index, 1);
+        this.voices.splice(index, 1);
     }
 }
 

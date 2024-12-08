@@ -32,19 +32,6 @@ export class RenderableVoice implements IRenderable {
         });
     }
 
-    // used for drawing all voices assigned to a bar
-    // not sure if it will be needed
-    static DrawVoices(
-        voiceDatas: VoiceData[],
-        context: RenderContext,
-        bar: Stave,
-        length: number,
-    ): void {
-        const voices = RenderableVoice.GetAsVexFlowVoices(voiceDatas);
-        new Formatter().joinVoices(voices).format(voices, length - 20);
-        voices.forEach((voice: Voice) => voice.draw(context, bar));
-    }
-
     // used for drawing one specific voice, shorter version of one above
     Draw(context: RenderContext, bar: Stave, length: number) {
         const voice = RenderableVoice.GetAsVexFlowVoices([this.voiceData]);
