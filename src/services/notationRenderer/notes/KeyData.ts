@@ -1,9 +1,9 @@
 export class KeyData {
-    key: string;
+    pitch: string;
     modifiers: string[];
 
-    constructor(key: string, modifiers: string[] = []) {
-        this.key = key;
+    constructor(pitch: string, modifiers: string[] = []) {
+        this.pitch = pitch;
         this.modifiers = modifiers;
     }
 }

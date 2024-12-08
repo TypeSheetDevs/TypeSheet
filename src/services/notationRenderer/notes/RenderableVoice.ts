@@ -22,7 +22,7 @@ export class RenderableVoice implements IRenderable {
 
         const notes = this.voiceData.notes.map(noteData => {
             return new StaveNote({
-                keys: noteData.keys.map(keyData => keyData.key),
+                keys: noteData.keys.map(keyData => keyData.pitch),
                 duration: noteData.duration,
             });
         });
@@ -39,25 +39,10 @@ export class RenderableVoice implements IRenderable {
     }
 
     public AddNote(note: NoteData, index?: number): void {
-        if (!note || !note.duration || !note.keys || note.keys.length === 0) {
-            throw new Error('Invalid note data provided.');
-        }
-
-        if (index !== undefined) {
-            if (index < 0 || index > this.voiceData.notes.length) {
-                throw new Error('Index out of bounds.');
-            }
-            this.voiceData.notes.splice(index, 0, note);
-        } else {
-            this.voiceData.notes.push(note);
-        }
+        this.voiceData.AddNote(note, index);
     }
 
     public RemoveNote(index: number): void {
-        if (index < 0 || index >= this.voiceData.notes.length) {
-            throw new Error('Index out of bounds.');
-        }
-
-        this.voiceData.notes.splice(index, 1);
+        this.voiceData.RemoveNote(index);
     }
 }
