@@ -1,6 +1,6 @@
 import { Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
-import { VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
+import { NoteData, VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
 
 export class RenderableVoice implements IRenderable {
     voiceData: VoiceData;
@@ -35,5 +35,28 @@ export class RenderableVoice implements IRenderable {
         const voice = [this.GetAsVexFlowVoice()];
         new Formatter().joinVoices(voice).format(voice, length - 20);
         voice.forEach((voice: Voice) => voice.draw(context, bar));
+    }
+
+    public AddNote(note: NoteData, index?: number): void {
+        if (!note || !note.duration || !note.keys || note.keys.length === 0) {
+            throw new Error('Invalid note data provided.');
+        }
+
+        if (index !== undefined) {
+            if (index < 0 || index > this.voiceData.notes.length) {
+                throw new Error('Index out of bounds.');
+            }
+            this.voiceData.notes.splice(index, 0, note);
+        } else {
+            this.voiceData.notes.push(note);
+        }
+    }
+
+    public RemoveNote(index: number): void {
+        if (index < 0 || index >= this.voiceData.notes.length) {
+            throw new Error('Index out of bounds.');
+        }
+
+        this.voiceData.notes.splice(index, 1);
     }
 }
