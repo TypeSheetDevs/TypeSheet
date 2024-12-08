@@ -1,8 +1,10 @@
 import { RenderContext, Stave } from 'vexflow';
 import { IRenderable } from './IRenderable';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
+import { NoteData } from '@services/notationRenderer/notes/NoteData';
+import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
+import { KeyData } from '@services/notationRenderer/notes/KeyData';
 
 class RenderableBar implements IRenderable {
     ratio: number;
@@ -13,43 +15,14 @@ class RenderableBar implements IRenderable {
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
-        const voice1: VoiceData = {
-            numBeats: 4,
-            beatValue: 4,
-            notes: [
-                {
-                    duration: 'q',
-                    keys: [{ key: 'e/4', modifiers: [] }],
-                    modifiers: [],
-                },
-                {
-                    duration: 'q',
-                    keys: [{ key: 'e/4', modifiers: [] }],
-                    modifiers: [],
-                },
-                {
-                    duration: 'q',
-                    keys: [{ key: 'g/4', modifiers: [] }],
-                    modifiers: [],
-                },
-                {
-                    duration: 'q',
-                    keys: [{ key: 'c/5', modifiers: [] }],
-                    modifiers: [],
-                },
-            ],
-        };
-        const voice2: VoiceData = {
-            numBeats: 4,
-            beatValue: 4,
-            notes: [
-                {
-                    duration: 'w',
-                    keys: [{ key: 'a/3', modifiers: [] }],
-                    modifiers: [],
-                },
-            ],
-        };
+        const voice1 = new VoiceData(4, 4, [
+            new NoteData('q', [new KeyData('e/4')]),
+            new NoteData('q', [new KeyData('e/4')]),
+            new NoteData('q', [new KeyData('g/4')]),
+            new NoteData('q', [new KeyData('c/5')]),
+        ]);
+
+        const voice2 = new VoiceData(4, 4, [new NoteData('w', [new KeyData('a/3')])]);
 
         this.addVoice(new RenderableVoice(voice1));
         this.addVoice(new RenderableVoice(voice2));

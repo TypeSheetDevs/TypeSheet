@@ -1,6 +1,7 @@
 import { Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
-import { VoiceData } from '@services/notationRenderer/notes/Voices.interfaces';
+import { NoteData } from '@services/notationRenderer/notes/NoteData';
+import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
 
 export class RenderableVoice implements IRenderable {
     voiceData: VoiceData;
@@ -21,7 +22,7 @@ export class RenderableVoice implements IRenderable {
 
         const notes = this.voiceData.notes.map(noteData => {
             return new StaveNote({
-                keys: noteData.keys.map(keyData => keyData.key),
+                keys: noteData.keys.map(keyData => keyData.pitch),
                 duration: noteData.duration,
             });
         });
@@ -35,5 +36,13 @@ export class RenderableVoice implements IRenderable {
         const voice = [this.GetAsVexFlowVoice()];
         new Formatter().joinVoices(voice).format(voice, length - 20);
         voice.forEach((voice: Voice) => voice.draw(context, bar));
+    }
+
+    public AddNote(note: NoteData, index?: number): void {
+        this.voiceData.AddNote(note, index);
+    }
+
+    public RemoveNote(index: number): void {
+        this.voiceData.RemoveNote(index);
     }
 }
