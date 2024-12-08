@@ -29,6 +29,11 @@ export class NotationRenderer {
         return tempStave.getBottomY() - tempStave.getY() + this.staveMinimumHeightDistance;
     }
 
+    ClearSelectedBar(): void {
+        this.selectedBar = null;
+        EventNotifier.Notify('needsRender');
+    }
+
     OnClick(params: EventParams<'clickedInsideRenderer'>) {
         const staves = this.notation.getStaves();
         for (
@@ -74,9 +79,7 @@ export class NotationRenderer {
 
         const selectedRect = this.selectedBar.Rect;
         context
-            .beginPath()
             .rect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height)
-            .closePath()
             .fill({ fillColor: 'pink' });
     }
 }
