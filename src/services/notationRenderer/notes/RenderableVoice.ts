@@ -41,14 +41,14 @@ export class RenderableVoice implements IRenderable {
         length: number,
     ): void {
         const voices = RenderableVoice.GetAsVexFlowVoices(voiceDatas);
-        new Formatter().joinVoices(voices).format(voices, length);
+        new Formatter().joinVoices(voices).format(voices, length - 20);
         voices.forEach((voice: Voice) => voice.draw(context, bar));
     }
 
     // used for drawing one specific voice, shorter version of one above
     Draw(context: RenderContext, bar: Stave, length: number) {
         const voice = RenderableVoice.GetAsVexFlowVoices([this.voiceData]);
-        new Formatter().joinVoices(voice).format(voice, length);
+        new Formatter().joinVoices(voice).format(voice, length - 20);
         voice.forEach((voice: Voice) => voice.draw(context, bar));
     }
 }
