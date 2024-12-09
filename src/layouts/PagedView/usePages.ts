@@ -2,6 +2,7 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { useState, useEffect } from 'react';
 import { Notation } from '@services/notationRenderer/Notation';
+import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 
 function usePages(currentPageDefault: number) {
     const [currentPage, setCurrentPage] = useState(currentPageDefault);
@@ -26,12 +27,14 @@ function usePages(currentPageDefault: number) {
     const nextPage = () => {
         if (currentPage < maxPages) {
             setCurrentPage(currentPage + 1);
+            NotationRenderer.getInstance().ClearSelectedBar();
         }
     };
 
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
+            NotationRenderer.getInstance().ClearSelectedBar();
         }
     };
 
@@ -42,6 +45,7 @@ function usePages(currentPageDefault: number) {
             page = maxPages;
         }
         setCurrentPage(page);
+        NotationRenderer.getInstance().ClearSelectedBar();
     };
 
     return [currentPage, maxPages, prevPage, nextPage, setPage] as const;

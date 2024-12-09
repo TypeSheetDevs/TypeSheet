@@ -1,6 +1,5 @@
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import { ConfigService } from '@services/ConfigService/ConfigService';
 
 export class Notation {
     private static _instance: Notation = null!;
@@ -9,9 +8,6 @@ export class Notation {
     }
 
     staves: RenderableStave[] = [];
-    staveMinimumHeightDistance: number = ConfigService.getInstance().getValue(
-        'StaveMinimumHeightDistance',
-    );
 
     constructor() {
         if (Notation._instance === null) {
