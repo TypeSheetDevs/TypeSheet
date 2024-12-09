@@ -47,6 +47,9 @@ export class NotationRenderer {
             }
 
             this.selectedBar = staves[i].bars[foundBarIndex];
+
+            this.selectedBar.removeClickedNote(params.positionX);
+
             EventNotifier.Notify('needsRender');
             break;
         }

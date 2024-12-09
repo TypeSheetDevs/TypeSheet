@@ -60,6 +60,21 @@ class RenderableBar implements IRenderable {
         );
     }
 
+    getClickedNote(voiceIndex: number, mousePosX: number): number {
+        if (voiceIndex < 0 || voiceIndex >= this.voices.length) {
+            return -1;
+        }
+
+        return this.voices[voiceIndex].GetNoteIndexByPosition(mousePosX);
+    }
+
+    removeClickedNote(mousePosX: number): void {
+        const idx = this.getClickedNote(0, mousePosX);
+        console.log(idx);
+        this.voices[0].RemoveNote(idx);
+        console.log(this.voices[0]);
+    }
+
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
         const bar = new Stave(positionX, positionY, length);
         bar.setContext(context).draw();
@@ -68,7 +83,7 @@ class RenderableBar implements IRenderable {
         this.currentWidth = bar.getWidth();
         this.currentHeight = bar.getBottomY() - bar.getY();
 
-        this.voices.forEach(voice => voice.Draw(context, bar, currentWidth));
+        this.voices.forEach(voice => voice.Draw(context, bar, this.currentWidth));
     }
 
     public addVoice(voice: RenderableVoice): void {
