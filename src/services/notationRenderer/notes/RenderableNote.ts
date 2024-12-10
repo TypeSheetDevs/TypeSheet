@@ -1,17 +1,17 @@
-import { KeyData } from '@services/notationRenderer/notes/KeyData';
+import { Key } from '@services/notationRenderer/notes/Key';
 
-export class NoteData {
+export class RenderableNote {
     duration: string;
-    keys: KeyData[];
+    keys: Key[];
     modifiers: string[];
 
-    constructor(duration: string, keys: KeyData[] = [], modifiers: string[] = []) {
+    constructor(duration: string, keys: Key[] = [], modifiers: string[] = []) {
         this.duration = duration;
         this.keys = keys;
         this.modifiers = modifiers;
     }
 
-    public AddKey(key: KeyData): void {
+    public AddKey(key: Key): void {
         if (!key || !key.pitch) {
             throw new Error('Invalid key data provided.');
         }

@@ -1,14 +1,14 @@
 import { Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
-import { NoteData } from '@services/notationRenderer/notes/NoteData';
+import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 
 export class RenderableVoice implements IRenderable {
     numBeats: number;
     beatValue: number;
-    notes: NoteData[];
+    notes: RenderableNote[];
     positionsX: number[] = [];
 
-    constructor(numBeats: number, beatValue: number, notes: NoteData[] = []) {
+    constructor(numBeats: number, beatValue: number, notes: RenderableNote[] = []) {
         this.numBeats = numBeats;
         this.beatValue = beatValue;
         this.notes = notes;
@@ -51,7 +51,7 @@ export class RenderableVoice implements IRenderable {
         this.positionsX = voice[0].getTickables().map(t => t.getAbsoluteX());
     }
 
-    AddNote(note: NoteData, index?: number): void {
+    AddNote(note: RenderableNote, index?: number): void {
         if (!note || !note.duration || !note.keys || note.keys.length === 0) {
             throw new Error('Invalid note data provided.');
         }
