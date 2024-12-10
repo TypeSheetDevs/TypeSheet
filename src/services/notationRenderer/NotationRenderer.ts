@@ -3,6 +3,7 @@ import { Notation } from './Notation';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -10,11 +11,10 @@ export class NotationRenderer {
         return NotationRenderer._instance || new NotationRenderer();
     }
 
-    notation: Notation = Notation.getInstance();
-    readonly staveMinimumHeightDistance: number = ConfigService.getInstance().getValue(
-        'StaveMinimumHeightDistance',
-    );
+    private configService: ConfigService = ConfigService.getInstance();
+    private notation: Notation = Notation.getInstance();
     private selectedBar: RenderableBar | null = null;
+    private state: NotationRendererState = NotationRendererState.Idle;
 
     constructor() {
         if (NotationRenderer._instance === null) {
@@ -24,9 +24,45 @@ export class NotationRenderer {
         } else return NotationRenderer._instance;
     }
 
+    private FindBarByPosition(
+        positionX: number,
+        positionY: number,
+        startingStaveIndex: number,
+        lastRenderedStave: number,
+    ) {
+        const staves = this.notation.getStaves();
+        for (let i = startingStaveIndex; i <= lastRenderedStave && i < staves.length; i++) {
+            const foundBarIndex = staves[i].GetClickedBar(positionX, positionY);
+            if (foundBarIndex != -1) {
+                return staves[i].bars[foundBarIndex];
+            }
+        }
+        return null;
+    }
+
+    private DrawVisibleBars(
+        startingStaveIndex: number,
+        lastStaveIndex: number,
+        context: RenderContext,
+        startingHeight: number,
+        width: number,
+    ) {
+        const staves = this.notation.getStaves();
+        for (let i = startingStaveIndex; i <= lastStaveIndex && i < staves.length; i++)
+            staves[i].Draw(
+                context,
+                width - 1,
+                i == startingStaveIndex ? startingHeight : staves[i - 1].currentPositionY,
+            );
+    }
+
     get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
-        return tempStave.getBottomY() - tempStave.getY() + this.staveMinimumHeightDistance;
+        return (
+            tempStave.getBottomY() -
+            tempStave.getY() +
+            this.configService.getValue('StaveMinimumHeightDistance')
+        );
     }
 
     ClearSelectedBar(): void {
@@ -35,24 +71,22 @@ export class NotationRenderer {
     }
 
     OnClick(params: EventParams<'clickedInsideRenderer'>) {
-        const staves = this.notation.getStaves();
-        for (
-            let i = params.startingStaveIndex;
-            i <= params.lastStaveIndex && i < staves.length;
-            i++
-        ) {
-            const foundBarIndex = staves[i].GetClickedBar(params.positionX, params.positionY);
-            if (foundBarIndex == -1) {
-                continue;
+        switch (this.state) {
+            case NotationRendererState.Idle: {
+                this.selectedBar = this.FindBarByPosition(
+                    params.positionX,
+                    params.positionY,
+                    params.startingStaveIndex,
+                    params.lastStaveIndex,
+                );
+                break;
             }
-
-            this.selectedBar = staves[i].bars[foundBarIndex];
-
-            this.selectedBar.removeClickedNote(params.positionX);
-
-            EventNotifier.Notify('needsRender');
-            break;
+            case NotationRendererState.RemovingNote:
+                this.selectedBar?.removeClickedNote(params.positionX);
+                break;
         }
+
+        EventNotifier.Notify('needsRender');
     }
 
     Render(
@@ -64,21 +98,11 @@ export class NotationRenderer {
         lastStaveIndex: number,
     ) {
         context.clear();
-        const staves = this.notation.getStaves();
+        this.DrawVisibleBars(startingStaveIndex, lastStaveIndex, context, startingHeight, width);
 
-        for (let i = startingStaveIndex; i <= lastStaveIndex && i < staves.length; i++)
-            staves[i].Draw(
-                context,
-                width - 1,
-                i == startingStaveIndex ? startingHeight : staves[i - 1].currentPositionY,
-            );
-
-        console.log('Staves: ', staves);
         console.log('Height: ', height, 'Width: ', width);
 
         if (!this.selectedBar) return;
-
-        console.log(this.selectedBar);
 
         const selectedRect = this.selectedBar.Rect;
         context

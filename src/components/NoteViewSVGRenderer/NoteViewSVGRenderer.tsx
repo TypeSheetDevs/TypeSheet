@@ -1,4 +1,4 @@
-import useNotationRenderer from '@hooks/useNotationRenderer';
+import useNotationRenderer from '@hooks/NotationRendererHooks/useNotationRenderer';
 import { useRef } from 'react';
 import { Renderer } from 'vexflow';
 import styles from './NoteViewSVGRenderer.styles.module.css';
