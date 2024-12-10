@@ -11,13 +11,18 @@ export class NotationRenderer {
         return NotationRenderer._instance || new NotationRenderer();
     }
 
+    private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
     private selectedBar: RenderableBar | null = null;
     private state: NotationRendererState = NotationRendererState.Idle;
 
-    readonly staveMinimumHeightDistance: number = ConfigService.getInstance().getValue(
-        'StaveMinimumHeightDistance',
-    );
+    constructor() {
+        if (NotationRenderer._instance === null) {
+            NotationRenderer._instance = this;
+            EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
+            return this;
+        } else return NotationRenderer._instance;
+    }
 
     private FindBarByPosition(
         positionX: number,
@@ -51,17 +56,13 @@ export class NotationRenderer {
             );
     }
 
-    constructor() {
-        if (NotationRenderer._instance === null) {
-            NotationRenderer._instance = this;
-            EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
-            return this;
-        } else return NotationRenderer._instance;
-    }
-
     get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
-        return tempStave.getBottomY() - tempStave.getY() + this.staveMinimumHeightDistance;
+        return (
+            tempStave.getBottomY() -
+            tempStave.getY() +
+            this.configService.getValue('StaveMinimumHeightDistance')
+        );
     }
 
     ClearSelectedBar(): void {
