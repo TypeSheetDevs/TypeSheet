@@ -7,17 +7,13 @@ export class RenderableVoice implements IRenderable {
     beatValue: number;
     notes: RenderableNote[];
 
-    constructor(numBeats: number, beatValue: number, notes: RenderableNote[] = []) {
-        this.numBeats = numBeats;
+    constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
         this.notes = notes;
+        this.numBeats = this.calculateNumBeats();
     }
 
     GetAsVexFlowVoice(): Voice {
-        if (!this.numBeats || !this.beatValue) {
-            throw new Error('No voice data provided.');
-        }
-
         const voice = new Voice({
             num_beats: this.numBeats,
             beat_value: this.beatValue,
@@ -31,8 +27,18 @@ export class RenderableVoice implements IRenderable {
                 });
             }),
         );
-
         return voice;
+    }
+
+    Draw(context: RenderContext, bar: Stave, length: number) {
+        if (this.notes.length === 0) return;
+        const voice = [this.GetAsVexFlowVoice()];
+        new Formatter().joinVoices(voice).format(voice, length - 20);
+        voice.forEach((voice: Voice) => voice.draw(context, bar));
+
+        // assign absoluteXs to RenderableNotes
+        const absoluteXs = voice[0].getTickables().map(t => t.getAbsoluteX());
+        this.notes.forEach((note, index) => note.setAbsoluteX(absoluteXs[index]));
     }
 
     GetNoteIndexByPositionX(positionX: number): number {
@@ -43,16 +49,6 @@ export class RenderableVoice implements IRenderable {
             if (positionX <= positionsX[i - 1] + diff / 2) return i - 1;
         }
         return positionsX.length - 1;
-    }
-
-    Draw(context: RenderContext, bar: Stave, length: number) {
-        const voice = [this.GetAsVexFlowVoice()];
-        new Formatter().joinVoices(voice).format(voice, length - 20);
-        voice.forEach((voice: Voice) => voice.draw(context, bar));
-
-        // assign absoluteXs to RenderableNotes
-        const absoluteXs = voice[0].getTickables().map(t => t.getAbsoluteX());
-        this.notes.forEach((note, index) => (note.absoluteX = absoluteXs[index]));
     }
 
     GetNote(index: number): RenderableNote {
@@ -75,14 +71,34 @@ export class RenderableVoice implements IRenderable {
         } else {
             this.notes.push(note);
         }
+
+        this.numBeats = this.calculateNumBeats();
     }
 
     RemoveNote(index: number): void {
         if (index < 0 || index >= this.notes.length) {
             throw new Error('Index out of bounds.');
         }
-
         this.notes.splice(index, 1);
-        this.numBeats--;
+
+        this.numBeats = this.calculateNumBeats();
+    }
+
+    private calculateNumBeats(): number {
+        return this.notes.reduce((totalBeats, note) => {
+            const noteDurationValue = this.getDurationValue(note.duration);
+            return totalBeats + noteDurationValue;
+        }, 0);
+    }
+
+    private getDurationValue(duration: string): number {
+        const durationMap: { [key: string]: number } = {
+            w: 4, // Whole note
+            h: 2, // Half note
+            q: 1, // Quarter note
+            '8': 0.5, // Eighth note
+            '16': 0.25, // Sixteenth note
+        };
+        return durationMap[duration] || 0; // Default to 0 if duration is invalid
     }
 }

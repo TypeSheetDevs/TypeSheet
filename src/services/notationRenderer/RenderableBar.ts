@@ -16,14 +16,14 @@ class RenderableBar implements IRenderable {
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
-        const voice1 = new RenderableVoice(4, 4, [
+        const voice1 = new RenderableVoice(4, [
             new RenderableNote('q', [new Key('e/4')]),
             new RenderableNote('q', [new Key('e/4')]),
             new RenderableNote('q', [new Key('g/4')]),
             new RenderableNote('q', [new Key('c/5')]),
         ]);
 
-        const voice2 = new RenderableVoice(4, 4, [new RenderableNote('w', [new Key('a/3')])]);
+        const voice2 = new RenderableVoice(4, [new RenderableNote('w', [new Key('a/3')])]);
 
         this.addVoice(voice1);
         this.addVoice(voice2);
@@ -69,9 +69,7 @@ class RenderableBar implements IRenderable {
 
     removeClickedNote(mousePosX: number): void {
         const idx = this.getClickedNote(0, mousePosX);
-        console.log(idx);
         this.voices[0].RemoveNote(idx);
-        console.log(this.voices[0]);
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
