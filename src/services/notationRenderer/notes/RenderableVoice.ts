@@ -6,7 +6,6 @@ export class RenderableVoice implements IRenderable {
     numBeats: number;
     beatValue: number;
     notes: RenderableNote[];
-    positionsX: number[] = [];
 
     constructor(numBeats: number, beatValue: number, notes: RenderableNote[] = []) {
         this.numBeats = numBeats;
@@ -24,31 +23,43 @@ export class RenderableVoice implements IRenderable {
             beat_value: this.beatValue,
         });
 
-        const staveNotes = this.notes.map(noteData => {
-            return new StaveNote({
-                keys: noteData.keys.map(keyData => keyData.pitch),
-                duration: noteData.duration,
-            });
-        });
+        voice.addTickables(
+            this.notes.map(noteData => {
+                return new StaveNote({
+                    keys: noteData.keys.map(keyData => keyData.pitch),
+                    duration: noteData.duration,
+                });
+            }),
+        );
 
-        voice.addTickables(staveNotes);
         return voice;
     }
 
     GetNoteIndexByPosition(positionX: number): number {
-        console.log(positionX, this.positionsX);
-        for (let i = 1; i < this.positionsX.length; i++) {
-            const diff = this.positionsX[i] - this.positionsX[i - 1];
-            if (positionX <= this.positionsX[i - 1] + diff / 2) return i - 1;
+        const positionsX = this.notes.map(n => n.getAbsoluteX());
+        console.log(positionX, positionsX);
+        for (let i = 1; i < positionsX.length; i++) {
+            const diff = positionsX[i] - positionsX[i - 1];
+            if (positionX <= positionsX[i - 1] + diff / 2) return i - 1;
         }
-        return this.positionsX.length - 1;
+        return positionsX.length - 1;
     }
 
     Draw(context: RenderContext, bar: Stave, length: number) {
         const voice = [this.GetAsVexFlowVoice()];
         new Formatter().joinVoices(voice).format(voice, length - 20);
         voice.forEach((voice: Voice) => voice.draw(context, bar));
-        this.positionsX = voice[0].getTickables().map(t => t.getAbsoluteX());
+
+        // assign absoluteXs to RenderableNotes
+        const absoluteXs = voice[0].getTickables().map(t => t.getAbsoluteX());
+        this.notes.forEach((note, index) => (note.absoluteX = absoluteXs[index]));
+    }
+
+    GetNote(index: number): RenderableNote {
+        if (index < 0 || index >= this.notes.length) {
+            throw new Error('Index out of bounds.');
+        }
+        return this.notes[index];
     }
 
     AddNote(note: RenderableNote, index?: number): void {

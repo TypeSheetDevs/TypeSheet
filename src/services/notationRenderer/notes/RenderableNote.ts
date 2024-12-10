@@ -4,11 +4,20 @@ export class RenderableNote {
     duration: string;
     keys: Key[];
     modifiers: string[];
+    absoluteX: number = 0;
 
     constructor(duration: string, keys: Key[] = [], modifiers: string[] = []) {
         this.duration = duration;
         this.keys = keys;
         this.modifiers = modifiers;
+    }
+
+    public getAbsoluteX(): number {
+        return this.absoluteX;
+    }
+
+    public setAbsoluteX(value: number): void {
+        this.absoluteX = value;
     }
 
     public AddKey(key: Key): void {
