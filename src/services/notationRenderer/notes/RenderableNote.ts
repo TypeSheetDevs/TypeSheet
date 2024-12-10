@@ -1,11 +1,11 @@
 import { Key } from '@services/notationRenderer/notes/Key';
 
 export class RenderableNote {
-    duration: string;
-    keys: Key[];
-    modifiers: string[];
-    absoluteX: number = 0;
-    color?: string;
+    private duration: string;
+    private keys: Key[];
+    private modifiers: string[];
+    private absoluteX: number = 0;
+    private color?: string;
 
     constructor(duration: string, keys: Key[] = [], modifiers: string[] = [], color?: string) {
         this.duration = duration;
@@ -14,19 +14,35 @@ export class RenderableNote {
         this.color = color;
     }
 
-    public getAbsoluteX(): number {
+    getDuration(): string {
+        return this.duration;
+    }
+
+    getKeys(): Key[] {
+        return this.keys;
+    }
+
+    getModifiers(): string[] {
+        return this.modifiers;
+    }
+
+    getAbsoluteX(): number {
         return this.absoluteX;
     }
 
-    public setAbsoluteX(value: number): void {
+    getColor(): string | undefined {
+        return this.color;
+    }
+
+    setAbsoluteX(value: number): void {
         this.absoluteX = value;
     }
 
-    public setColor(value: string): void {
+    setColor(value: string): void {
         this.color = value;
     }
 
-    public AddKey(key: Key): void {
+    AddKey(key: Key): void {
         if (!key || !key.pitch) {
             throw new Error('Invalid key data provided.');
         }
@@ -35,7 +51,7 @@ export class RenderableNote {
         }
     }
 
-    public RemoveKey(index: number): void {
+    RemoveKey(index: number): void {
         if (index < 0 || index >= this.keys.length) {
             throw new Error('Index out of bounds.');
         }

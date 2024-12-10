@@ -3,14 +3,32 @@ import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 
 export class RenderableVoice implements IRenderable {
-    numBeats: number;
-    beatValue: number;
-    notes: RenderableNote[];
+    private numBeats: number;
+    private beatValue: number;
+    private notes: RenderableNote[];
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
         this.notes = notes;
         this.numBeats = this.calculateNumBeats();
+    }
+
+    private calculateNumBeats(): number {
+        return this.notes.reduce((totalBeats, note) => {
+            const noteDurationValue = this.getDurationValue(note.getDuration());
+            return totalBeats + noteDurationValue;
+        }, 0);
+    }
+
+    private getDurationValue(duration: string): number {
+        const durationMap: { [key: string]: number } = {
+            w: 4, // Whole note
+            h: 2, // Half note
+            q: 1, // Quarter note
+            '8': 0.5, // Eighth note
+            '16': 0.25, // Sixteenth note
+        };
+        return durationMap[duration] || 0; // Default to 0 if duration is invalid
     }
 
     GetAsVexFlowVoice(): Voice {
@@ -22,12 +40,15 @@ export class RenderableVoice implements IRenderable {
         voice.addTickables(
             this.notes.map(noteData => {
                 const staveNote = new StaveNote({
-                    keys: noteData.keys.map(keyData => keyData.pitch),
-                    duration: noteData.duration,
+                    keys: noteData.getKeys().map(keyData => keyData.pitch),
+                    duration: noteData.getDuration(),
                 });
 
-                if (noteData.color) {
-                    staveNote.setStyle({ fillStyle: noteData.color, strokeStyle: noteData.color });
+                if (noteData.getColor()) {
+                    staveNote.setStyle({
+                        fillStyle: noteData.getColor(),
+                        strokeStyle: noteData.getColor(),
+                    });
                 }
 
                 return staveNote;
@@ -65,7 +86,7 @@ export class RenderableVoice implements IRenderable {
     }
 
     AddNote(note: RenderableNote, index?: number): void {
-        if (!note || !note.duration || !note.keys || note.keys.length === 0) {
+        if (!note || !note.getDuration() || !note.getKeys()?.length) {
             throw new Error('Invalid note data provided.');
         }
 
@@ -92,23 +113,5 @@ export class RenderableVoice implements IRenderable {
 
     SetNotesColor(color: string): void {
         this.notes.forEach(note => note.setColor(color));
-    }
-
-    private calculateNumBeats(): number {
-        return this.notes.reduce((totalBeats, note) => {
-            const noteDurationValue = this.getDurationValue(note.duration);
-            return totalBeats + noteDurationValue;
-        }, 0);
-    }
-
-    private getDurationValue(duration: string): number {
-        const durationMap: { [key: string]: number } = {
-            w: 4, // Whole note
-            h: 2, // Half note
-            q: 1, // Quarter note
-            '8': 0.5, // Eighth note
-            '16': 0.25, // Sixteenth note
-        };
-        return durationMap[duration] || 0; // Default to 0 if duration is invalid
     }
 }
