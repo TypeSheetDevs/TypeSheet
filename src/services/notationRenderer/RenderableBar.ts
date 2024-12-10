@@ -22,7 +22,6 @@ class RenderableBar implements IRenderable {
             new RenderableNote('q', [new Key('g/4')]),
             new RenderableNote('q', [new Key('c/5')]),
         ]);
-
         const voice2 = new RenderableVoice(4, [new RenderableNote('w', [new Key('a/3')])]);
 
         this.addVoice(voice1);

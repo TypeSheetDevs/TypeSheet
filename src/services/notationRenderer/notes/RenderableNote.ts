@@ -5,11 +5,13 @@ export class RenderableNote {
     keys: Key[];
     modifiers: string[];
     absoluteX: number = 0;
+    color?: string;
 
-    constructor(duration: string, keys: Key[] = [], modifiers: string[] = []) {
+    constructor(duration: string, keys: Key[] = [], modifiers: string[] = [], color?: string) {
         this.duration = duration;
         this.keys = keys;
         this.modifiers = modifiers;
+        this.color = color;
     }
 
     public getAbsoluteX(): number {
@@ -18,6 +20,10 @@ export class RenderableNote {
 
     public setAbsoluteX(value: number): void {
         this.absoluteX = value;
+    }
+
+    public setColor(value: string): void {
+        this.color = value;
     }
 
     public AddKey(key: Key): void {

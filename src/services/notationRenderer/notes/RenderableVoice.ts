@@ -21,10 +21,16 @@ export class RenderableVoice implements IRenderable {
 
         voice.addTickables(
             this.notes.map(noteData => {
-                return new StaveNote({
+                const staveNote = new StaveNote({
                     keys: noteData.keys.map(keyData => keyData.pitch),
                     duration: noteData.duration,
                 });
+
+                if (noteData.color) {
+                    staveNote.setStyle({ fillStyle: noteData.color, strokeStyle: noteData.color });
+                }
+
+                return staveNote;
             }),
         );
         return voice;
@@ -82,6 +88,10 @@ export class RenderableVoice implements IRenderable {
         this.notes.splice(index, 1);
 
         this.numBeats = this.calculateNumBeats();
+    }
+
+    SetNotesColor(color: string): void {
+        this.notes.forEach(note => note.setColor(color));
     }
 
     private calculateNumBeats(): number {
