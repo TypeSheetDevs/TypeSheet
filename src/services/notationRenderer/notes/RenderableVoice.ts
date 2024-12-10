@@ -35,7 +35,7 @@ export class RenderableVoice implements IRenderable {
         return voice;
     }
 
-    GetNoteIndexByPosition(positionX: number): number {
+    GetNoteIndexByPositionX(positionX: number): number {
         const positionsX = this.notes.map(n => n.getAbsoluteX());
         console.log(positionX, positionsX);
         for (let i = 1; i < positionsX.length; i++) {

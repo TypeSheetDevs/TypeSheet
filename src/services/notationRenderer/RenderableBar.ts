@@ -64,7 +64,7 @@ class RenderableBar implements IRenderable {
             return -1;
         }
 
-        return this.voices[voiceIndex].GetNoteIndexByPosition(mousePosX);
+        return this.voices[voiceIndex].GetNoteIndexByPositionX(mousePosX);
     }
 
     removeClickedNote(mousePosX: number): void {
