@@ -1,33 +1,37 @@
 import { Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { NoteData } from '@services/notationRenderer/notes/NoteData';
-import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
 
 export class RenderableVoice implements IRenderable {
-    voiceData: VoiceData;
+    numBeats: number;
+    beatValue: number;
+    notes: NoteData[];
     positionsX: number[] = [];
-    constructor(voiceData: VoiceData) {
-        this.voiceData = voiceData;
+
+    constructor(numBeats: number, beatValue: number, notes: NoteData[] = []) {
+        this.numBeats = numBeats;
+        this.beatValue = beatValue;
+        this.notes = notes;
     }
 
     GetAsVexFlowVoice(): Voice {
-        if (!this.voiceData) {
+        if (!this.numBeats || !this.beatValue) {
             throw new Error('No voice data provided.');
         }
 
         const voice = new Voice({
-            num_beats: this.voiceData.numBeats,
-            beat_value: this.voiceData.beatValue,
+            num_beats: this.numBeats,
+            beat_value: this.beatValue,
         });
 
-        const notes = this.voiceData.notes.map(noteData => {
+        const staveNotes = this.notes.map(noteData => {
             return new StaveNote({
                 keys: noteData.keys.map(keyData => keyData.pitch),
                 duration: noteData.duration,
             });
         });
 
-        voice.addTickables(notes);
+        voice.addTickables(staveNotes);
         return voice;
     }
 
@@ -40,7 +44,6 @@ export class RenderableVoice implements IRenderable {
         return this.positionsX.length - 1;
     }
 
-    // used for drawing one specific voice, shorter version of one above
     Draw(context: RenderContext, bar: Stave, length: number) {
         const voice = [this.GetAsVexFlowVoice()];
         new Formatter().joinVoices(voice).format(voice, length - 20);
@@ -48,12 +51,27 @@ export class RenderableVoice implements IRenderable {
         this.positionsX = voice[0].getTickables().map(t => t.getAbsoluteX());
     }
 
-    public AddNote(note: NoteData, index?: number): void {
-        this.voiceData.AddNote(note, index);
+    AddNote(note: NoteData, index?: number): void {
+        if (!note || !note.duration || !note.keys || note.keys.length === 0) {
+            throw new Error('Invalid note data provided.');
+        }
+
+        if (index !== undefined) {
+            if (index < 0 || index > this.notes.length) {
+                throw new Error('Index out of bounds.');
+            }
+            this.notes.splice(index, 0, note);
+        } else {
+            this.notes.push(note);
+        }
     }
 
-    public RemoveNote(index: number): void {
-        this.voiceData.RemoveNote(index);
-        this.voiceData.numBeats--;
+    RemoveNote(index: number): void {
+        if (index < 0 || index >= this.notes.length) {
+            throw new Error('Index out of bounds.');
+        }
+
+        this.notes.splice(index, 1);
+        this.numBeats--;
     }
 }
