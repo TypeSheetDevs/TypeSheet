@@ -1,4 +1,4 @@
-export class KeyData {
+export class Key {
     pitch: string;
     modifiers: string[];
 

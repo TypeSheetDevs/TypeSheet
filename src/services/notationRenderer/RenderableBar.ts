@@ -2,9 +2,8 @@ import { RenderContext, Stave } from 'vexflow';
 import { IRenderable } from './IRenderable';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
-import { NoteData } from '@services/notationRenderer/notes/NoteData';
-import { VoiceData } from '@services/notationRenderer/notes/VoiceData';
-import { KeyData } from '@services/notationRenderer/notes/KeyData';
+import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
+import { Key } from '@services/notationRenderer/notes/Key';
 
 class RenderableBar implements IRenderable {
     private currentPosX = 0;
@@ -17,17 +16,16 @@ class RenderableBar implements IRenderable {
 
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
-        const voice1 = new VoiceData(4, 4, [
-            new NoteData('q', [new KeyData('e/4')]),
-            new NoteData('q', [new KeyData('e/4')]),
-            new NoteData('q', [new KeyData('g/4')]),
-            new NoteData('q', [new KeyData('c/5')]),
+        const voice1 = new RenderableVoice(4, [
+            new RenderableNote('q', [new Key('e/4')]),
+            new RenderableNote('q', [new Key('e/4')]),
+            new RenderableNote('q', [new Key('g/4')]),
+            new RenderableNote('q', [new Key('c/5')]),
         ]);
+        const voice2 = new RenderableVoice(4, [new RenderableNote('w', [new Key('a/3')])]);
 
-        const voice2 = new VoiceData(4, 4, [new NoteData('w', [new KeyData('a/3')])]);
-
-        this.addVoice(new RenderableVoice(voice1));
-        this.addVoice(new RenderableVoice(voice2));
+        this.addVoice(voice1);
+        this.addVoice(voice2);
     }
 
     get NextPositionX(): number {
@@ -65,14 +63,12 @@ class RenderableBar implements IRenderable {
             return -1;
         }
 
-        return this.voices[voiceIndex].GetNoteIndexByPosition(mousePosX);
+        return this.voices[voiceIndex].GetNoteIndexByPositionX(mousePosX);
     }
 
     removeClickedNote(mousePosX: number): void {
         const idx = this.getClickedNote(0, mousePosX);
-        console.log(idx);
         this.voices[0].RemoveNote(idx);
-        console.log(this.voices[0]);
     }
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
