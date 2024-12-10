@@ -1,7 +1,7 @@
 import styles from './NoteViewRenderer.styles.module.css';
 import { Renderer } from 'vexflow';
 import { useRef } from 'react';
-import useNotationRenderer from '@hooks/useNotationRenderer';
+import useNotationRenderer from '@hooks/NotationRendererHooks/useNotationRenderer';
 
 function NoteViewRenderer(props: NoteViewRendererProps) {
   const container = useRef<HTMLCanvasElement>(null!);
