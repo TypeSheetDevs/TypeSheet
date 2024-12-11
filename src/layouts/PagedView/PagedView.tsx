@@ -8,8 +8,6 @@ function PagedView() {
   const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
 
   const [currentPage, maxPages, prevPage, nextPage, setPage] = usePages(1);
-  const startingStaveIndex = currentPage * stavesPerPage - stavesPerPage;
-  const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
 
   const containerHeight = NotationRenderer.getInstance().StaveHeight * stavesPerPage;
 
@@ -28,11 +26,7 @@ function PagedView() {
       <div
         className={styles.container}
         style={{ height: `${containerHeight}px` }}>
-        <NoteViewSVGRenderer
-          startingStaveIndex={startingStaveIndex}
-          lastStaveIndex={lastStaveIndex}
-          startingHeight={0}
-        />
+        <NoteViewSVGRenderer />
       </div>
     </div>
   );

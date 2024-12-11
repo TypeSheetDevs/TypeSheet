@@ -10,6 +10,14 @@ export class NotationRenderer {
     static getInstance() {
         return NotationRenderer._instance || new NotationRenderer();
     }
+    private context: RenderContext | null = null;
+    private width: number = 0;
+    private height: number = 0;
+    private viewport: RenderArguments = {
+        startingHeight: 0,
+        startingStaveIndex: 0,
+        lastStaveIndex: 0,
+    };
 
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
@@ -20,18 +28,20 @@ export class NotationRenderer {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
             EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
+            EventNotifier.AddListener('resized', this.OnResize.bind(this));
+            EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
+            EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
             return this;
         } else return NotationRenderer._instance;
     }
 
-    private FindBarByPosition(
-        positionX: number,
-        positionY: number,
-        startingStaveIndex: number,
-        lastRenderedStave: number,
-    ) {
+    private FindBarByPosition(positionX: number, positionY: number) {
         const staves = this.notation.getStaves();
-        for (let i = startingStaveIndex; i <= lastRenderedStave && i < staves.length; i++) {
+        for (
+            let i = this.viewport.startingStaveIndex;
+            i <= this.viewport.lastStaveIndex && i < staves.length;
+            i++
+        ) {
             const foundBarIndex = staves[i].GetClickedBar(positionX, positionY);
             if (foundBarIndex != -1) {
                 return staves[i].bars[foundBarIndex];
@@ -40,19 +50,19 @@ export class NotationRenderer {
         return null;
     }
 
-    private DrawVisibleBars(
-        startingStaveIndex: number,
-        lastStaveIndex: number,
-        context: RenderContext,
-        startingHeight: number,
-        width: number,
-    ) {
+    private DrawVisibleBars() {
         const staves = this.notation.getStaves();
-        for (let i = startingStaveIndex; i <= lastStaveIndex && i < staves.length; i++)
+        for (
+            let i = this.viewport.startingStaveIndex;
+            i <= this.viewport.lastStaveIndex && i < staves.length;
+            i++
+        )
             staves[i].Draw(
-                context,
-                width - 1,
-                i == startingStaveIndex ? startingHeight : staves[i - 1].currentPositionY,
+                this.context!,
+                this.width - 1,
+                i == this.viewport.startingStaveIndex
+                    ? this.viewport.startingHeight
+                    : staves[i - 1].currentPositionY,
             );
     }
 
@@ -67,18 +77,32 @@ export class NotationRenderer {
 
     ClearSelectedBar(): void {
         this.selectedBar = null;
-        EventNotifier.Notify('needsRender');
+        this.OnRender();
     }
 
-    OnClick(params: EventParams<'clickedInsideRenderer'>) {
+    SetContext(context: RenderContext): void {
+        this.context = context;
+        this.OnRender();
+    }
+
+    private OnResize(params: EventParams<'resized'>): void {
+        this.width = params.width;
+        this.height = params.height;
+
+        console.log(this.height);
+
+        this.OnRender();
+    }
+
+    private OnViewportChange(params: EventParams<'viewportChanged'>): void {
+        this.viewport = params;
+        this.OnRender();
+    }
+
+    private OnClick(params: EventParams<'clickedInsideRenderer'>) {
         switch (this.state) {
             case NotationRendererState.Idle: {
-                this.selectedBar = this.FindBarByPosition(
-                    params.positionX,
-                    params.positionY,
-                    params.startingStaveIndex,
-                    params.lastStaveIndex,
-                );
+                this.selectedBar = this.FindBarByPosition(params.positionX, params.positionY);
                 break;
             }
             case NotationRendererState.RemovingNote:
@@ -86,26 +110,19 @@ export class NotationRenderer {
                 break;
         }
 
-        EventNotifier.Notify('needsRender');
+        this.OnRender();
     }
 
-    Render(
-        context: RenderContext,
-        width: number,
-        height: number,
-        startingHeight: number,
-        startingStaveIndex: number,
-        lastStaveIndex: number,
-    ) {
-        context.clear();
-        this.DrawVisibleBars(startingStaveIndex, lastStaveIndex, context, startingHeight, width);
+    private OnRender() {
+        if (!this.context) return;
 
-        console.log('Height: ', height, 'Width: ', width);
+        this.context.clear();
+        this.DrawVisibleBars();
 
         if (!this.selectedBar) return;
 
         const selectedRect = this.selectedBar.Rect;
-        context
+        this.context
             .rect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height)
             .fill({ fillColor: 'pink' });
     }

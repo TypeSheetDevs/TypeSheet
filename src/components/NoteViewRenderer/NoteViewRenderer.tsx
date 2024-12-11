@@ -3,10 +3,10 @@ import { Renderer } from 'vexflow';
 import { useRef } from 'react';
 import useNotationRenderer from '@hooks/NotationRendererHooks/useNotationRenderer';
 
-function NoteViewRenderer(props: NoteViewRendererProps) {
+function NoteViewRenderer() {
   const container = useRef<HTMLCanvasElement>(null!);
 
-  useNotationRenderer(props, container, Renderer.Backends.CANVAS);
+  useNotationRenderer(container, Renderer.Backends.CANVAS);
 
   return (
     <div className={styles.container}>
