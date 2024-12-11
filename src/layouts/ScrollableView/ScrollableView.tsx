@@ -5,8 +5,7 @@ import useScrollBox from './useScrollBox';
 
 function ScrollableView() {
   const scrollableBox = useRef<HTMLDivElement>(null);
-  const [containerHeight, stavesStartingHeight, firstStaveIndex, visibleStavesCount] =
-    useScrollBox(scrollableBox);
+  const containerHeight = useScrollBox(scrollableBox);
 
   return (
     <div
@@ -15,11 +14,7 @@ function ScrollableView() {
       <div
         className={styles.container}
         style={{ height: `${containerHeight}px` }}>
-        <NoteViewSVGRenderer
-          startingHeight={stavesStartingHeight}
-          startingStaveIndex={firstStaveIndex}
-          lastStaveIndex={firstStaveIndex + visibleStavesCount + 3}
-        />
+        <NoteViewSVGRenderer />
       </div>
     </div>
   );

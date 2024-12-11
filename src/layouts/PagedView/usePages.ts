@@ -10,10 +10,21 @@ function usePages(currentPageDefault: number) {
 
     const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
 
+    const changeViewport = (page: number, clearSelected: boolean = true) => {
+        const startingStaveIndex = page * stavesPerPage - stavesPerPage;
+        const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
+        if (clearSelected) NotationRenderer.getInstance().ClearSelectedBar();
+        EventNotifier.Notify('viewportChanged', {
+            lastStaveIndex: lastStaveIndex,
+            startingStaveIndex: startingStaveIndex,
+            startingHeight: 0,
+        });
+    };
+
     useEffect(() => {
         const setPages = (numberOfStaves: number) => {
             setMaxPages(Math.max(1, Math.ceil(numberOfStaves / stavesPerPage)));
-            EventNotifier.Notify('needsRender');
+            changeViewport(currentPage, false);
         };
 
         setPages(Notation.getInstance().staves.length);
@@ -27,14 +38,14 @@ function usePages(currentPageDefault: number) {
     const nextPage = () => {
         if (currentPage < maxPages) {
             setCurrentPage(currentPage + 1);
-            NotationRenderer.getInstance().ClearSelectedBar();
+            changeViewport(currentPage + 1);
         }
     };
 
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
-            NotationRenderer.getInstance().ClearSelectedBar();
+            changeViewport(currentPage - 1);
         }
     };
 
@@ -45,7 +56,7 @@ function usePages(currentPageDefault: number) {
             page = maxPages;
         }
         setCurrentPage(page);
-        NotationRenderer.getInstance().ClearSelectedBar();
+        changeViewport(page);
     };
 
     return [currentPage, maxPages, prevPage, nextPage, setPage] as const;

@@ -4,7 +4,6 @@ import useEventListenerOnRenderer from '@hooks/NotationRendererHooks/useEventLis
 
 function useOnMouseMoveRendererEvent(
     container: React.MutableRefObject<HTMLCanvasElement | HTMLDivElement>,
-    args: React.MutableRefObject<RenderArguments>,
 ) {
     const onMouseMove = useCallback(
         (ev: Event) => {
@@ -14,12 +13,10 @@ function useOnMouseMoveRendererEvent(
             EventNotifier.Notify('movedInsideRenderer', {
                 positionY: mouseEvent.y - rect.top,
                 positionX: mouseEvent.x - rect.left,
-                startingStaveIndex: args.current.startingStaveIndex,
-                lastStaveIndex: args.current.lastStaveIndex,
             });
             ev.preventDefault();
         },
-        [args],
+        [container],
     );
 
     useEventListenerOnRenderer(container, 'mousemove', onMouseMove);

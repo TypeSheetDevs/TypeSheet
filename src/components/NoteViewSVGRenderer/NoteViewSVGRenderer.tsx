@@ -3,10 +3,10 @@ import { useRef } from 'react';
 import { Renderer } from 'vexflow';
 import styles from './NoteViewSVGRenderer.styles.module.css';
 
-export function NoteViewSVGRenderer(props: NoteViewSVGRendererProps) {
+export function NoteViewSVGRenderer() {
   const container = useRef<HTMLDivElement>(null!);
 
-  useNotationRenderer(props, container, Renderer.Backends.SVG);
+  useNotationRenderer(container, Renderer.Backends.SVG);
 
   return (
     <div

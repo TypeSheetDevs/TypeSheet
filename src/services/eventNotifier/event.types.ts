@@ -1,13 +1,13 @@
 type NotationEvent =
     | { name: 'needsRender' }
     | { name: 'numberOfStavesChanged'; params: number }
+    | { name: 'resized'; params: { width: number; height: number } }
+    | { name: 'viewportChanged'; params: RenderArguments }
     | {
           name: 'clickedInsideRenderer';
           params: {
               positionX: number;
               positionY: number;
-              startingStaveIndex: number;
-              lastStaveIndex: number;
           };
       }
     | {
@@ -15,7 +15,5 @@ type NotationEvent =
           params: {
               positionX: number;
               positionY: number;
-              startingStaveIndex: number;
-              lastStaveIndex: number;
           };
       };
