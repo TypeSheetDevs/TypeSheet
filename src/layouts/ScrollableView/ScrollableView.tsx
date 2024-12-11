@@ -2,6 +2,7 @@ import styles from './ScrollableView.styles.module.css';
 import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRenderer';
 import { useRef } from 'react';
 import useScrollBox from './useScrollBox';
+import NoteViewRenderer from '@components/NoteViewRenderer/NoteViewRenderer';
 
 function ScrollableView() {
   const scrollableBox = useRef<HTMLDivElement>(null);
@@ -14,7 +15,7 @@ function ScrollableView() {
       <div
         className={styles.container}
         style={{ height: `${containerHeight}px` }}>
-        <NoteViewSVGRenderer />
+        <NoteViewRenderer />
       </div>
     </div>
   );

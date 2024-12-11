@@ -7,9 +7,11 @@ import { NotationRendererState } from '@services/notationRenderer/NotationRender
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
+
     static getInstance() {
         return NotationRenderer._instance || new NotationRenderer();
     }
+
     private context: RenderContext | null = null;
     private width: number = 0;
     private height: number = 0;
@@ -23,6 +25,8 @@ export class NotationRenderer {
     private notation: Notation = Notation.getInstance();
     private selectedBar: RenderableBar | null = null;
     private state: NotationRendererState = NotationRendererState.Idle;
+    private hoveredNoteIndex: number = -1;
+    private hoveredBar: RenderableBar | null = null;
 
     constructor() {
         if (NotationRenderer._instance === null) {
@@ -31,6 +35,7 @@ export class NotationRenderer {
             EventNotifier.AddListener('resized', this.OnResize.bind(this));
             EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
             EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
+            EventNotifier.AddListener('movedInsideRenderer', this.OnMouseMove.bind(this));
             return this;
         } else return NotationRenderer._instance;
     }
@@ -113,9 +118,30 @@ export class NotationRenderer {
         this.OnRender();
     }
 
+    private OnMouseMove(params: EventParams<'movedInsideRenderer'>): void {
+        const bar = this.FindBarByPosition(params.positionX, params.positionY);
+        if (!bar) {
+            this.hoveredBar?.colorChosenNote(this.hoveredNoteIndex, 'black');
+            this.hoveredBar = null;
+            this.hoveredNoteIndex = -1;
+            this.OnRender();
+            return;
+        }
+
+        const noteIndex = bar.getClickedNote(0, params.positionX);
+
+        if (this.hoveredBar === bar && this.hoveredNoteIndex == noteIndex) return;
+
+        this.hoveredBar?.colorChosenNote(this.hoveredNoteIndex, 'black');
+        bar.colorChosenNote(noteIndex, 'blue');
+        this.hoveredBar = bar;
+        this.hoveredNoteIndex = noteIndex;
+
+        this.OnRender();
+    }
+
     private OnRender() {
         if (!this.context) return;
-
         this.context.clear();
         this.DrawVisibleBars();
 

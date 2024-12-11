@@ -66,6 +66,10 @@ class RenderableBar implements IRenderable {
         return this.voices[voiceIndex].GetNoteIndexByPositionX(mousePosX);
     }
 
+    colorChosenNote(noteIndex: number, color: string) {
+        this.voices[0].GetNote(noteIndex).setColor(color);
+    }
+
     removeClickedNote(mousePosX: number): void {
         const idx = this.getClickedNote(0, mousePosX);
         this.voices[0].RemoveNote(idx);

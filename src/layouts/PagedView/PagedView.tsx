@@ -3,6 +3,7 @@ import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import usePages from './usePages';
 import styles from './PagedView.styles.module.css';
 import { ConfigService } from '@services/ConfigService/ConfigService';
+import NoteViewRenderer from '@components/NoteViewRenderer/NoteViewRenderer';
 
 function PagedView() {
   const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
@@ -26,7 +27,7 @@ function PagedView() {
       <div
         className={styles.container}
         style={{ height: `${containerHeight}px` }}>
-        <NoteViewSVGRenderer />
+        <NoteViewRenderer />
       </div>
     </div>
   );
