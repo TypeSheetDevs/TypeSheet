@@ -3,11 +3,12 @@ import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 
 export class RenderableVoice implements IRenderable {
+    private cachedVoice: Voice | null = null;
+    private isVoiceDirty: boolean = true;
+
     private numBeats: number;
     private beatValue: number;
     private notes: RenderableNote[];
-    private cachedVoice: Voice | null = null;
-    private isVoiceDirty: boolean = true;
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
@@ -61,6 +62,23 @@ export class RenderableVoice implements IRenderable {
         // Assign absoluteXs to RenderableNotes
         const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
         this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
+    }
+
+    GetNoteIndexByPositionX(positionX: number): number {
+        const positionsX = this.notes.map(n => n.AbsoluteX);
+        console.log(positionX, positionsX);
+        for (let i = 1; i < positionsX.length; i++) {
+            const diff = positionsX[i] - positionsX[i - 1];
+            if (positionX <= positionsX[i - 1] + diff / 2) return i - 1;
+        }
+        return positionsX.length - 1;
+    }
+
+    GetNote(index: number): RenderableNote {
+        if (index < 0 || index >= this.notes.length) {
+            throw new Error('Index out of bounds.');
+        }
+        return this.notes[index];
     }
 
     AddNote(note: RenderableNote, index?: number): void {

@@ -2,13 +2,14 @@ import { Key } from '@services/notationRenderer/notes/Key';
 import { StaveNote } from 'vexflow';
 
 export class RenderableNote {
+    private cachedStaveNote: StaveNote | null = null;
+    private isNoteDirty: boolean = true;
+
     private duration: string;
     private keys: Key[];
     private modifiers: string[];
     private absoluteX: number = 0;
     private color?: string;
-    private cachedStaveNote: StaveNote | null = null;
-    private isNoteDirty: boolean = true;
 
     constructor(duration: string, keys: Key[] = [], modifiers: string[] = [], color?: string) {
         this.duration = duration;
@@ -33,12 +34,12 @@ export class RenderableNote {
         return this.absoluteX;
     }
 
-    get Color(): string | undefined {
-        return this.color;
-    }
-
     set AbsoluteX(value: number) {
         this.absoluteX = value;
+    }
+
+    get Color(): string | undefined {
+        return this.color;
     }
 
     set Color(value: string) {
