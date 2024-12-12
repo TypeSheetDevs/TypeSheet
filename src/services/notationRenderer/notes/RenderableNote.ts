@@ -14,31 +14,31 @@ export class RenderableNote {
         this.color = color;
     }
 
-    getDuration(): string {
+    get Duration(): string {
         return this.duration;
     }
 
-    getKeys(): Key[] {
+    get Keys(): Key[] {
         return this.keys;
     }
 
-    getModifiers(): string[] {
+    get Modifiers(): string[] {
         return this.modifiers;
     }
 
-    getAbsoluteX(): number {
+    get AbsoluteX(): number {
         return this.absoluteX;
     }
 
-    getColor(): string | undefined {
+    get Color(): string | undefined {
         return this.color;
     }
 
-    setAbsoluteX(value: number): void {
+    set AbsoluteX(value: number) {
         this.absoluteX = value;
     }
 
-    setColor(value: string): void {
+    set Color(value: string) {
         this.color = value;
     }
 

@@ -15,7 +15,7 @@ export class RenderableVoice implements IRenderable {
 
     private calculateNumBeats(): number {
         return this.notes.reduce((totalBeats, note) => {
-            const noteDurationValue = this.getDurationValue(note.getDuration());
+            const noteDurationValue = this.getDurationValue(note.Duration);
             return totalBeats + noteDurationValue;
         }, 0);
     }
@@ -40,14 +40,14 @@ export class RenderableVoice implements IRenderable {
         voice.addTickables(
             this.notes.map(noteData => {
                 const staveNote = new StaveNote({
-                    keys: noteData.getKeys().map(keyData => keyData.pitch),
-                    duration: noteData.getDuration(),
+                    keys: noteData.Keys.map(keyData => keyData.pitch),
+                    duration: noteData.Duration,
                 });
 
-                if (noteData.getColor()) {
+                if (noteData.Color) {
                     staveNote.setStyle({
-                        fillStyle: noteData.getColor(),
-                        strokeStyle: noteData.getColor(),
+                        fillStyle: noteData.Color,
+                        strokeStyle: noteData.Color,
                     });
                 }
 
@@ -65,11 +65,11 @@ export class RenderableVoice implements IRenderable {
 
         // assign absoluteXs to RenderableNotes
         const absoluteXs = voice[0].getTickables().map(t => t.getAbsoluteX());
-        this.notes.forEach((note, index) => note.setAbsoluteX(absoluteXs[index]));
+        this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
     }
 
     GetNoteIndexByPositionX(positionX: number): number {
-        const positionsX = this.notes.map(n => n.getAbsoluteX());
+        const positionsX = this.notes.map(n => n.AbsoluteX);
         console.log(positionX, positionsX);
         for (let i = 1; i < positionsX.length; i++) {
             const diff = positionsX[i] - positionsX[i - 1];
@@ -86,7 +86,7 @@ export class RenderableVoice implements IRenderable {
     }
 
     AddNote(note: RenderableNote, index?: number): void {
-        if (!note || !note.getDuration() || !note.getKeys()?.length) {
+        if (!note || !note.Duration || !note.Keys?.length) {
             throw new Error('Invalid note data provided.');
         }
 
@@ -112,6 +112,6 @@ export class RenderableVoice implements IRenderable {
     }
 
     SetNotesColor(color: string): void {
-        this.notes.forEach(note => note.setColor(color));
+        this.notes.forEach(note => (note.Color = color));
     }
 }
