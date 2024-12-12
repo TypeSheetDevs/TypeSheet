@@ -1,4 +1,5 @@
 import { Key } from '@services/notationRenderer/notes/Key';
+import { StaveNote } from 'vexflow';
 
 export class RenderableNote {
     private duration: string;
@@ -6,6 +7,8 @@ export class RenderableNote {
     private modifiers: string[];
     private absoluteX: number = 0;
     private color?: string;
+    private cachedStaveNote: StaveNote | null = null;
+    private isNoteDirty: boolean = true;
 
     constructor(duration: string, keys: Key[] = [], modifiers: string[] = [], color?: string) {
         this.duration = duration;
@@ -40,6 +43,7 @@ export class RenderableNote {
 
     set Color(value: string) {
         this.color = value;
+        this.isNoteDirty = true;
     }
 
     AddKey(key: Key): void {
@@ -48,6 +52,7 @@ export class RenderableNote {
         }
         if (!this.keys.find(k => k.pitch === key.pitch)) {
             this.keys.push(key);
+            this.isNoteDirty = true;
         }
     }
 
@@ -56,5 +61,29 @@ export class RenderableNote {
             throw new Error('Index out of bounds.');
         }
         this.keys.splice(index, 1);
+        this.isNoteDirty = true;
+    }
+
+    GetAsVexFlowNote(): StaveNote {
+        if (this.cachedStaveNote && !this.isNoteDirty) {
+            return this.cachedStaveNote;
+        }
+
+        const note = new StaveNote({
+            keys: this.keys.map(key => key.pitch),
+            duration: this.duration,
+        });
+
+        if (this.color) {
+            note.setStyle({
+                fillStyle: this.color,
+                strokeStyle: this.color,
+            });
+        }
+
+        this.cachedStaveNote = note;
+        this.isNoteDirty = false;
+
+        return note;
     }
 }
