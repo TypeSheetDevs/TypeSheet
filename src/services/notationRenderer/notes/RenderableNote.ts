@@ -1,6 +1,10 @@
 import { Key } from '@services/notationRenderer/notes/Key';
+import { StaveNote } from 'vexflow';
 
 export class RenderableNote {
+    private cachedStaveNote: StaveNote | null = null;
+    private isNoteDirty: boolean = true;
+
     private duration: string;
     private keys: Key[];
     private modifiers: string[];
@@ -14,32 +18,33 @@ export class RenderableNote {
         this.color = color;
     }
 
-    getDuration(): string {
+    get Duration(): string {
         return this.duration;
     }
 
-    getKeys(): Key[] {
+    get Keys(): Key[] {
         return this.keys;
     }
 
-    getModifiers(): string[] {
+    get Modifiers(): string[] {
         return this.modifiers;
     }
 
-    getAbsoluteX(): number {
+    get AbsoluteX(): number {
         return this.absoluteX;
     }
 
-    getColor(): string | undefined {
-        return this.color;
-    }
-
-    setAbsoluteX(value: number): void {
+    set AbsoluteX(value: number) {
         this.absoluteX = value;
     }
 
-    setColor(value: string): void {
+    get Color(): string | undefined {
+        return this.color;
+    }
+
+    set Color(value: string) {
         this.color = value;
+        this.isNoteDirty = true;
     }
 
     AddKey(key: Key): void {
@@ -48,6 +53,7 @@ export class RenderableNote {
         }
         if (!this.keys.find(k => k.pitch === key.pitch)) {
             this.keys.push(key);
+            this.isNoteDirty = true;
         }
     }
 
@@ -56,5 +62,29 @@ export class RenderableNote {
             throw new Error('Index out of bounds.');
         }
         this.keys.splice(index, 1);
+        this.isNoteDirty = true;
+    }
+
+    GetAsVexFlowNote(): StaveNote {
+        if (this.cachedStaveNote && !this.isNoteDirty) {
+            return this.cachedStaveNote;
+        }
+
+        const note = new StaveNote({
+            keys: this.keys.map(key => key.pitch),
+            duration: this.duration,
+        });
+
+        if (this.color) {
+            note.setStyle({
+                fillStyle: this.color,
+                strokeStyle: this.color,
+            });
+        }
+
+        this.cachedStaveNote = note;
+        this.isNoteDirty = false;
+
+        return note;
     }
 }

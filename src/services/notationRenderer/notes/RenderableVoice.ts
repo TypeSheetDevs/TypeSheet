@@ -1,8 +1,11 @@
-import { Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
+import { Formatter, RenderContext, Stave, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 
 export class RenderableVoice implements IRenderable {
+    private cachedVoice: Voice | null = null;
+    private isVoiceDirty: boolean = true;
+
     private numBeats: number;
     private beatValue: number;
     private notes: RenderableNote[];
@@ -15,61 +18,54 @@ export class RenderableVoice implements IRenderable {
 
     private calculateNumBeats(): number {
         return this.notes.reduce((totalBeats, note) => {
-            const noteDurationValue = this.getDurationValue(note.getDuration());
+            const noteDurationValue = this.getDurationValue(note.Duration);
             return totalBeats + noteDurationValue;
         }, 0);
     }
 
     private getDurationValue(duration: string): number {
         const durationMap: { [key: string]: number } = {
-            w: 4, // Whole note
-            h: 2, // Half note
-            q: 1, // Quarter note
-            '8': 0.5, // Eighth note
-            '16': 0.25, // Sixteenth note
+            w: 4,
+            h: 2,
+            q: 1,
+            '8': 0.5,
+            '16': 0.25,
         };
-        return durationMap[duration] || 0; // Default to 0 if duration is invalid
+        return durationMap[duration] || 0;
     }
 
     GetAsVexFlowVoice(): Voice {
+        if (this.cachedVoice && !this.isVoiceDirty) {
+            return this.cachedVoice;
+        }
+
         const voice = new Voice({
             num_beats: this.numBeats,
             beat_value: this.beatValue,
         });
 
-        voice.addTickables(
-            this.notes.map(noteData => {
-                const staveNote = new StaveNote({
-                    keys: noteData.getKeys().map(keyData => keyData.pitch),
-                    duration: noteData.getDuration(),
-                });
+        voice.addTickables(this.notes.map(note => note.GetAsVexFlowNote()));
 
-                if (noteData.getColor()) {
-                    staveNote.setStyle({
-                        fillStyle: noteData.getColor(),
-                        strokeStyle: noteData.getColor(),
-                    });
-                }
+        this.cachedVoice = voice;
+        this.isVoiceDirty = false;
 
-                return staveNote;
-            }),
-        );
         return voice;
     }
 
-    Draw(context: RenderContext, bar: Stave, length: number) {
+    Draw(context: RenderContext, bar: Stave, length: number): void {
         if (this.notes.length === 0) return;
-        const voice = [this.GetAsVexFlowVoice()];
-        new Formatter().joinVoices(voice).format(voice, length - 20);
-        voice.forEach((voice: Voice) => voice.draw(context, bar));
 
-        // assign absoluteXs to RenderableNotes
-        const absoluteXs = voice[0].getTickables().map(t => t.getAbsoluteX());
-        this.notes.forEach((note, index) => note.setAbsoluteX(absoluteXs[index]));
+        const voice = this.GetAsVexFlowVoice();
+        new Formatter().joinVoices([voice]).format([voice], length - 20);
+        voice.draw(context, bar);
+
+        // Assign absoluteXs to RenderableNotes
+        const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
+        this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
     }
 
     GetNoteIndexByPositionX(positionX: number): number {
-        const positionsX = this.notes.map(n => n.getAbsoluteX());
+        const positionsX = this.notes.map(n => n.AbsoluteX);
         console.log(positionX, positionsX);
         for (let i = 1; i < positionsX.length; i++) {
             const diff = positionsX[i] - positionsX[i - 1];
@@ -86,7 +82,7 @@ export class RenderableVoice implements IRenderable {
     }
 
     AddNote(note: RenderableNote, index?: number): void {
-        if (!note || !note.getDuration() || !note.getKeys()?.length) {
+        if (!note || !note.Duration || !note.Keys?.length) {
             throw new Error('Invalid note data provided.');
         }
 
@@ -100,6 +96,7 @@ export class RenderableVoice implements IRenderable {
         }
 
         this.numBeats = this.calculateNumBeats();
+        this.isVoiceDirty = true;
     }
 
     RemoveNote(index: number): void {
@@ -109,9 +106,11 @@ export class RenderableVoice implements IRenderable {
         this.notes.splice(index, 1);
 
         this.numBeats = this.calculateNumBeats();
+        this.isVoiceDirty = true;
     }
 
     SetNotesColor(color: string): void {
-        this.notes.forEach(note => note.setColor(color));
+        this.notes.forEach(note => (note.Color = color));
+        this.isVoiceDirty = true;
     }
 }
