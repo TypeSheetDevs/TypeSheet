@@ -1,0 +1,21 @@
+export enum NoteDuration {
+    Whole = 'w',
+    Half = 'h',
+    Quarter = 'q',
+    Eighth = '8',
+    Sixteenth = '16',
+    ThirtySecond = '32',
+    SixtyFourth = '64',
+    OneTwentyEighth = '128',
+}
+
+export const NoteDurationValues = {
+    [NoteDuration.Whole]: 4,
+    [NoteDuration.Half]: 2,
+    [NoteDuration.Quarter]: 1,
+    [NoteDuration.Eighth]: 0.5,
+    [NoteDuration.Sixteenth]: 0.25,
+    [NoteDuration.ThirtySecond]: 0.125,
+    [NoteDuration.SixtyFourth]: 0.0625,
+    [NoteDuration.OneTwentyEighth]: 0.03125,
+};

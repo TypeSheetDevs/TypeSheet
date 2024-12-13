@@ -1,25 +1,30 @@
 import { Key } from '@services/notationRenderer/notes/Key';
 import { StaveNote } from 'vexflow';
+import { NoteDuration, NoteDurationValues } from '@services/notationRenderer/notes/Notes.enums';
 
 export class RenderableNote {
-    private cachedStaveNote: StaveNote | null = null;
-    private isNoteDirty: boolean = true;
-
-    private duration: string;
+    private duration: NoteDuration;
     private keys: Key[];
     private modifiers: string[];
     private absoluteX: number = 0;
     private color?: string;
+    private cachedStaveNote: StaveNote | null = null;
+    private isNoteDirty: boolean = true;
 
-    constructor(duration: string, keys: Key[] = [], modifiers: string[] = [], color?: string) {
+    constructor(
+        duration: NoteDuration,
+        keys: Key[] = [],
+        modifiers: string[] = [],
+        color?: string,
+    ) {
         this.duration = duration;
         this.keys = keys;
         this.modifiers = modifiers;
         this.color = color;
     }
 
-    get Duration(): string {
-        return this.duration;
+    get DurationValue(): number {
+        return NoteDurationValues[this.duration];
     }
 
     get Keys(): Key[] {
@@ -34,12 +39,12 @@ export class RenderableNote {
         return this.absoluteX;
     }
 
-    set AbsoluteX(value: number) {
-        this.absoluteX = value;
-    }
-
     get Color(): string | undefined {
         return this.color;
+    }
+
+    set AbsoluteX(value: number) {
+        this.absoluteX = value;
     }
 
     set Color(value: string) {
@@ -70,21 +75,21 @@ export class RenderableNote {
             return this.cachedStaveNote;
         }
 
-        const note = new StaveNote({
+        const staveNote = new StaveNote({
             keys: this.keys.map(key => key.pitch),
             duration: this.duration,
         });
 
         if (this.color) {
-            note.setStyle({
+            staveNote.setStyle({
                 fillStyle: this.color,
                 strokeStyle: this.color,
             });
         }
 
-        this.cachedStaveNote = note;
+        this.cachedStaveNote = staveNote;
         this.isNoteDirty = false;
 
-        return note;
+        return staveNote;
     }
 }

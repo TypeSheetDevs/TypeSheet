@@ -18,20 +18,9 @@ export class RenderableVoice implements IRenderable {
 
     private calculateNumBeats(): number {
         return this.notes.reduce((totalBeats, note) => {
-            const noteDurationValue = this.getDurationValue(note.Duration);
+            const noteDurationValue = note.DurationValue;
             return totalBeats + noteDurationValue;
         }, 0);
-    }
-
-    private getDurationValue(duration: string): number {
-        const durationMap: { [key: string]: number } = {
-            w: 4,
-            h: 2,
-            q: 1,
-            '8': 0.5,
-            '16': 0.25,
-        };
-        return durationMap[duration] || 0;
     }
 
     GetAsVexFlowVoice(): Voice {
@@ -82,7 +71,7 @@ export class RenderableVoice implements IRenderable {
     }
 
     AddNote(note: RenderableNote, index?: number): void {
-        if (!note || !note.Duration || !note.Keys?.length) {
+        if (!note || !note.Keys?.length) {
             throw new Error('Invalid note data provided.');
         }
 
