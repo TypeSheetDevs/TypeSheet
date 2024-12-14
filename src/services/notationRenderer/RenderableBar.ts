@@ -4,6 +4,7 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { Key } from '@services/notationRenderer/notes/Key';
+import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 
 class RenderableBar implements IRenderable {
     private currentPosX = 0;
@@ -17,12 +18,14 @@ class RenderableBar implements IRenderable {
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
         const voice1 = new RenderableVoice(4, [
-            new RenderableNote('q', [new Key('e/4')]),
-            new RenderableNote('q', [new Key('e/4')]),
-            new RenderableNote('q', [new Key('g/4')]),
-            new RenderableNote('q', [new Key('c/5')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('e/4')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('e/4')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('g/4')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('c/5')]),
         ]);
-        const voice2 = new RenderableVoice(4, [new RenderableNote('w', [new Key('a/3')])]);
+        const voice2 = new RenderableVoice(4, [
+            new RenderableNote(NoteDuration.Whole, [new Key('a/3')]),
+        ]);
 
         this.addVoice(voice1);
         this.addVoice(voice2);
