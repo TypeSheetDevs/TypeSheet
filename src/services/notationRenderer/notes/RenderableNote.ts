@@ -1,5 +1,5 @@
 import { Key } from '@services/notationRenderer/notes/Key';
-import { StaveNote } from 'vexflow';
+import { Accidental, StaveNote } from 'vexflow';
 import { NoteDuration, NoteDurationValues } from '@services/notationRenderer/notes/Notes.enums';
 
 export class RenderableNote {
@@ -86,6 +86,12 @@ export class RenderableNote {
                 strokeStyle: this.color,
             });
         }
+
+        this.keys.forEach((key, index) => {
+            key.modifiers.forEach(modifier => {
+                staveNote.addModifier(new Accidental(modifier as string), index);
+            });
+        });
 
         this.cachedStaveNote = staveNote;
         this.isNoteDirty = false;
