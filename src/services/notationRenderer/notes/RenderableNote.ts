@@ -52,6 +52,13 @@ export class RenderableNote {
         this.isNoteDirty = true;
     }
 
+    GetKey(index: number): Key {
+        if (index < 0 || index >= this.keys.length) {
+            throw new Error('Index out of bounds.');
+        }
+        return this.keys[index];
+    }
+
     AddKey(key: Key): void {
         if (!key || !key.pitch) {
             throw new Error('Invalid key data provided.');
@@ -71,7 +78,7 @@ export class RenderableNote {
     }
 
     GetAsVexFlowNote(): StaveNote {
-        if (this.cachedStaveNote && !this.isNoteDirty) {
+        if (this.cachedStaveNote && !this.isNoteDirty && this.keys.every(k => !k.IsKeyDirty)) {
             return this.cachedStaveNote;
         }
 
@@ -91,6 +98,7 @@ export class RenderableNote {
             key.modifiers.forEach(modifier => {
                 staveNote.addModifier(new Accidental(modifier as string), index);
             });
+            key.SetNotDirty();
         });
 
         this.cachedStaveNote = staveNote;
