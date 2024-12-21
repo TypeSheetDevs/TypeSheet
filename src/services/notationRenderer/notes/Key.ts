@@ -9,7 +9,7 @@ export class Key {
         return this.isKeyDirty;
     }
 
-    constructor(pitch: string, modifier: KeyModifier | null = KeyModifier.DoubleFlat) {
+    constructor(pitch: string, modifier: KeyModifier | null = null) {
         this.pitch = pitch;
         this.modifier = modifier;
     }
