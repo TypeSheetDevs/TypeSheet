@@ -1,5 +1,5 @@
 import { Key } from '@services/notationRenderer/notes/Key';
-import { Accidental, Articulation, StaveNote, Vex } from 'vexflow';
+import { Accidental, Articulation, Dot, StaveNote, Vex } from 'vexflow';
 import {
     NoteDuration,
     NoteDurationValues,
@@ -13,8 +13,11 @@ export class RenderableNote {
     private duration: NoteDuration;
     private keys: Key[];
     private modifiers: NoteModifier[];
+    private dotted: boolean;
+
     private absoluteX: number = 0;
     private color?: string;
+
     private cachedStaveNote: StaveNote | null = null;
     private isNoteDirty: boolean = true;
 
@@ -22,11 +25,13 @@ export class RenderableNote {
         duration: NoteDuration,
         keys: Key[] = [],
         modifiers: NoteModifier[] = [],
+        dotted: boolean = false,
         color?: string,
     ) {
         this.duration = duration;
         this.keys = keys;
         this.modifiers = modifiers;
+        this.dotted = dotted;
         this.color = color;
     }
 
@@ -111,11 +116,13 @@ export class RenderableNote {
 
         this.modifiers.forEach(modifier => {
             staveNote.addModifier(
-                new Articulation(modifier)
-                    .setPosition(this.GetModifierPosition())
-                    .setFont({ size: 10 }),
+                new Articulation(modifier).setPosition(this.GetModifierPosition()),
             );
         });
+
+        if (this.dotted) {
+            Dot.buildAndAttach([staveNote], { all: true });
+        }
 
         this.cachedStaveNote = staveNote;
         this.isNoteDirty = false;
@@ -132,10 +139,6 @@ export class RenderableNote {
     }
 
     private IsHighPitch(pitch: string): boolean {
-        const note = pitch[0];
-        const octave = parseInt(pitch[pitch.length - 1], 10);
-
-        const highNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-        return octave > 4 || (octave === 4 && highNotes.includes(note));
+        return parseInt(pitch[pitch.length - 1], 10) >= 5;
     }
 }

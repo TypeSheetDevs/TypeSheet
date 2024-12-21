@@ -22,6 +22,7 @@ export const NoteDurationValues = {
 
 export enum NoteModifier {
     Staccato = 'a.',
+    Staccatissimo = 'a..',
     Tenuto = 'a-',
     Accent = 'a>',
     Marcato = 'a^',
