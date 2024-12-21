@@ -1,11 +1,18 @@
 import { Key } from '@services/notationRenderer/notes/Key';
-import { Accidental, StaveNote } from 'vexflow';
-import { NoteDuration, NoteDurationValues } from '@services/notationRenderer/notes/Notes.enums';
+import { Accidental, Articulation, StaveNote, Vex } from 'vexflow';
+import {
+    NoteDuration,
+    NoteDurationValues,
+    NoteModifier,
+} from '@services/notationRenderer/notes/Notes.enums';
+
+const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
+const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
 export class RenderableNote {
     private duration: NoteDuration;
     private keys: Key[];
-    private modifiers: string[];
+    private modifiers: NoteModifier[];
     private absoluteX: number = 0;
     private color?: string;
     private cachedStaveNote: StaveNote | null = null;
@@ -14,7 +21,7 @@ export class RenderableNote {
     constructor(
         duration: NoteDuration,
         keys: Key[] = [],
-        modifiers: string[] = [],
+        modifiers: NoteModifier[] = [],
         color?: string,
     ) {
         this.duration = duration;
@@ -85,6 +92,7 @@ export class RenderableNote {
         const staveNote = new StaveNote({
             keys: this.keys.map(key => key.pitch),
             duration: this.duration,
+            stem_direction: this.GetStemDirection(),
         });
 
         if (this.color) {
@@ -96,14 +104,38 @@ export class RenderableNote {
 
         this.keys.forEach((key, index) => {
             key.modifiers.forEach(modifier => {
-                staveNote.addModifier(new Accidental(modifier as string), index);
+                staveNote.addModifier(new Accidental(modifier), index);
             });
             key.SetNotDirty();
+        });
+
+        this.modifiers.forEach(modifier => {
+            staveNote.addModifier(
+                new Articulation(modifier)
+                    .setPosition(this.GetModifierPosition())
+                    .setFont({ size: 10 }),
+            );
         });
 
         this.cachedStaveNote = staveNote;
         this.isNoteDirty = false;
 
         return staveNote;
+    }
+
+    private GetStemDirection(): number {
+        return this.keys.every(key => !this.IsHighPitch(key.pitch)) ? 1 : -1;
+    }
+
+    private GetModifierPosition(): number {
+        return this.keys.some(key => this.IsHighPitch(key.pitch)) ? POSITION_ABOVE : POSITION_BELOW;
+    }
+
+    private IsHighPitch(pitch: string): boolean {
+        const note = pitch[0];
+        const octave = parseInt(pitch[pitch.length - 1], 10);
+
+        const highNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        return octave > 4 || (octave === 4 && highNotes.includes(note));
     }
 }
