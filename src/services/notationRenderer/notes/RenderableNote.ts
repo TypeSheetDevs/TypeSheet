@@ -10,8 +10,8 @@ const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
 export class RenderableNote {
+    private readonly keys: Key[];
     private duration: NoteDuration;
-    private keys: Key[];
     private modifiers: NoteModifier[];
     private dotted: boolean;
 
@@ -35,24 +35,12 @@ export class RenderableNote {
         this.color = color;
     }
 
-    get DurationValue(): number {
-        return NoteDurationValues[this.duration];
-    }
-
-    get Keys(): Key[] {
-        return this.keys;
-    }
-
-    get Modifiers(): string[] {
-        return this.modifiers;
+    set Duration(value: NoteDuration) {
+        this.duration = value;
     }
 
     get AbsoluteX(): number {
         return this.absoluteX;
-    }
-
-    get Color(): string | undefined {
-        return this.color;
     }
 
     set AbsoluteX(value: number) {
@@ -64,6 +52,27 @@ export class RenderableNote {
         this.isNoteDirty = true;
     }
 
+    get Dotted(): boolean {
+        return this.dotted;
+    }
+
+    set Dotted(value: boolean) {
+        this.dotted = value;
+        this.isNoteDirty = true;
+    }
+
+    get DurationValue(): number {
+        return NoteDurationValues[this.duration] * (this.dotted ? 1.5 : 1);
+    }
+
+    get KeysLength(): number {
+        return this.keys.length;
+    }
+
+    get IsDirty(): boolean {
+        return !this.cachedStaveNote || this.isNoteDirty || this.keys.some(k => k.IsKeyDirty);
+    }
+
     GetKey(index: number): Key {
         if (index < 0 || index >= this.keys.length) {
             throw new Error('Index out of bounds.');
@@ -72,10 +81,10 @@ export class RenderableNote {
     }
 
     AddKey(key: Key): void {
-        if (!key || !key.pitch) {
+        if (!key || !key.Pitch) {
             throw new Error('Invalid key data provided.');
         }
-        if (!this.keys.find(k => k.pitch === key.pitch)) {
+        if (!this.keys.find(k => k.Pitch === key.Pitch)) {
             this.keys.push(key);
             this.isNoteDirty = true;
         }
@@ -90,12 +99,12 @@ export class RenderableNote {
     }
 
     GetAsVexFlowNote(): StaveNote {
-        if (this.cachedStaveNote && !this.isNoteDirty && this.keys.every(k => !k.IsKeyDirty)) {
-            return this.cachedStaveNote;
+        if (!this.IsDirty) {
+            return this.cachedStaveNote!;
         }
 
         const staveNote = new StaveNote({
-            keys: this.keys.map(key => key.pitch),
+            keys: this.keys.map(key => key.Pitch),
             duration: this.duration,
             stem_direction: this.GetStemDirection(),
         });
@@ -108,8 +117,8 @@ export class RenderableNote {
         }
 
         this.keys.forEach((key, index) => {
-            if (key.modifier) {
-                staveNote.addModifier(new Accidental(key.modifier), index);
+            if (key.Modifier) {
+                staveNote.addModifier(new Accidental(key.Modifier), index);
             }
             key.SetNotDirty();
         });
@@ -131,11 +140,11 @@ export class RenderableNote {
     }
 
     private GetStemDirection(): number {
-        return this.keys.every(key => !this.IsHighPitch(key.pitch)) ? 1 : -1;
+        return this.keys.every(key => !this.IsHighPitch(key.Pitch)) ? 1 : -1;
     }
 
     private GetModifierPosition(): number {
-        return this.keys.some(key => this.IsHighPitch(key.pitch)) ? POSITION_ABOVE : POSITION_BELOW;
+        return this.keys.some(key => this.IsHighPitch(key.Pitch)) ? POSITION_ABOVE : POSITION_BELOW;
     }
 
     private IsHighPitch(pitch: string): boolean {

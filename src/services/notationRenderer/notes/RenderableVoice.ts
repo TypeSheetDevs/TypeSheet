@@ -6,9 +6,9 @@ export class RenderableVoice implements IRenderable {
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
 
+    private readonly notes: RenderableNote[];
     private numBeats: number;
     private beatValue: number;
-    private notes: RenderableNote[];
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
@@ -16,11 +16,14 @@ export class RenderableVoice implements IRenderable {
         this.numBeats = this.calculateNumBeats();
     }
 
-    private calculateNumBeats(): number {
-        return this.notes.reduce((totalBeats, note) => {
-            const noteDurationValue = note.DurationValue;
-            return totalBeats + noteDurationValue;
-        }, 0);
+    set BeatValue(beatValue: number) {
+        this.beatValue = beatValue;
+        this.isVoiceDirty = true;
+    }
+
+    SetNotesColor(color: string): void {
+        this.notes.forEach(note => (note.Color = color));
+        this.isVoiceDirty = true;
     }
 
     GetAsVexFlowVoice(): Voice {
@@ -48,7 +51,6 @@ export class RenderableVoice implements IRenderable {
         new Formatter().joinVoices([voice]).format([voice], length - 20);
         voice.draw(context, bar);
 
-        // Assign absoluteXs to RenderableNotes
         const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
         this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
     }
@@ -71,7 +73,7 @@ export class RenderableVoice implements IRenderable {
     }
 
     AddNote(note: RenderableNote, index?: number): void {
-        if (!note || !note.Keys?.length) {
+        if (!note || note.KeysLength === 0) {
             throw new Error('Invalid note data provided.');
         }
 
@@ -98,8 +100,10 @@ export class RenderableVoice implements IRenderable {
         this.isVoiceDirty = true;
     }
 
-    SetNotesColor(color: string): void {
-        this.notes.forEach(note => (note.Color = color));
-        this.isVoiceDirty = true;
+    private calculateNumBeats(): number {
+        return this.notes.reduce((totalBeats, note) => {
+            const noteDurationValue = note.DurationValue;
+            return totalBeats + noteDurationValue;
+        }, 0);
     }
 }
