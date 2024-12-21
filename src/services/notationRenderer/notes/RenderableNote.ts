@@ -65,6 +65,10 @@ export class RenderableNote {
         return NoteDurationValues[this.duration] * (this.dotted ? 1.5 : 1);
     }
 
+    get DurationSymbol(): string {
+        return this.duration + (this.dotted ? 'd' : '');
+    }
+
     get KeysLength(): number {
         return this.keys.length;
     }
@@ -105,7 +109,7 @@ export class RenderableNote {
 
         const staveNote = new StaveNote({
             keys: this.keys.map(key => key.Pitch),
-            duration: this.duration,
+            duration: this.DurationSymbol,
             stem_direction: this.GetStemDirection(),
         });
 
