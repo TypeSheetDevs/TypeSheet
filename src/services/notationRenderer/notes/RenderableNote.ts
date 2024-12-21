@@ -108,9 +108,9 @@ export class RenderableNote {
         }
 
         this.keys.forEach((key, index) => {
-            key.modifiers.forEach(modifier => {
-                staveNote.addModifier(new Accidental(modifier), index);
-            });
+            if (key.modifier) {
+                staveNote.addModifier(new Accidental(key.modifier), index);
+            }
             key.SetNotDirty();
         });
 

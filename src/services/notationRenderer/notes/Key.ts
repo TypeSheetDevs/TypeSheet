@@ -2,27 +2,26 @@ import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 export class Key {
     pitch: string;
-    // it may be just a variable instead of array, but not sure yet
-    modifiers: KeyModifier[];
+    modifier: KeyModifier | null = null;
     private isKeyDirty: boolean = false;
 
     get IsKeyDirty() {
         return this.isKeyDirty;
     }
 
-    constructor(pitch: string, modifiers: KeyModifier[] = []) {
+    constructor(pitch: string, modifier: KeyModifier | null = KeyModifier.DoubleFlat) {
         this.pitch = pitch;
-        this.modifiers = modifiers;
+        this.modifier = modifier;
     }
 
-    public AddModifier(modifier: KeyModifier) {
-        if (!this.modifiers.includes(modifier)) {
+    public SetModifier(modifier: KeyModifier) {
+        if (this.modifier !== modifier) {
             this.isKeyDirty = true;
-            this.modifiers.push(modifier);
+            this.modifier = modifier;
         }
     }
 
     public SetNotDirty() {
-        this.isKeyDirty = true;
+        this.isKeyDirty = false;
     }
 }
