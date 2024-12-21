@@ -1,4 +1,4 @@
-import { Formatter, RenderContext, Stave, Voice } from 'vexflow';
+import { Beam, Formatter, RenderContext, Stave, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 
@@ -49,7 +49,9 @@ export class RenderableVoice implements IRenderable {
 
         const voice = this.GetAsVexFlowVoice();
         new Formatter().joinVoices([voice]).format([voice], length - 20);
+        const beams = Beam.applyAndGetBeams(voice);
         voice.draw(context, bar);
+        beams.forEach(beam => beam.setContext(context).draw());
 
         const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
         this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
