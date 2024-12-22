@@ -16,4 +16,5 @@ type NotationEvent =
               positionX: number;
               positionY: number;
           };
-      };
+      }
+    | { name: 'toggleConfigManager' };

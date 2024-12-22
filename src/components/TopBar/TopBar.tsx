@@ -3,6 +3,7 @@ import { useState, DragEvent } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 import getButtonIcon from '@assets/icons/getIcon';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 function TopBar() {
   const [buttonsGroups, setButtonsGroups] = useState<ButtonsGroupType[]>([
@@ -50,8 +51,8 @@ function TopBar() {
     {
       buttons: [
         {
-          iconPath: getButtonIcon('play_arrow.svg'),
-          onClick: () => {},
+          iconPath: getButtonIcon('settings.svg'),
+          onClick: () => EventNotifier.Notify('toggleConfigManager'),
         },
       ],
     },
