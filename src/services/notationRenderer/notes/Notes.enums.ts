@@ -19,3 +19,12 @@ export const NoteDurationValues = {
     [NoteDuration.SixtyFourth]: 0.0625,
     [NoteDuration.OneTwentyEighth]: 0.03125,
 };
+
+export enum NoteModifier {
+    Staccato = 'a.',
+    Staccatissimo = 'a..',
+    Tenuto = 'a-',
+    Accent = 'a>',
+    Marcato = 'a^',
+    Fermata = 'a@a',
+}
