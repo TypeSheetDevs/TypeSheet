@@ -86,7 +86,7 @@ export class ConfigService {
         await this.saveConfig();
     }
 
-    private async saveConfig(): Promise<void> {
+    public async saveConfig(): Promise<void> {
         try {
             if (!this._appConfig) {
                 throw new Error('No config data available to save');

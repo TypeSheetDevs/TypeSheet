@@ -4,13 +4,22 @@ export type AppConfig = {
     configs: SavedParameter[];
 };
 
+export enum SavedParameterNames {
+    StartingView = 'StartingView',
+    BarsPerStave = 'BarsPerStave',
+    StaveMinimumHeightDistance = 'StaveMinimumHeightDistance',
+    MainViewMargin = 'MainViewMargin',
+    StavesPerPage = 'StavesPerPage',
+    TopBarColor = 'TopBarColor',
+}
+
 export type SavedParameter =
-    | { name: 'StartingView'; value: ViewType }
-    | { name: 'BarsPerStave'; value: number }
-    | { name: 'StaveMinimumHeightDistance'; value: number }
-    | { name: 'MainViewMargin'; value: number }
-    | { name: 'StavesPerPage'; value: number }
-    | { name: 'TopBarColor'; value: `#${string}` };
+    | { name: SavedParameterNames.StartingView; value: ViewType }
+    | { name: SavedParameterNames.BarsPerStave; value: number }
+    | { name: SavedParameterNames.StaveMinimumHeightDistance; value: number }
+    | { name: SavedParameterNames.MainViewMargin; value: number }
+    | { name: SavedParameterNames.StavesPerPage; value: number }
+    | { name: SavedParameterNames.TopBarColor; value: string };
 
 export type ValueOf<T extends SavedParameter['name']> = Extract<
     SavedParameter,

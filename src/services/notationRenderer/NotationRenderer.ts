@@ -4,6 +4,7 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
+import { SavedParameterNames } from '@services/ConfigService/ConfigService.types';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -71,7 +72,7 @@ export class NotationRenderer {
         return (
             tempStave.getBottomY() -
             tempStave.getY() +
-            this.configService.getValue('StaveMinimumHeightDistance')
+            this.configService.getValue(SavedParameterNames.StaveMinimumHeightDistance)
         );
     }
 
