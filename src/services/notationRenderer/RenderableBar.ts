@@ -5,7 +5,7 @@ import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoic
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { Key } from '@services/notationRenderer/notes/Key';
 import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
-import { SavedParameterNames } from '@services/ConfigService/ConfigService.types';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 class RenderableBar implements IRenderable {
     private currentPosX = 0;
@@ -40,7 +40,7 @@ class RenderableBar implements IRenderable {
         return (
             this.currentPosY +
             this.currentHeight +
-            ConfigService.getInstance().getValue(SavedParameterNames.StaveMinimumHeightDistance)
+            ConfigService.getInstance().getValue(SavedParameterName.StaveMinimumHeightDistance)
         );
     }
 

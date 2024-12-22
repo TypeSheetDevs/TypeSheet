@@ -1,30 +1,30 @@
 import styles from './ConfigManager.styles.module.css';
-import { SavedParameter, SavedParameterNames } from '@services/ConfigService/ConfigService.types';
+import { SavedParameter, SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ReactElement } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
+import ConfigEditorNumber from '@components/ConfigManager/ConfigEditor.number';
+import ConfigEditorString from '@components/ConfigManager/ConfigEditor.string';
 
 function ConfigManager(): ReactElement | null {
   const configService: ConfigService = ConfigService.getInstance();
 
   const renderValue = (paramValue: SavedParameter['value']): ReactElement => {
     if (typeof paramValue === 'string') {
-      return <li>{paramValue}</li>;
+      return <ConfigEditorString paramValue={paramValue}></ConfigEditorString>;
     }
 
     if (typeof paramValue === 'number') {
-      return <li>{paramValue}</li>;
+      return <ConfigEditorNumber paramValue={paramValue}></ConfigEditorNumber>;
     }
 
-    return <li>Enum</li>;
+    return <li style={{ backgroundColor: 'red' }}>Enum</li>;
   };
 
   return (
     <div className={styles.mainDiv}>
-      <ul>
-        {Object.values(SavedParameterNames).map(paramName =>
-          renderValue(configService.getValue(paramName)),
-        )}
-      </ul>
+      {Object.values(SavedParameterName).map(paramName => (
+        <div key={paramName}>{renderValue(configService.getValue(paramName))}</div>
+      ))}
     </div>
   );
 }
