@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameter } from '@services/ConfigService/ConfigService.types';
 import { EditorConfigMap } from '@components/ConfigManager/ConfigManager.types';
+import styles from './ConfigEditor.number.styles.module.css';
 
 interface ConfigEditorNumberProps {
   paramName: SavedParameter['name'];
@@ -33,16 +34,25 @@ function ConfigEditorNumber({
   };
 
   return (
-    <div>
-      <input
-        type="number"
-        value={inputValue}
-        onChange={handleChange}
-        min={min}
-        max={max}
-        step="1"
-      />
-      <button onClick={resetToDefault}>Reset to Default</button>
+    <div className={styles.container}>
+      <label className={styles.label}>{paramName}</label>
+      <div className={styles.inputContainer}>
+        <input
+          className={styles.input}
+          type="number"
+          value={inputValue}
+          onChange={handleChange}
+          min={min}
+          max={max}
+          step="1"
+        />
+        <button
+          className={styles.resetButton}
+          onClick={resetToDefault}
+          title="Reset to Default">
+          Reset To Default
+        </button>
+      </div>
     </div>
   );
 }
