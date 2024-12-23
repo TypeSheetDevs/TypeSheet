@@ -12,11 +12,11 @@ export enum EditorType {
 
 export type Validator<T> = (value: T) => boolean;
 
-export interface EditorConfig<T> {
+export type EditorConfig<T> = {
     editorType: EditorType;
     validators?: Validator<T>[];
     extraParams?: { [key: string]: any };
-}
+};
 
 export type EditorConfigMapType = {
     [key in SavedParameterName]: EditorConfig<ValueOf<key>>;

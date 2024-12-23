@@ -4,6 +4,7 @@ import { ReactElement } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import ConfigEditorNumber from '@components/ConfigManager/ConfigEditor.number';
 import ConfigEditorString from '@components/ConfigManager/ConfigEditor.string';
+import { EditorConfigMap, EditorType } from '@components/ConfigManager/ConfigManager.types';
 
 function ConfigManager(): ReactElement | null {
   const configService: ConfigService = ConfigService.getInstance();
@@ -12,25 +13,28 @@ function ConfigManager(): ReactElement | null {
     paramName: SavedParameter['name'],
     paramValue: SavedParameter['value'],
   ): ReactElement => {
-    if (typeof paramValue === 'string') {
-      return (
-        <ConfigEditorString
-          paramName={paramName}
-          paramValue={paramValue}
-        />
-      );
-    }
+    const editorConfig = EditorConfigMap[paramName];
 
-    if (typeof paramValue === 'number') {
-      return (
-        <ConfigEditorNumber
-          paramName={paramName}
-          paramValue={paramValue}
-        />
-      );
-    }
+    switch (editorConfig.editorType) {
+      case EditorType.Text:
+        return (
+          <ConfigEditorString
+            paramName={paramName}
+            paramValue={paramValue as string}
+          />
+        );
 
-    return <li style={{ backgroundColor: 'red' }}>Enum</li>;
+      case EditorType.Number:
+        return (
+          <ConfigEditorNumber
+            paramName={paramName}
+            paramValue={paramValue as number}
+          />
+        );
+
+      default:
+        return <li style={{ backgroundColor: 'red' }}>Unsupported Type</li>;
+    }
   };
 
   return (
