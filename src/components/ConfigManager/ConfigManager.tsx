@@ -1,10 +1,10 @@
+import { ReactElement } from 'react';
 import styles from './ConfigManager.styles.module.css';
 import { SavedParameter, SavedParameterName } from '@services/ConfigService/ConfigService.types';
-import { ReactElement } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
+import { EditorConfigMap, EditorType } from '@components/ConfigManager/ConfigManager.types';
 import ConfigEditorNumber from '@components/ConfigManager/ConfigEditors/ConfigEditor.number';
 import ConfigEditorString from '@components/ConfigManager/ConfigEditors/ConfigEditor.string';
-import { EditorConfigMap, EditorType } from '@components/ConfigManager/ConfigManager.types';
 import ConfigEditorColor from '@components/ConfigManager/ConfigEditors/ConfigEditor.color';
 import ConfigEditorEnum from '@components/ConfigManager/ConfigEditors/ConfigEditor.enum';
 
@@ -58,7 +58,9 @@ function ConfigManager(): ReactElement | null {
   return (
     <div className={styles.mainDiv}>
       {Object.values(SavedParameterName).map(paramName => (
-        <div key={paramName}>
+        <div
+          key={paramName}
+          className={styles.configItem}>
           {renderConfigEditor(paramName, configService.getValue(paramName))}
         </div>
       ))}

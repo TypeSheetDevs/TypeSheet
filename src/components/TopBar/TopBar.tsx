@@ -1,9 +1,10 @@
 import styles from './TopBar.styles.module.css';
-import { useState, DragEvent } from 'react';
+import { DragEvent, useState } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 import getButtonIcon from '@assets/icons/getIcon';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 function TopBar() {
   const [buttonsGroups, setButtonsGroups] = useState<ButtonsGroupType[]>([
@@ -59,7 +60,7 @@ function TopBar() {
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  const topBarColor = ConfigService.getInstance().getValue('TopBarColor');
+  const topBarColor = ConfigService.getInstance().getValue(SavedParameterName.TopBarColor);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
