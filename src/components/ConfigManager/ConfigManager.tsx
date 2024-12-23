@@ -11,7 +11,7 @@ import ConfigEditorEnum from '@components/ConfigManager/ConfigEditors/ConfigEdit
 function ConfigManager(): ReactElement | null {
   const configService: ConfigService = ConfigService.getInstance();
 
-  const renderValue = (
+  const renderConfigEditor = (
     paramName: SavedParameter['name'],
     paramValue: SavedParameter['value'],
   ): ReactElement => {
@@ -58,7 +58,9 @@ function ConfigManager(): ReactElement | null {
   return (
     <div className={styles.mainDiv}>
       {Object.values(SavedParameterName).map(paramName => (
-        <div key={paramName}>{renderValue(paramName, configService.getValue(paramName))}</div>
+        <div key={paramName}>
+          {renderConfigEditor(paramName, configService.getValue(paramName))}
+        </div>
       ))}
     </div>
   );
