@@ -1,17 +1,30 @@
 import React, { ReactElement, useState } from 'react';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameter } from '@services/ConfigService/ConfigService.types';
 
 interface ConfigEditorNumberProps {
+  paramName: SavedParameter['name'];
   paramValue: number;
 }
 
-function ConfigEditorNumber({ paramValue }: ConfigEditorNumberProps): ReactElement | null {
+function ConfigEditorNumber({
+  paramName,
+  paramValue,
+}: ConfigEditorNumberProps): ReactElement | null {
+  const initialValue = paramValue;
   const [inputValue, setInputValue] = useState(paramValue);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(event.target.value, 10);
     if (!isNaN(newValue)) {
       setInputValue(newValue);
+      await ConfigService.getInstance().updateValue(paramName, newValue);
     }
+  };
+
+  const resetToDefault = async () => {
+    setInputValue(initialValue);
+    await ConfigService.getInstance().updateValue(paramName, initialValue);
   };
 
   return (
@@ -23,6 +36,7 @@ function ConfigEditorNumber({ paramValue }: ConfigEditorNumberProps): ReactEleme
         step="1"
         min="0"
       />
+      <button onClick={resetToDefault}>Reset to Default</button>
     </div>
   );
 }
