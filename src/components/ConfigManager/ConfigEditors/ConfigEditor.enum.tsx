@@ -1,36 +1,45 @@
 import React, { ReactElement, useState } from 'react';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameter } from '@services/ConfigService/ConfigService.types';
+import { EditorConfigMap } from '@components/ConfigManager/ConfigManager.types';
 
 interface ConfigEditorEnumProps {
+  paramName: SavedParameter['name'];
   paramValue: string;
-  enumValues: string[];
 }
 
-function ConfigEditorEnum({ paramValue, enumValues }: ConfigEditorEnumProps): ReactElement | null {
-  const [inputValue, setInputValue] = useState<string>(paramValue);
+function ConfigEditorEnum({ paramName, paramValue }: ConfigEditorEnumProps): ReactElement | null {
+  const initialValue = paramValue;
+  const [inputValue, setInputValue] = useState(paramValue);
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+  const editorConfig = EditorConfigMap[paramName];
+  const options = editorConfig?.extraParams?.options || [];
+
+  const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     setInputValue(newValue);
+    await ConfigService.getInstance().updateValue(paramName, newValue);
   };
 
-  const handleBlur = (): void => {
-    console.log(inputValue);
+  const resetToDefault = async () => {
+    setInputValue(initialValue);
+    await ConfigService.getInstance().updateValue(paramName, initialValue);
   };
 
   return (
     <div>
       <select
         value={inputValue}
-        onChange={handleChange}
-        onBlur={handleBlur}>
-        {enumValues.map(enumValue => (
+        onChange={handleChange}>
+        {options.map((option: string) => (
           <option
-            key={enumValue}
-            value={enumValue}>
-            {enumValue}
+            key={option}
+            value={option}>
+            {option}
           </option>
         ))}
       </select>
+      <button onClick={resetToDefault}>Reset to Default</button>
     </div>
   );
 }

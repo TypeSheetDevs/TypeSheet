@@ -6,6 +6,7 @@ import ConfigEditorNumber from '@components/ConfigManager/ConfigEditors/ConfigEd
 import ConfigEditorString from '@components/ConfigManager/ConfigEditors/ConfigEditor.string';
 import { EditorConfigMap, EditorType } from '@components/ConfigManager/ConfigManager.types';
 import ConfigEditorColor from '@components/ConfigManager/ConfigEditors/ConfigEditor.color';
+import ConfigEditorEnum from '@components/ConfigManager/ConfigEditors/ConfigEditor.enum';
 
 function ConfigManager(): ReactElement | null {
   const configService: ConfigService = ConfigService.getInstance();
@@ -36,6 +37,14 @@ function ConfigManager(): ReactElement | null {
       case EditorType.Color:
         return (
           <ConfigEditorColor
+            paramName={paramName}
+            paramValue={paramValue as string}
+          />
+        );
+
+      case EditorType.Enum:
+        return (
+          <ConfigEditorEnum
             paramName={paramName}
             paramValue={paramValue as string}
           />

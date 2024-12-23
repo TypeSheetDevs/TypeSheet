@@ -7,7 +7,7 @@ export enum EditorType {
     Text,
     Number,
     Color,
-    Select,
+    Enum,
 }
 
 export type Validator<T> = (value: T) => boolean;
@@ -24,7 +24,7 @@ export type EditorConfigMapType = {
 
 export const EditorConfigMap: EditorConfigMapType = {
     [SavedParameterName.StartingView]: {
-        editorType: EditorType.Select,
+        editorType: EditorType.Enum,
         extraParams: {
             options: [ViewType.Paged, ViewType.Scrollable],
         },
