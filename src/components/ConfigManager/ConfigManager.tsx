@@ -2,8 +2,8 @@ import styles from './ConfigManager.styles.module.css';
 import { SavedParameter, SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ReactElement } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import ConfigEditorNumber from '@components/ConfigManager/ConfigEditor.number';
-import ConfigEditorString from '@components/ConfigManager/ConfigEditor.string';
+import ConfigEditorNumber from '@components/ConfigManager/ConfigEditors/ConfigEditor.number';
+import ConfigEditorString from '@components/ConfigManager/ConfigEditors/ConfigEditor.string';
 import { EditorConfigMap, EditorType } from '@components/ConfigManager/ConfigManager.types';
 
 function ConfigManager(): ReactElement | null {
