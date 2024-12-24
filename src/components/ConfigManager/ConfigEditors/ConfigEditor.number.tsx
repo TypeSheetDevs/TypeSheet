@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameter } from '@services/ConfigService/ConfigService.types';
 import { EditorConfigMap } from '@components/ConfigManager/ConfigManager.types';
+import getButtonIcon from '@assets/icons/getIcon';
 import styles from './ConfigEditor.number.styles.module.css';
 
 interface ConfigEditorNumberProps {
@@ -50,7 +51,10 @@ function ConfigEditorNumber({
           className={styles.resetButton}
           onClick={resetToDefault}
           title="Reset to Default">
-          Reset To Default
+          <img
+            src={getButtonIcon('undo.svg')}
+            alt={'Undo'}
+          />
         </button>
       </div>
     </div>

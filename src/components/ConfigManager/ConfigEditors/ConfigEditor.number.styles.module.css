@@ -6,8 +6,6 @@
 }
 
 .label {
-    font-size: 14px;
-    font-weight: bold;
     color: #333;
     flex-shrink: 0;
     width: 150px;
