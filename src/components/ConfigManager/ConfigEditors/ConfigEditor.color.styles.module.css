@@ -3,18 +3,6 @@
     gap: 8px;
 }
 
-input[type=color]::-webkit-color-swatch {
-    border: none;
-    border-radius: 50%;
-    padding: 0;
-}
-
-input[type=color]::-webkit-color-swatch-wrapper {
-    border: none;
-    border-radius: 50%;
-    padding: 0;
-}
-
 .color-input {
     width: 1.8rem;
     height: 1.8rem;
@@ -24,4 +12,14 @@ input[type=color]::-webkit-color-swatch-wrapper {
 
 .color-input:focus {
     outline: none;
+}
+
+.color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
 }

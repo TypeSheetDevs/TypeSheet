@@ -2,6 +2,9 @@ import React, { ReactElement, useState } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameter } from '@services/ConfigService/ConfigService.types';
 import { EditorConfigMap } from '@components/ConfigManager/ConfigManager.types';
+import styles from '@components/ConfigManager/ConfigEditors/ConfigEditor.enum.styles.module.css';
+import editorStyles from '@components/ConfigManager/ConfigEditors/ConfigEditor.styles.module.css';
+import getButtonIcon from '@assets/icons/getIcon';
 
 interface ConfigEditorEnumProps {
   paramName: SavedParameter['name'];
@@ -27,8 +30,17 @@ function ConfigEditorEnum({ paramName, paramValue }: ConfigEditorEnumProps): Rea
   };
 
   return (
-    <div>
+    <div className={styles.enumEditorDiv}>
+      <button
+        className={editorStyles.resetButton}
+        onClick={resetToDefault}>
+        <img
+          src={getButtonIcon('undo.svg')}
+          alt={'Undo'}
+        />
+      </button>
       <select
+        className={styles.enumInput}
         value={inputValue}
         onChange={handleChange}>
         {options.map((option: string) => (
@@ -39,7 +51,6 @@ function ConfigEditorEnum({ paramName, paramValue }: ConfigEditorEnumProps): Rea
           </option>
         ))}
       </select>
-      <button onClick={resetToDefault}>Reset to Default</button>
     </div>
   );
 }

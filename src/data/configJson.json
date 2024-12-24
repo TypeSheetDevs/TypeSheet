@@ -2,7 +2,7 @@
   "configs": [
     {
       "name": "StartingView",
-      "value": "Paged"
+      "value": "Scrollable"
     },
     {
       "name": "BarsPerStave",

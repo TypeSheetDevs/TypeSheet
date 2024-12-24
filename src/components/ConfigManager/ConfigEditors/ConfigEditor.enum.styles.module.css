@@ -1,0 +1,16 @@
+.enum-editor-div {
+    display: flex;
+    gap: 8px;
+}
+
+.enum-input {
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+}
+
+.enum-input:focus {
+    outline: none;
+    border: 1px solid black;
+}
