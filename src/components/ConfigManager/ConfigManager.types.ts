@@ -53,8 +53,8 @@ export const EditorConfigMap: EditorConfigMapType = {
     [SavedParameterName.StavesPerPage]: {
         editorType: EditorType.Number,
         extraParams: {
-            min: 3,
-            max: 8,
+            min: 10,
+            max: 40,
         },
     },
     [SavedParameterName.TopBarColor]: {

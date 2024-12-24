@@ -59,8 +59,9 @@ function ConfigManager(): ReactElement | null {
     <div className={styles.mainDiv}>
       {Object.values(SavedParameterName).map(paramName => (
         <div
-          key={paramName}
-          className={styles.configItem}>
+          className={styles.configItem}
+          key={paramName}>
+          <label>{paramName}</label>
           {renderConfigEditor(paramName, configService.getValue(paramName))}
         </div>
       ))}

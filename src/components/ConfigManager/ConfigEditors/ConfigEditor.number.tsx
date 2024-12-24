@@ -35,28 +35,24 @@ function ConfigEditorNumber({
   };
 
   return (
-    <div className={styles.container}>
-      <label className={styles.label}>{paramName}</label>
-      <div className={styles.inputContainer}>
-        <input
-          className={styles.input}
-          type="number"
-          value={inputValue}
-          onChange={handleChange}
-          min={min}
-          max={max}
-          step="1"
+    <div className={styles.editorDiv}>
+      <button
+        className={styles.resetButton}
+        onClick={resetToDefault}>
+        <img
+          src={getButtonIcon('undo.svg')}
+          alt={'Undo'}
         />
-        <button
-          className={styles.resetButton}
-          onClick={resetToDefault}
-          title="Reset to Default">
-          <img
-            src={getButtonIcon('undo.svg')}
-            alt={'Undo'}
-          />
-        </button>
-      </div>
+      </button>
+      <input
+        className={styles.input}
+        type="number"
+        value={inputValue}
+        onChange={handleChange}
+        min={min}
+        max={max}
+        step="1"
+      />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import ConfigManager from '@components/ConfigManager/ConfigManager';
 
 function MainLayout(): JSX.Element {
-  const [showConfigManager, setShowConfigManager] = useState<boolean>(false);
+  const [showConfigManager, setShowConfigManager] = useState<boolean>(true);
 
   useEffect(() => {
     const toggleConfigManagerHandler = () => {
