@@ -4,6 +4,7 @@ import { SavedParameter } from '@services/ConfigService/ConfigService.types';
 import { EditorConfigMap } from '@components/ConfigManager/ConfigManager.types';
 import getButtonIcon from '@assets/icons/getIcon';
 import styles from './ConfigEditor.number.styles.module.css';
+import editorStyles from './ConfigEditor.styles.module.css';
 
 interface ConfigEditorNumberProps {
   paramName: SavedParameter['name'];
@@ -35,9 +36,9 @@ function ConfigEditorNumber({
   };
 
   return (
-    <div className={styles.editorDiv}>
+    <div className={styles.numberEditorDiv}>
       <button
-        className={styles.resetButton}
+        className={editorStyles.resetButton}
         onClick={resetToDefault}>
         <img
           src={getButtonIcon('undo.svg')}
@@ -45,7 +46,7 @@ function ConfigEditorNumber({
         />
       </button>
       <input
-        className={styles.input}
+        className={styles.numberInput}
         type="number"
         value={inputValue}
         onChange={handleChange}
