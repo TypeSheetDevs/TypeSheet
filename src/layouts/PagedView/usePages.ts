@@ -3,12 +3,13 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { useState, useEffect } from 'react';
 import { Notation } from '@services/notationRenderer/Notation';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 function usePages(currentPageDefault: number) {
     const [currentPage, setCurrentPage] = useState(currentPageDefault);
     const [maxPages, setMaxPages] = useState(1);
 
-    const stavesPerPage = ConfigService.getInstance().getValue('StavesPerPage');
+    const stavesPerPage = ConfigService.getInstance().getValue(SavedParameterName.StavesPerPage);
 
     const changeViewport = (page: number, clearSelected: boolean = true) => {
         const startingStaveIndex = page * stavesPerPage - stavesPerPage;

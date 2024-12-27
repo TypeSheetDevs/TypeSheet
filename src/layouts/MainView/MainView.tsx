@@ -5,10 +5,11 @@ import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { Notation } from '@services/notationRenderer/Notation';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(
-    ConfigService.getInstance().getValue('StartingView'),
+    ConfigService.getInstance().getValue(SavedParameterName.StartingView),
   );
 
   return (
