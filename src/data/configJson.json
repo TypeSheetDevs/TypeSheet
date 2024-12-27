@@ -2,11 +2,11 @@
   "configs": [
     {
       "name": "StartingView",
-      "value": 0
+      "value": "Scrollable"
     },
     {
       "name": "BarsPerStave",
-      "value": 7
+      "value": 10
     },
     {
       "name": "StaveMinimumHeightDistance",
@@ -18,7 +18,7 @@
     },
     {
       "name": "StavesPerPage",
-      "value": 4
+      "value": 40
     },
     {
       "name": "TopBarColor",

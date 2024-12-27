@@ -1,0 +1,29 @@
+.main-div {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 6px;
+    align-items: center;
+}
+
+.config-item {
+    width: 50%;
+    min-width: 500px;
+    height: 40px;
+
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid lightgray;
+    background-color: #ffffff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.config-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

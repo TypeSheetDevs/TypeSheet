@@ -2,11 +2,12 @@ import { IRenderable } from './IRenderable';
 import RenderableBar from './RenderableBar';
 import { RenderContext } from 'vexflow';
 import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 class RenderableStave implements IRenderable {
     bars: RenderableBar[] = [];
     currentPositionY = 0;
-    barsPerStave = ConfigService.getInstance().getValue('BarsPerStave');
+    barsPerStave = ConfigService.getInstance().getValue(SavedParameterName.BarsPerStave);
 
     constructor(numberOfBars?: number) {
         numberOfBars ??= this.barsPerStave;
