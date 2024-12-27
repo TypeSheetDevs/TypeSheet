@@ -8,7 +8,7 @@ test('app is not packaged', async ({ electronApp }) => {
 });
 
 test('app launches and has correct title', async ({ mainPage }) => {
-    await expect(mainPage).toHaveTitle('Typesheet');
+    await expect(mainPage).toHaveTitle('TypeSheet');
 });
 
 test('load main window and check for elements', async ({ mainPage }) => {
