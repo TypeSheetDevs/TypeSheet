@@ -12,8 +12,8 @@ export class Notation {
 
     constructor() {
         if (Notation._instance === null) {
+            console.log(HarmonicsService.GetChordInfo(['C3', 'E-3', 'G3']));
             Notation._instance = this;
-            console.log(HarmonicsService.IdentifyChord(['C3', 'E-3', 'G3']));
             return this;
         } else return Notation._instance;
     }
