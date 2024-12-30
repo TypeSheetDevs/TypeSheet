@@ -1,13 +1,23 @@
 import { chord } from 'music21j';
 import { ChordType, ChordTypeMusic21 } from '@services/HarmonicsService/Harmonics.enum';
+import { ChordInfo } from '@services/HarmonicsService/Harmonics.types';
 
 export class HarmonicsService {
-    public static IdentifyChord(keys: string[]) {
-        const c = new chord.Chord();
-        c.add(keys);
-        c.removeDuplicatePitches();
-        console.log(c.commonName);
-        console.log(this.MapChordCommonName(c.commonName));
+    public static GetChordInfo(keys: string[]): ChordInfo {
+        const c = new chord.Chord(keys);
+
+        const rootInfo = c.root().stringInfo();
+        const [rootPitch, octaveStr] = rootInfo.match(/^([A-G#b]+)(\d+)$/)!.slice(1);
+        const octave = parseInt(octaveStr, 10);
+
+        const chordType = this.MapChordCommonName(c.commonName);
+
+        return {
+            rootPitch,
+            octave,
+            chordType,
+            canBeTonic: c.canBeTonic(),
+        };
     }
 
     private static MapChordCommonName(chordName: string): ChordType {

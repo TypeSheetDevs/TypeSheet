@@ -13,7 +13,7 @@ export class Notation {
     constructor() {
         if (Notation._instance === null) {
             Notation._instance = this;
-            HarmonicsService.IdentifyChord(['C3', 'E-3', 'G-3']);
+            console.log(HarmonicsService.IdentifyChord(['C3', 'E-3', 'G3']));
             return this;
         } else return Notation._instance;
     }
