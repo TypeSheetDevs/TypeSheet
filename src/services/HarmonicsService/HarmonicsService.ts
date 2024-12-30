@@ -20,6 +20,13 @@ export class HarmonicsService {
         };
     }
 
+    public static GetChordIntervals(keys: string[]): number[] {
+        const c = new chord.Chord(keys);
+        return c.orderedPitchClasses
+            .map((pitchClass, i, arr) => (arr[(i + 1) % arr.length] - pitchClass + 12) % 12)
+            .slice(-1);
+    }
+
     private static MapChordCommonName(chordName: string): ChordType {
         const entry = Object.entries(ChordTypeMusic21).find(([_, value]) => value === chordName);
 
