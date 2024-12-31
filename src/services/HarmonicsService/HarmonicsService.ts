@@ -1,5 +1,5 @@
 import { chord } from 'music21j';
-import { ChordType, ChordTypeMusic21 } from '@services/HarmonicsService/Harmonics.enum';
+import { ChordType, ChordTypeMusic21 } from '@services/HarmonicsService/Harmonics.chords.enums';
 import { ChordInfo } from '@services/HarmonicsService/Harmonics.types';
 
 export class HarmonicsService {
@@ -7,8 +7,8 @@ export class HarmonicsService {
         const c = new chord.Chord(keys);
 
         const rootInfo = c.root().stringInfo();
-        const [rootPitch, octaveStr] = rootInfo.match(/^([A-G#b]+)(\d+)$/)!.slice(1);
-        const octave = parseInt(octaveStr, 10);
+        const [rootPitch, octaveString] = rootInfo.match(/^([A-G#b]+)(\d+)$/)!.slice(1);
+        const octave = parseInt(octaveString, 10);
 
         const chordType = this.MapChordCommonName(c.commonName);
 

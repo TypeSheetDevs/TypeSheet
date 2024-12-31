@@ -1,4 +1,4 @@
-import { ChordType } from '@services/HarmonicsService/Harmonics.enum';
+import { ChordType } from '@services/HarmonicsService/Harmonics.chords.enums';
 
 export type ChordInfo = {
     rootPitch: string;
