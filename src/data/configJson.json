@@ -22,7 +22,11 @@
     },
     {
       "name": "TopBarColor",
-      "value": "#0E0B52"
+      "value": "#510b3b"
+    },
+    {
+      "name": "RendererEngine",
+      "value": "Canvas"
     }
   ]
 }
