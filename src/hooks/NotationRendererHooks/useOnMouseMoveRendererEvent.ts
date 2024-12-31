@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import useEventListenerOnRenderer from '@hooks/NotationRendererHooks/useEventListenerOnRenderer';
+import throttle from '@utils/throttle';
 
 function useOnMouseMoveRendererEvent(
     container: React.MutableRefObject<HTMLCanvasElement | HTMLDivElement>,
@@ -19,7 +20,7 @@ function useOnMouseMoveRendererEvent(
         [container],
     );
 
-    useEventListenerOnRenderer(container, 'mousemove', onMouseMove);
+    useEventListenerOnRenderer(container, 'mousemove', throttle(onMouseMove, 10));
 }
 
 export default useOnMouseMoveRendererEvent;
