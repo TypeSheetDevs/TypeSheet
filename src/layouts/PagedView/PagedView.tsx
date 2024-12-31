@@ -1,13 +1,13 @@
-import NoteViewSVGRenderer from '@components/NoteViewSVGRenderer/NoteViewSVGRenderer';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import usePages from './usePages';
 import styles from './PagedView.styles.module.css';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { getRendererEngine } from '@utils/getRendererEngine';
 
 function PagedView() {
   const stavesPerPage = ConfigService.getInstance().getValue(SavedParameterName.StavesPerPage);
-
+  const rendererEngine = ConfigService.getInstance().getValue(SavedParameterName.RendererEngine);
   const [currentPage, maxPages, prevPage, nextPage, setPage] = usePages(1);
 
   const containerHeight = NotationRenderer.getInstance().StaveHeight * stavesPerPage;
@@ -27,7 +27,7 @@ function PagedView() {
       <div
         className={styles.container}
         style={{ height: `${containerHeight}px` }}>
-        <NoteViewSVGRenderer />
+        {getRendererEngine(rendererEngine)}
       </div>
     </div>
   );

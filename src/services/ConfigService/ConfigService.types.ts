@@ -1,4 +1,5 @@
 import { ViewType } from '@layouts/MainView/MainView.types';
+import { NotationRenderEngine } from '@utils/getRendererEngine';
 
 export type AppConfig = {
     configs: SavedParameter[];
@@ -11,6 +12,7 @@ export enum SavedParameterName {
     MainViewMargin = 'MainViewMargin',
     StavesPerPage = 'StavesPerPage',
     TopBarColor = 'TopBarColor',
+    RendererEngine = 'RendererEngine',
 }
 
 export type SavedParameter =
@@ -19,7 +21,8 @@ export type SavedParameter =
     | { name: SavedParameterName.StaveMinimumHeightDistance; value: number }
     | { name: SavedParameterName.MainViewMargin; value: number }
     | { name: SavedParameterName.StavesPerPage; value: number }
-    | { name: SavedParameterName.TopBarColor; value: string };
+    | { name: SavedParameterName.TopBarColor; value: string }
+    | { name: SavedParameterName.RendererEngine; value: NotationRenderEngine };
 
 export type ValueOf<T extends SavedParameter['name']> = Extract<
     SavedParameter,
