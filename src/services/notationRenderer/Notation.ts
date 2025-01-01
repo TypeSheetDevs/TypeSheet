@@ -1,7 +1,7 @@
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { HarmonicsService } from '@services/HarmonicsService/HarmonicsService';
-import { Mode } from '@services/HarmonicsService/Harmonics.scales.enums';
+import { ChordType } from '@services/HarmonicsService/Harmonics.chords.enums';
 
 export class Notation {
     private static _instance: Notation = null!;
@@ -13,7 +13,7 @@ export class Notation {
 
     constructor() {
         if (Notation._instance === null) {
-            HarmonicsService.GenerateScale('E#', Mode.Locrian).forEach(note => console.log(note));
+            console.log(HarmonicsService.GenerateChord('Bb', ChordType.DiminishedSeventhChord));
             Notation._instance = this;
             return this;
         } else return Notation._instance;

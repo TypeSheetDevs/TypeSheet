@@ -37,5 +37,3 @@ export const ScalePatterns: Record<Mode, number[]> = {
     [Mode.HarmonicMinor]: [2, 1, 2, 2, 1, 3, 1],
     [Mode.MelodicMinor]: [2, 1, 2, 2, 2, 2, 1],
 };
-
-export const Notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
