@@ -16,6 +16,10 @@ export class RenderableVoice implements IRenderable {
         this.numBeats = this.calculateNumBeats();
     }
 
+    get IsDirty() {
+        return !this.cachedVoice || this.isVoiceDirty || this.notes.some(k => k.IsDirty);
+    }
+
     set BeatValue(beatValue: number) {
         this.beatValue = beatValue;
         this.isVoiceDirty = true;
@@ -27,7 +31,7 @@ export class RenderableVoice implements IRenderable {
     }
 
     GetAsVexFlowVoice(): Voice {
-        if (this.cachedVoice && !this.isVoiceDirty) {
+        if (this.cachedVoice && !this.IsDirty) {
             return this.cachedVoice;
         }
 
@@ -59,7 +63,6 @@ export class RenderableVoice implements IRenderable {
 
     GetNoteIndexByPositionX(positionX: number): number {
         const positionsX = this.notes.map(n => n.AbsoluteX);
-        console.log(positionX, positionsX);
         for (let i = 1; i < positionsX.length; i++) {
             const diff = positionsX[i] - positionsX[i - 1];
             if (positionX <= positionsX[i - 1] + diff / 2) return i - 1;

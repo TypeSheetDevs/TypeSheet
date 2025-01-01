@@ -75,6 +75,10 @@ class RenderableBar implements IRenderable {
         this.voices[0].RemoveNote(idx);
     }
 
+    colorChosenNote(noteIndex: number, color: string) {
+        this.voices[0].GetNote(noteIndex).Color = color;
+    }
+
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
         const bar = new Stave(positionX, positionY, length);
         bar.setContext(context).draw();

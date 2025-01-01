@@ -22,8 +22,12 @@ export class NotationRenderer {
 
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
-    private selectedBar: RenderableBar | null = null;
+
     private state: NotationRendererState = NotationRendererState.Idle;
+
+    private selectedBar: RenderableBar | null = null;
+    private hoveredNoteIndex: number = -1;
+    private hoveredBar: RenderableBar | null = null;
 
     constructor() {
         if (NotationRenderer._instance === null) {
@@ -32,6 +36,7 @@ export class NotationRenderer {
             EventNotifier.AddListener('resized', this.OnResize.bind(this));
             EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
             EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
+            EventNotifier.AddListener('movedInsideRenderer', this.OnMouseMove.bind(this));
             return this;
         } else return NotationRenderer._instance;
     }
@@ -86,6 +91,28 @@ export class NotationRenderer {
         this.OnRender();
     }
 
+    private OnMouseMove(params: EventParams<'movedInsideRenderer'>): void {
+        const bar = this.FindBarByPosition(params.positionX, params.positionY);
+        if (!bar) {
+            this.hoveredBar?.colorChosenNote(this.hoveredNoteIndex, 'black');
+            this.hoveredBar = null;
+            this.hoveredNoteIndex = -1;
+            this.OnRender();
+            return;
+        }
+
+        const noteIndex = bar.getClickedNote(0, params.positionX);
+
+        if (this.hoveredBar === bar && this.hoveredNoteIndex == noteIndex) return;
+        console.log(bar);
+
+        this.hoveredBar?.colorChosenNote(this.hoveredNoteIndex, 'black');
+        bar.colorChosenNote(noteIndex, 'red');
+        this.hoveredBar = bar;
+        this.hoveredNoteIndex = noteIndex;
+        this.OnRender();
+    }
+
     private OnResize(params: EventParams<'resized'>): void {
         this.width = params.width;
         this.height = params.height;
@@ -118,6 +145,7 @@ export class NotationRenderer {
         if (!this.context) return;
 
         this.context.clear();
+        this.selectedBar?.colorChosenNote(0, 'red');
         this.DrawVisibleBars();
 
         if (!this.selectedBar) return;
@@ -125,6 +153,8 @@ export class NotationRenderer {
         const selectedRect = this.selectedBar.Rect;
         this.context
             .rect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height)
-            .fill({ fillColor: 'pink' });
+            .setStrokeStyle('blue')
+            .stroke()
+            .setStrokeStyle('black');
     }
 }
