@@ -13,7 +13,7 @@ export class Notation {
 
     constructor() {
         if (Notation._instance === null) {
-            console.log(HarmonicsService.GenerateScale('C', Mode.Ionian));
+            HarmonicsService.GenerateScale('E#', Mode.Locrian).forEach(note => console.log(note));
             Notation._instance = this;
             return this;
         } else return Notation._instance;

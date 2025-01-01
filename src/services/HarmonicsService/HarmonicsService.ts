@@ -52,11 +52,10 @@ export class HarmonicsService {
 
             offset += step - 2;
             if (lastNote === 'E' || lastNote === 'B') offset += 1;
-            console.log(lastNote, offset);
 
-            if (offset <= -2 || offset >= 2) throw new Error('Scale cannot be generated');
+            if (offset <= -3 || offset >= 3) throw new Error('Scale cannot be generated');
 
-            scale.push(Notes[currentIndex] + (offset === -1 ? 'b' : offset === 1 ? '#' : ''));
+            scale.push(Notes[currentIndex] + (offset < 0 ? 'b' : '#').repeat(Math.abs(offset)));
         }
 
         return scale;
