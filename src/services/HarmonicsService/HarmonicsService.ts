@@ -37,7 +37,7 @@ export class HarmonicsService {
 
     // Scales
     public static GenerateScale(tonic: string, mode: Mode): string[] {
-        const notes: string[] = [tonic];
+        const scale: string[] = [tonic];
         let currentIndex = Notes.indexOf(tonic[0]);
         if (currentIndex === -1) {
             throw new Error(`Invalid tonic: ${tonic}`);
@@ -47,17 +47,18 @@ export class HarmonicsService {
         let offset = tonic.length === 2 ? (tonic.includes('#') ? 1 : -1) : 0;
 
         for (const step of ScalePatterns[mode]) {
-            const lastNote = notes[currentIndex];
+            const lastNote = Notes[currentIndex];
             currentIndex = (currentIndex + 1) % Notes.length;
 
             offset += step - 2;
             if (lastNote === 'E' || lastNote === 'B') offset += 1;
+            console.log(lastNote, offset);
 
             if (offset <= -2 || offset >= 2) throw new Error('Scale cannot be generated');
 
-            notes.push(notes[currentIndex] + (offset === -1 ? 'b' : offset === 1 ? '#' : ''));
+            scale.push(Notes[currentIndex] + (offset === -1 ? 'b' : offset === 1 ? '#' : ''));
         }
 
-        return [];
+        return scale;
     }
 }
