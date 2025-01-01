@@ -14,10 +14,6 @@
     padding: 0 5px;
 }
 
-.draggable-component:hover {
-    background-color: #010d4e;
-}
-
 .separator {
     margin: 2px 4px;
     background-color: #ccc;
