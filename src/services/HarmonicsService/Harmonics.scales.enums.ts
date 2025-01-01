@@ -12,19 +12,19 @@ export enum Mode {
     MelodicMinor = 'Melodic Minor',
 }
 
-export type ModeType = 'minor' | 'major';
-
-export const ModeTypes: Record<Mode, ModeType> = {
-    [Mode.Ionian]: 'major',
-    [Mode.Lydian]: 'major',
-    [Mode.Mixolydian]: 'major',
-    [Mode.Aeolian]: 'minor',
-    [Mode.Dorian]: 'minor',
-    [Mode.Phrygian]: 'minor',
-    [Mode.Locrian]: 'minor',
-    [Mode.HarmonicMinor]: 'minor',
-    [Mode.MelodicMinor]: 'minor',
-};
+// export type ModeType = 'minor' | 'major';
+//
+// export const ModeTypes: Record<Mode, ModeType> = {
+//     [Mode.Ionian]: 'major',
+//     [Mode.Lydian]: 'major',
+//     [Mode.Mixolydian]: 'major',
+//     [Mode.Aeolian]: 'minor',
+//     [Mode.Dorian]: 'minor',
+//     [Mode.Phrygian]: 'minor',
+//     [Mode.Locrian]: 'minor',
+//     [Mode.HarmonicMinor]: 'minor',
+//     [Mode.MelodicMinor]: 'minor',
+// };
 
 export const ScalePatterns: Record<Mode, number[]> = {
     [Mode.Ionian]: [2, 2, 1, 2, 2, 2, 1],
@@ -38,5 +38,4 @@ export const ScalePatterns: Record<Mode, number[]> = {
     [Mode.MelodicMinor]: [2, 1, 2, 2, 2, 2, 1],
 };
 
-export const NotesSharps = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'B#'];
-export const NotesFlats = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'Cb'];
+export const Notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
