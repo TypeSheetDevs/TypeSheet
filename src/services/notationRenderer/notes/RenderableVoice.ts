@@ -32,7 +32,7 @@ export class RenderableVoice implements IRenderable {
 
     GetAsVexFlowVoice(): Voice {
         if (!this.isVoiceDirty) {
-            return this.cachedVoice;
+            return this.cachedVoice!;
         }
 
         const voice = new Voice({
