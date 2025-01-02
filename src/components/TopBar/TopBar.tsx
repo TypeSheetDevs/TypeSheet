@@ -3,8 +3,9 @@ import { DragEvent, useState } from 'react';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 import getButtonIcon from '@assets/icons/getIcon';
-import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import OpenCloseButton from '@components/TopBar/OpenCloseButton';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 function TopBar() {
   const [buttonsGroups, setButtonsGroups] = useState<ButtonsGroupType[]>([
@@ -46,14 +47,6 @@ function TopBar() {
         {
           iconPath: getButtonIcon('skip_previous.svg'),
           onClick: () => {},
-        },
-      ],
-    },
-    {
-      buttons: [
-        {
-          iconPath: getButtonIcon('settings.svg'),
-          onClick: () => EventNotifier.Notify('toggleConfigManager'),
         },
       ],
     },
@@ -104,6 +97,10 @@ function TopBar() {
           {index < buttonsGroups.length - 1 && <div className={styles.separator} />}
         </div>
       ))}
+      <OpenCloseButton
+        style={{ marginLeft: 'auto' }}
+        onToggle={() => EventNotifier.Notify('toggleConfigManager')}
+      />
     </div>
   );
 }
