@@ -26,8 +26,12 @@ export class RenderableVoice implements IRenderable {
         this.isVoiceDirty = true;
     }
 
+    get IsDirty() {
+        return !this.cachedVoice || this.isVoiceDirty || this.notes.some(k => k.IsDirty);
+    }
+
     GetAsVexFlowVoice(): Voice {
-        if (this.cachedVoice && !this.isVoiceDirty) {
+        if (!this.isVoiceDirty) {
             return this.cachedVoice;
         }
 
