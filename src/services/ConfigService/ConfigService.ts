@@ -49,11 +49,13 @@ export class ConfigService {
     public getValue<T extends SavedParameter['name']>(name: T): ValueOf<T> {
         const config = this._appConfig?.configs?.find(param => param.name === name);
 
-        if (!config || config.value == null) {
+        const defaultValue = DefaultConfig[name] as ValueOf<T>;
+
+        if (!config || config.value === null || typeof config.value !== typeof defaultValue) {
             console.warn(
                 `Configuration "${name}" not found or its value is faulty. Returning default value.`,
             );
-            return DefaultConfig[name] as ValueOf<T>;
+            return defaultValue;
         }
 
         return config.value as ValueOf<T>;
