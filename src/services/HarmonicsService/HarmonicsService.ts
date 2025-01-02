@@ -90,7 +90,7 @@ export class HarmonicsService {
         }
 
         // converting chromatic chord to refined chord
-        const refinedChord = [];
+        const refinedChord: string[] = [];
         for (let index = 0; index < chromaticChord.length; ++index) {
             const chromaticNote = chromaticChord[index];
             const expectedNote = expectedNotes[index];
@@ -110,9 +110,11 @@ export class HarmonicsService {
                 distance = Math.sign(expectedNoteCIndex - chromaticNoteCIndex) * outwardDistance;
             }
 
-            console.log(
-                `Chromatic note: ${chromaticNote}, Expected note: ${expectedNote}, Distance: ${distance}`,
-            );
+            // console.log(
+            //     `Chromatic note: ${chromaticNote}, Expected note: ${expectedNote}, Distance: ${distance}`,
+            // );
+
+            refinedChord.push(expectedNote + (distance < 0 ? 'b' : '#').repeat(Math.abs(distance)));
         }
 
         return refinedChord;

@@ -13,7 +13,7 @@ export class Notation {
 
     constructor() {
         if (Notation._instance === null) {
-            console.log(HarmonicsService.GenerateChord('Bb', ChordType.DiminishedSeventhChord));
+            console.log(HarmonicsService.GenerateChord('Bb', ChordType.MajorSeventhChord));
             Notation._instance = this;
             return this;
         } else return Notation._instance;
