@@ -1,12 +1,14 @@
-import { Beam, Formatter, RenderContext, Stave, Voice } from 'vexflow';
+import { Beam, Formatter, Note, RenderContext, Stave, StaveTie, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 
 export class RenderableVoice implements IRenderable {
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
+    private cachedNotes: Note[] = [];
 
     private readonly notes: RenderableNote[];
+    private readonly ties: [number, number][] = [];
     private numBeats: number;
     private beatValue: number;
 
@@ -36,7 +38,9 @@ export class RenderableVoice implements IRenderable {
             beat_value: this.beatValue,
         });
 
-        voice.addTickables(this.notes.map(note => note.GetAsVexFlowNote()));
+        this.cachedNotes = this.notes.map(note => note.GetAsVexFlowNote());
+
+        voice.addTickables(this.cachedNotes);
 
         this.cachedVoice = voice;
         this.isVoiceDirty = false;
@@ -53,6 +57,16 @@ export class RenderableVoice implements IRenderable {
         const beams = Beam.applyAndGetBeams(voice);
         voice.draw(context, bar);
         beams.forEach(beam => beam.setContext(context).draw());
+
+        this.ties.forEach(tie => {
+            const staveTie = new StaveTie({
+                first_note: this.cachedNotes[tie[0]],
+                last_note: this.cachedNotes[tie[1]],
+                first_indices: [0],
+                last_indices: [0],
+            });
+            staveTie.setContext(context).draw();
+        });
 
         const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
         this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
@@ -101,6 +115,37 @@ export class RenderableVoice implements IRenderable {
 
         this.numBeats = this.CalculateNumBeats();
         this.isVoiceDirty = true;
+    }
+
+    AddTie(startNoteIndex: number, endNoteIndex: number): void {
+        if (
+            startNoteIndex < 0 ||
+            startNoteIndex >= this.notes.length ||
+            endNoteIndex < 0 ||
+            endNoteIndex >= this.notes.length
+        ) {
+            throw new Error('Index out of bounds for tie.');
+        }
+
+        this.ties.push([startNoteIndex, endNoteIndex]);
+    }
+
+    RemoveTie(startNoteIndex: number, endNoteIndex: number): void {
+        if (
+            startNoteIndex < 0 ||
+            startNoteIndex >= this.notes.length ||
+            endNoteIndex < 0 ||
+            endNoteIndex >= this.notes.length
+        ) {
+            throw new Error('Index out of bounds for tie.');
+        }
+
+        for (let i = 0; i < this.ties.length; i++) {
+            if (this.ties[i][0] === startNoteIndex && this.ties[i][1] === endNoteIndex) {
+                this.ties.splice(i, 1);
+                break;
+            }
+        }
     }
 
     private CalculateNumBeats(): number {
