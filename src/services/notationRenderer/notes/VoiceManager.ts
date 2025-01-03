@@ -3,14 +3,26 @@ import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { Formatter, Voice } from 'vexflow';
 
 export class VoiceManager {
+    private static _instance: VoiceManager = null!;
     // maps voices to bars where they start
     barsVoiceMap = new Map<RenderableBar, RenderableVoice[]>();
+
+    constructor() {
+        if (VoiceManager._instance === null) {
+            VoiceManager._instance = this;
+            return this;
+        } else return VoiceManager._instance;
+    }
+
+    static getInstance() {
+        return new VoiceManager();
+    }
 
     public Draw(): void {
         console.log('Draw Voices');
     }
 
-    public static GetVoiceMinimumWidth(voice: Voice) {
+    public GetVoiceMinimumWidth(voice: Voice) {
         return new Formatter().format([voice]).getMinTotalWidth();
     }
 
