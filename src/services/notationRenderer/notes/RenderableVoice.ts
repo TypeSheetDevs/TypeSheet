@@ -13,7 +13,7 @@ export class RenderableVoice implements IRenderable {
     constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
         this.notes = notes;
-        this.numBeats = this.calculateNumBeats();
+        this.numBeats = this.CalculateNumBeats();
     }
 
     set BeatValue(beatValue: number) {
@@ -49,6 +49,7 @@ export class RenderableVoice implements IRenderable {
 
         const voice = this.GetAsVexFlowVoice();
         new Formatter().joinVoices([voice]).format([voice], length - 20);
+
         const beams = Beam.applyAndGetBeams(voice);
         voice.draw(context, bar);
         beams.forEach(beam => beam.setContext(context).draw());
@@ -88,7 +89,7 @@ export class RenderableVoice implements IRenderable {
             this.notes.push(note);
         }
 
-        this.numBeats = this.calculateNumBeats();
+        this.numBeats = this.CalculateNumBeats();
         this.isVoiceDirty = true;
     }
 
@@ -98,11 +99,11 @@ export class RenderableVoice implements IRenderable {
         }
         this.notes.splice(index, 1);
 
-        this.numBeats = this.calculateNumBeats();
+        this.numBeats = this.CalculateNumBeats();
         this.isVoiceDirty = true;
     }
 
-    private calculateNumBeats(): number {
+    private CalculateNumBeats(): number {
         return this.notes.reduce((totalBeats, note) => {
             const noteDurationValue = note.DurationValue;
             return totalBeats + noteDurationValue;
