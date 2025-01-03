@@ -22,10 +22,11 @@ class RenderableBar implements IRenderable {
             new RenderableNote(NoteDuration.Quarter, [new Key('e/4')]),
             new RenderableNote(NoteDuration.Quarter, [new Key('g/4')]),
             new RenderableNote(NoteDuration.Eighth, [new Key('c/5')], [], true),
-            new RenderableNote(NoteDuration.Sixteenth, [new Key('a/4')]),
+            new RenderableNote(NoteDuration.SixteenthRest, [new Key('a/4')]),
         ]);
         const voice2 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Whole, [new Key('a/3')]),
+            new RenderableNote(NoteDuration.Half, [new Key('a/3')]),
+            new RenderableNote(NoteDuration.HalfRest, [new Key('a/3')]),
         ]);
 
         this.addVoice(voice1);
