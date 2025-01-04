@@ -24,4 +24,12 @@ export class FileService {
             throw new Error(`Failed to save file: ${result.error || 'Unknown error'}`);
         }
     }
+
+    public async OpenFileDialog(): Promise<string> {
+        const result = await window.api.openFileDialog();
+        if (!result.success || !result.filePaths) {
+            throw new Error(`Open file dialog failed with: ${result.error || 'Unknown error'}`);
+        }
+        return result.filePaths[0];
+    }
 }

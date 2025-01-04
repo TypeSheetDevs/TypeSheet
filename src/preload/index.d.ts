@@ -14,6 +14,11 @@ declare global {
                 filePath: string,
                 content: string,
             ) => Promise<{ success: boolean; error?: string }>;
+            openFileDialog: () => Promise<{
+                success: boolean;
+                filePaths?: string[];
+                error?: string;
+            }>;
         };
     }
 }

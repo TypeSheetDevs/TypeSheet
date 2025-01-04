@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron';
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron';
 import path, { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
@@ -118,3 +118,23 @@ ipcMain.handle(
         }
     },
 );
+
+// IPC handler for opening a file dialog
+ipcMain.handle('open-file-dialog', async () => {
+    try {
+        const result = await dialog.showOpenDialog({
+            title: 'Select a File',
+            buttonLabel: 'Open',
+            properties: ['openFile'], // Allow only single file selection
+            filters: [{ name: 'JSON Files', extensions: ['json'] }],
+        });
+
+        if (result.canceled) {
+            return { success: false, error: 'File selection was canceled' };
+        }
+
+        return { success: true, filePaths: result.filePaths };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+});
