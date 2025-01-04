@@ -7,7 +7,9 @@ export class Notation {
         return Notation._instance || new Notation();
     }
 
-    staves: RenderableStave[] = [];
+    private staves: RenderableStave[] = [];
+    private title: string = '';
+    private author: string = '';
 
     constructor() {
         if (Notation._instance === null) {
@@ -23,5 +25,21 @@ export class Notation {
 
     getStaves(): RenderableStave[] {
         return this.staves;
+    }
+
+    get Title(): string {
+        return this.title;
+    }
+
+    set Title(value: string) {
+        this.title = value;
+    }
+
+    get Author(): string {
+        return this.author;
+    }
+
+    set Author(value: string) {
+        this.author = value;
     }
 }
