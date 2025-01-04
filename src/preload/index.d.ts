@@ -14,9 +14,14 @@ declare global {
                 filePath: string,
                 content: string,
             ) => Promise<{ success: boolean; error?: string }>;
-            openFileDialog: () => Promise<{
+            readFileDialog: () => Promise<{
                 success: boolean;
-                filePaths?: string[];
+                filePath?: string;
+                error?: string;
+            }>;
+            saveFileDialog: () => Promise<{
+                success: boolean;
+                filePath?: string;
                 error?: string;
             }>;
         };

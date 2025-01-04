@@ -20,8 +20,11 @@ const api = {
     ): Promise<{ success: boolean; error?: string }> => {
         return ipcRenderer.invoke('save-file', { filePath, content });
     },
-    openFileDialog: (): Promise<{ success: boolean; filePaths?: string[]; error?: string }> => {
-        return ipcRenderer.invoke('open-file-dialog');
+    readFileDialog: (): Promise<{ success: boolean; filePath?: string; error?: string }> => {
+        return ipcRenderer.invoke('read-file-dialog');
+    },
+    saveFileDialog: (): Promise<{ success: boolean; filePath?: string; error?: string }> => {
+        return ipcRenderer.invoke('save-file-dialog');
     },
 };
 

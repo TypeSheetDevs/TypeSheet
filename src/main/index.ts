@@ -120,7 +120,7 @@ ipcMain.handle(
 );
 
 // IPC handler for opening a file dialog
-ipcMain.handle('open-file-dialog', async () => {
+ipcMain.handle('read-file-dialog', async () => {
     try {
         const result = await dialog.showOpenDialog({
             title: 'Select a File',
@@ -133,7 +133,25 @@ ipcMain.handle('open-file-dialog', async () => {
             return { success: false, error: 'File selection was canceled' };
         }
 
-        return { success: true, filePaths: result.filePaths };
+        return { success: true, filePath: result.filePaths[0] };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+});
+
+ipcMain.handle('save-file-dialog', async () => {
+    try {
+        const result = await dialog.showSaveDialog({
+            title: 'Save File',
+            buttonLabel: 'Save',
+            filters: [{ name: 'JSON File', extensions: ['json'] }],
+        });
+
+        if (result.canceled) {
+            return { success: false, error: 'Save operation was canceled' };
+        }
+
+        return { success: true, filePath: result.filePath };
     } catch (error) {
         return { success: false, error: getErrorMessage(error) };
     }

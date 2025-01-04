@@ -25,11 +25,20 @@ export class FileService {
         }
     }
 
-    public async OpenFileDialog(): Promise<string> {
-        const result = await window.api.openFileDialog();
-        if (!result.success || !result.filePaths) {
+    public async ReadFileDialog(): Promise<string> {
+        const result = await window.api.readFileDialog();
+        if (!result.success || !result.filePath) {
             throw new Error(`Open file dialog failed with: ${result.error || 'Unknown error'}`);
         }
-        return result.filePaths[0];
+        return result.filePath;
+    }
+
+    public async SaveFileDialog(): Promise<string> {
+        const result = await window.api.saveFileDialog();
+        if (!result.success || !result.filePath) {
+            throw new Error(`Open file dialog failed with: ${result.error || 'Unknown error'}`);
+        }
+
+        return result.filePath;
     }
 }
