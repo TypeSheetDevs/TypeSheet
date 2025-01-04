@@ -9,6 +9,7 @@ export class FileService {
         return FileService._instance;
     }
 
+    // reads contents of file located under filePath
     public async ReadFile(filePath: string): Promise<string> {
         const result = await window.api.readFile(filePath);
         if (!result.success || !result.content) {
@@ -18,6 +19,7 @@ export class FileService {
         return result.content;
     }
 
+    // saves contents to file located under filePath
     public async SaveFile(filePath: string, content: string): Promise<void> {
         const result = await window.api.saveFile(filePath, content);
         if (!result.success) {
@@ -25,6 +27,7 @@ export class FileService {
         }
     }
 
+    // returns a filePath to read from
     public async ReadFileDialog(): Promise<string> {
         const result = await window.api.readFileDialog();
         if (!result.success || !result.filePath) {
@@ -33,6 +36,7 @@ export class FileService {
         return result.filePath;
     }
 
+    // returns a filePath to save to
     public async SaveFileDialog(): Promise<string> {
         const result = await window.api.saveFileDialog();
         if (!result.success || !result.filePath) {
@@ -40,5 +44,17 @@ export class FileService {
         }
 
         return result.filePath;
+    }
+
+    public async ReadJsonFile<T>(filePath: string): Promise<T> {
+        try {
+            const fileContent = await this.ReadFile(filePath);
+            // Parse the content into the specified type
+            return JSON.parse(fileContent);
+        } catch (error) {
+            throw new Error(
+                `Failed to parse JSON from file: ${filePath}. Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            );
+        }
     }
 }

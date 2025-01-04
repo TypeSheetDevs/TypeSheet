@@ -10,6 +10,11 @@ export class Key {
         this.modifier = modifier;
     }
 
+    public toJSON() {
+        const { isKeyDirty, ...rest } = this;
+        return rest;
+    }
+
     get Pitch(): string {
         return this.pitch;
     }

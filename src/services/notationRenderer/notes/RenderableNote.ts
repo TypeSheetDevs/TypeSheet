@@ -10,16 +10,20 @@ const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
 export class RenderableNote {
+    private cachedStaveNote: StaveNote | null = null;
+    private isNoteDirty: boolean = true;
+
     private readonly keys: Key[];
     private duration: NoteDuration;
     private modifiers: NoteModifier[];
     private dotted: boolean;
-
-    private absoluteX: number = 0;
     private color?: string;
+    private absoluteX: number = 0;
 
-    private cachedStaveNote: StaveNote | null = null;
-    private isNoteDirty: boolean = true;
+    public toJSON() {
+        const { cachedStaveNote, isNoteDirty, absoluteX, ...rest } = this;
+        return rest;
+    }
 
     constructor(
         duration: NoteDuration,

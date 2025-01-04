@@ -16,6 +16,11 @@ export class RenderableVoice implements IRenderable {
         this.numBeats = this.calculateNumBeats();
     }
 
+    public toJSON() {
+        const { cachedVoice, isVoiceDirty, ...rest } = this;
+        return rest;
+    }
+
     set BeatValue(beatValue: number) {
         this.beatValue = beatValue;
         this.isVoiceDirty = true;

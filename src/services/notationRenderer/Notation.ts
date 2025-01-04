@@ -1,8 +1,11 @@
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { NotationData } from '@services/notationRenderer/NotationData';
+import { FileService } from '@services/FileService/FileService';
 
 export class Notation {
     private static _instance: Notation = null!;
+    private _fileService: FileService = FileService.getInstance();
     static getInstance() {
         return Notation._instance || new Notation();
     }
@@ -42,5 +45,37 @@ export class Notation {
 
     set Author(value: string) {
         this.author = value;
+    }
+
+    public async SaveToJson(): Promise<void> {
+        try {
+            const notationData: NotationData = {
+                title: this.title,
+                author: this.author,
+                staves: this.staves,
+            };
+            const filePath = await this._fileService.SaveFileDialog();
+            await this._fileService.SaveFile(filePath, JSON.stringify(notationData));
+        } catch (error) {
+            console.warn(`Error saving to JSON: ${(error as Error).message}`);
+        }
+    }
+
+    public async ReadFromJson(filePath?: string): Promise<void> {
+        try {
+            if (!filePath) {
+                filePath = await this._fileService.ReadFileDialog();
+            }
+            const notationData = await this._fileService.ReadJsonFile<NotationData>(filePath);
+            this.RecoverFromNotationData(notationData);
+        } catch (error) {
+            console.warn(`Error saving to JSON: ${(error as Error).message}`);
+        }
+    }
+
+    private RecoverFromNotationData(notationData: NotationData) {
+        this.title = notationData.title;
+        this.author = notationData.author;
+        this.staves = notationData.staves;
     }
 }

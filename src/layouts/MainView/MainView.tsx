@@ -26,6 +26,18 @@ function MainView() {
         }}>
         Add Bar
       </button>
+      <button
+        onClick={async () => {
+          await Notation.getInstance().SaveToJson();
+        }}>
+        Save To Json
+      </button>
+      <button
+        onClick={async () => {
+          await Notation.getInstance().ReadFromJson();
+        }}>
+        Read From Json
+      </button>
       {GetViewComponent(currentView)}
     </div>
   );
