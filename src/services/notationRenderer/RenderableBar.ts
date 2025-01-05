@@ -9,7 +9,7 @@ import { SavedParameterName } from '@services/ConfigService/ConfigService.types'
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-class RenderableBar implements IRenderable, IRecoverable<RenderableBar, RenderableBarData> {
+class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
     private currentPosY = 0;
     private currentWidth = 0;
@@ -99,11 +99,6 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBar, Renderab
             throw new Error('Index out of bounds.');
         }
         this.voices.splice(index, 1);
-    }
-
-    FromData(data: RenderableBarData): RenderableBar {
-        console.log(data);
-        return null!;
     }
 
     ToData(): RenderableBarData {

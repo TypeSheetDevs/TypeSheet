@@ -3,24 +3,21 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
-import { ParseNoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 
-export class Notation implements IRecoverable<Notation, NotationData> {
+export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
     private _fileService: FileService = FileService.getInstance();
     static getInstance() {
         return Notation._instance || new Notation();
     }
 
-    private staves: RenderableStave[] = [];
-    // TODO: use them in NotationRenderer
+    staves: RenderableStave[] = [];
     private title: string = '';
     private author: string = '';
 
     constructor() {
         if (Notation._instance === null) {
             Notation._instance = this;
-            console.log(ParseNoteDuration('q'));
             return this;
         } else return Notation._instance;
     }

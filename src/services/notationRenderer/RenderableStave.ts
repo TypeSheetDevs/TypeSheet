@@ -6,7 +6,7 @@ import { SavedParameterName } from '@services/ConfigService/ConfigService.types'
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableStaveData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-class RenderableStave implements IRenderable, IRecoverable<RenderableStave, RenderableStaveData> {
+class RenderableStave implements IRenderable, IRecoverable<RenderableStaveData> {
     bars: RenderableBar[] = [];
     currentPositionY = 0;
     barsPerStave = ConfigService.getInstance().getValue(SavedParameterName.BarsPerStave);
@@ -44,11 +44,6 @@ class RenderableStave implements IRenderable, IRecoverable<RenderableStave, Rend
             bar.Draw(context, positionY, this.GetBarPositionX(idx), ratioValue * bar.ratio),
         );
         this.currentPositionY = this.bars.length != 0 ? this.bars[0].NextPositionY : 0;
-    }
-
-    FromData(data: RenderableStaveData): RenderableStave {
-        console.log(data);
-        return null!;
     }
 
     ToData(): RenderableStaveData {

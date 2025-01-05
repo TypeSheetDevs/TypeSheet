@@ -13,7 +13,7 @@ import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IR
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
-export class RenderableNote implements IRecoverable<RenderableNote, RenderableNoteData> {
+export class RenderableNote implements IRecoverable<RenderableNoteData> {
     private cachedStaveNote: StaveNote | null = null;
     private isNoteDirty: boolean = true;
 
@@ -23,11 +23,6 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
     private dotted: boolean;
     private color?: string;
     private absoluteX: number = 0;
-
-    public toJSON() {
-        const { cachedStaveNote, isNoteDirty, absoluteX, ...rest } = this;
-        return rest;
-    }
 
     constructor(
         duration: NoteDuration,
@@ -161,11 +156,6 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
 
     private IsHighPitch(pitch: string): boolean {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
-    }
-
-    FromData(data: RenderableNoteData): RenderableNote {
-        console.log(data);
-        return null!;
     }
 
     ToData(): RenderableNoteData {

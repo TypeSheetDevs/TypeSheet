@@ -4,9 +4,7 @@ import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote'
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableVoiceData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-export class RenderableVoice
-    implements IRenderable, IRecoverable<RenderableVoice, RenderableVoiceData>
-{
+export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoiceData> {
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
 
@@ -18,11 +16,6 @@ export class RenderableVoice
         this.beatValue = beatValue;
         this.notes = notes;
         this.numBeats = this.calculateNumBeats();
-    }
-
-    public toJSON() {
-        const { cachedVoice, isVoiceDirty, ...rest } = this;
-        return rest;
     }
 
     set BeatValue(beatValue: number) {
@@ -116,11 +109,6 @@ export class RenderableVoice
             const noteDurationValue = note.DurationValue;
             return totalBeats + noteDurationValue;
         }, 0);
-    }
-
-    FromData(data: RenderableVoiceData): RenderableVoice {
-        console.log(data);
-        return null!;
     }
 
     ToData(): RenderableVoiceData {

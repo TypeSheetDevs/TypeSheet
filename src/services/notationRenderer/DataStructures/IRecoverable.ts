@@ -1,4 +1,3 @@
-export interface IRecoverable<TInstance, TData> {
-    FromData(data: TData): TInstance;
+export interface IRecoverable<TData> {
     ToData(): TData;
 }
