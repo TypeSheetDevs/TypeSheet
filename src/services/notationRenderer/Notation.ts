@@ -64,20 +64,17 @@ export class Notation implements IRecoverable<Notation, NotationData> {
                 filePath = await this._fileService.ReadFileDialog();
             }
             const notationData = await this._fileService.ReadJsonFile<NotationData>(filePath);
-            this.RecoverFromNotationData(notationData);
+            this.FromData(notationData);
         } catch (error) {
             console.warn(`Error saving to JSON: ${(error as Error).message}`);
         }
     }
 
-    private RecoverFromNotationData(notationData: NotationData) {
-        this.title = notationData.title;
-        this.author = notationData.author;
-    }
-
     FromData(data: NotationData): Notation {
-        console.log(data);
-        return null!;
+        this.title = data.title;
+        this.author = data.author;
+        this.staves = data.stavesData.map(staveData => RenderableStave.FromData(staveData));
+        return this;
     }
 
     ToData(): NotationData {

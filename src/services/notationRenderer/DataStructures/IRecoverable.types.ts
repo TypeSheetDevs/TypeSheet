@@ -1,6 +1,3 @@
-import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
-import { NoteDuration, NoteModifier } from '@services/notationRenderer/notes/Notes.enums';
-
 export type NotationData = {
     title: string;
     author: string;
@@ -23,13 +20,13 @@ export type RenderableVoiceData = {
 
 export type RenderableNoteData = {
     keysData: KeyData[];
-    duration: NoteDuration;
-    modifiers: NoteModifier[];
+    duration: string;
+    modifiers: string[];
     dotted: boolean;
-    color?: string;
+    color: string | null;
 };
 
 export type KeyData = {
     pitch: string;
-    modifier: KeyModifier | null;
+    modifier: string | null;
 };

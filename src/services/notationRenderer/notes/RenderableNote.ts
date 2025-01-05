@@ -16,10 +16,10 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
     private isNoteDirty: boolean = true;
 
     private readonly keys: Key[];
+    private readonly modifiers: NoteModifier[];
     private duration: NoteDuration;
-    private modifiers: NoteModifier[];
     private dotted: boolean;
-    private color?: string;
+    private color: string | null;
     private absoluteX: number = 0;
 
     public toJSON() {
@@ -38,7 +38,7 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
         this.keys = keys;
         this.modifiers = modifiers;
         this.dotted = dotted;
-        this.color = color;
+        this.color = color ?? null;
     }
 
     set Duration(value: NoteDuration) {
@@ -174,5 +174,15 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
             modifiers: this.modifiers,
             color: this.color,
         };
+    }
+
+    static FromData(data: RenderableNoteData): RenderableNote {
+        return new RenderableNote(
+            NoteDuration.Quarter,
+            data.keysData.map(keyData => Key.FromData(keyData)),
+            [],
+            data.dotted,
+            // add color here
+        );
     }
 }

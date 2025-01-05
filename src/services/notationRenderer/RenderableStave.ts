@@ -54,6 +54,12 @@ class RenderableStave implements IRenderable, IRecoverable<RenderableStave, Rend
     ToData(): RenderableStaveData {
         return { barsData: this.bars.map(bar => bar.ToData()) };
     }
+
+    static FromData(data: RenderableStaveData): RenderableStave {
+        const stave = new RenderableStave(data.barsData.length);
+        stave.bars = data.barsData.map(barData => RenderableBar.FromData(barData));
+        return stave;
+    }
 }
 
 export default RenderableStave;

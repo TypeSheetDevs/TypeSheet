@@ -9,6 +9,13 @@ export enum NoteDuration {
     OneTwentyEighth = '128',
 }
 
+export function ParseNoteDuration(durationString: string): NoteDuration | null {
+    if (Object.values(NoteDuration).includes(durationString as NoteDuration)) {
+        return NoteDuration[durationString as keyof typeof NoteDuration];
+    }
+    return null;
+}
+
 export const NoteDurationValues = {
     [NoteDuration.Whole]: 4,
     [NoteDuration.Half]: 2,
@@ -27,4 +34,11 @@ export enum NoteModifier {
     Accent = 'a>',
     Marcato = 'a^',
     Fermata = 'a@a',
+}
+
+export function ParseNoteModifier(modifierString: string): NoteModifier | null {
+    if (Object.values(NoteModifier).includes(modifierString as NoteModifier)) {
+        return NoteModifier[modifierString as keyof typeof NoteModifier];
+    }
+    return null;
 }

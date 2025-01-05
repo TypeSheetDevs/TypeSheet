@@ -4,12 +4,12 @@ import { KeyData } from '@services/notationRenderer/DataStructures/IRecoverable.
 
 export class Key implements IRecoverable<Key, KeyData> {
     private pitch: string;
-    private modifier: KeyModifier | null = null;
+    private modifier: KeyModifier | null;
     private isKeyDirty: boolean = false;
 
-    constructor(pitch: string, modifier: KeyModifier | null = null) {
+    constructor(pitch: string, modifier?: KeyModifier) {
         this.pitch = pitch;
-        this.modifier = modifier;
+        this.modifier = modifier ?? null;
     }
 
     public toJSON() {
@@ -24,10 +24,6 @@ export class Key implements IRecoverable<Key, KeyData> {
     set Pitch(value: string) {
         this.pitch = value;
         this.isKeyDirty = true;
-    }
-
-    get Modifier(): KeyModifier | null {
-        return this.modifier;
     }
 
     set Modifier(modifier: KeyModifier) {
@@ -52,5 +48,9 @@ export class Key implements IRecoverable<Key, KeyData> {
 
     ToData(): KeyData {
         return { pitch: this.pitch, modifier: this.modifier };
+    }
+
+    static FromData(data: KeyData): Key {
+        return new Key(data.pitch, KeyModifier.Flat);
     }
 }

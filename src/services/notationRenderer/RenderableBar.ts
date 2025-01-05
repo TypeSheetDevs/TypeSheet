@@ -109,6 +109,12 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBar, Renderab
     ToData(): RenderableBarData {
         return { ratio: this.ratio, voicesData: this.voices.map(voice => voice.ToData()) };
     }
+
+    static FromData(data: RenderableBarData): RenderableBar {
+        const bar = new RenderableBar(data.ratio);
+        bar.voices = data.voicesData.map(voiceData => RenderableVoice.FromData(voiceData));
+        return bar;
+    }
 }
 
 export default RenderableBar;
