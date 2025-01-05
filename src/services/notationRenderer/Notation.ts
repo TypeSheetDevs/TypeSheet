@@ -2,8 +2,9 @@ import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 
-export class Notation {
+export class Notation implements IRecoverable<Notation> {
     private static _instance: Notation = null!;
     private _fileService: FileService = FileService.getInstance();
     static getInstance() {
@@ -76,5 +77,10 @@ export class Notation {
     private RecoverFromNotationData(notationData: NotationData) {
         this.title = notationData.title;
         this.author = notationData.author;
+    }
+
+    FromData<NotationData>(data: NotationData): Notation {
+        console.log(data);
+        return null!;
     }
 }

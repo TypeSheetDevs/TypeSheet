@@ -3,8 +3,9 @@ import RenderableBar from './RenderableBar';
 import { RenderContext } from 'vexflow';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 
-class RenderableStave implements IRenderable {
+class RenderableStave implements IRenderable, IRecoverable<RenderableStave> {
     bars: RenderableBar[] = [];
     currentPositionY = 0;
     barsPerStave = ConfigService.getInstance().getValue(SavedParameterName.BarsPerStave);
@@ -42,6 +43,11 @@ class RenderableStave implements IRenderable {
             bar.Draw(context, positionY, this.GetBarPositionX(idx), ratioValue * bar.ratio),
         );
         this.currentPositionY = this.bars.length != 0 ? this.bars[0].NextPositionY : 0;
+    }
+
+    FromData<RenderableStaveData>(data: RenderableStaveData): RenderableStave {
+        console.log(data);
+        return null!;
     }
 }
 

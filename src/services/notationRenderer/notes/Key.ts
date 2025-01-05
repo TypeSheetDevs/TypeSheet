@@ -1,6 +1,7 @@
 import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 
-export class Key {
+export class Key implements IRecoverable<Key> {
     private pitch: string;
     private modifier: KeyModifier | null = null;
     private isKeyDirty: boolean = false;
@@ -41,5 +42,10 @@ export class Key {
 
     SetNotDirty() {
         this.isKeyDirty = false;
+    }
+
+    FromData<KeyData>(data: KeyData): Key {
+        console.log(data);
+        return null!;
     }
 }

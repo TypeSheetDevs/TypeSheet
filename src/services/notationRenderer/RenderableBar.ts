@@ -6,8 +6,9 @@ import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote'
 import { Key } from '@services/notationRenderer/notes/Key';
 import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 
-class RenderableBar implements IRenderable {
+class RenderableBar implements IRenderable, IRecoverable<RenderableBar> {
     private currentPosX = 0;
     private currentPosY = 0;
     private currentWidth = 0;
@@ -97,6 +98,11 @@ class RenderableBar implements IRenderable {
             throw new Error('Index out of bounds.');
         }
         this.voices.splice(index, 1);
+    }
+
+    FromData<RenderableBarData>(data: RenderableBarData): RenderableBar {
+        console.log(data);
+        return null!;
     }
 }
 
