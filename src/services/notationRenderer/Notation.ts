@@ -52,6 +52,7 @@ export class Notation {
             const notationData: NotationData = {
                 title: this.title,
                 author: this.author,
+                stavesData: [],
             };
             const filePath = await this._fileService.SaveFileDialog();
             await this._fileService.SaveFile(filePath, JSON.stringify(notationData));
