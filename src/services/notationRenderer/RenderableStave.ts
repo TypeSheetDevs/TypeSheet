@@ -52,7 +52,7 @@ class RenderableStave implements IRenderable, IRecoverable<RenderableStave, Rend
     }
 
     ToData(): RenderableStaveData {
-        return null!;
+        return { barsData: this.bars.map(bar => bar.ToData()) };
     }
 }
 

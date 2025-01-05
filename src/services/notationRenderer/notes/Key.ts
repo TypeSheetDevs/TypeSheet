@@ -51,6 +51,6 @@ export class Key implements IRecoverable<Key, KeyData> {
     }
 
     ToData(): KeyData {
-        return null!;
+        return { pitch: this.pitch, modifier: this.modifier };
     }
 }

@@ -167,6 +167,12 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
     }
 
     ToData(): RenderableNoteData {
-        return null!;
+        return {
+            keysData: this.keys.map(k => k.ToData()),
+            duration: this.Duration,
+            dotted: this.Dotted,
+            modifiers: this.modifiers,
+            color: this.color,
+        };
     }
 }

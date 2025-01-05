@@ -50,11 +50,7 @@ export class Notation implements IRecoverable<Notation, NotationData> {
 
     public async SaveToJson(): Promise<void> {
         try {
-            const notationData: NotationData = {
-                title: this.title,
-                author: this.author,
-                stavesData: [],
-            };
+            const notationData = this.ToData();
             const filePath = await this._fileService.SaveFileDialog();
             await this._fileService.SaveFile(filePath, JSON.stringify(notationData));
         } catch (error) {
@@ -85,6 +81,10 @@ export class Notation implements IRecoverable<Notation, NotationData> {
     }
 
     ToData(): NotationData {
-        return null!;
+        return {
+            title: this.title,
+            author: this.author,
+            stavesData: this.staves.map(stave => stave.ToData()),
+        };
     }
 }

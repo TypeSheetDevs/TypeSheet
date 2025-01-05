@@ -124,6 +124,6 @@ export class RenderableVoice
     }
 
     ToData(): RenderableVoiceData {
-        return null!;
+        return { beatValue: this.beatValue, notesData: this.notes.map(note => note.ToData()) };
     }
 }
