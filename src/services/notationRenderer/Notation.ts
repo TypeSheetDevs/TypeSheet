@@ -1,7 +1,7 @@
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import { NotationData } from '@services/notationRenderer/NotationData';
 import { FileService } from '@services/FileService/FileService';
+import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
 export class Notation {
     private static _instance: Notation = null!;
@@ -52,7 +52,6 @@ export class Notation {
             const notationData: NotationData = {
                 title: this.title,
                 author: this.author,
-                staves: this.staves,
             };
             const filePath = await this._fileService.SaveFileDialog();
             await this._fileService.SaveFile(filePath, JSON.stringify(notationData));
@@ -76,6 +75,5 @@ export class Notation {
     private RecoverFromNotationData(notationData: NotationData) {
         this.title = notationData.title;
         this.author = notationData.author;
-        this.staves = notationData.staves;
     }
 }
