@@ -23,7 +23,7 @@ export type RenderableNoteData = {
     duration: string;
     modifiers: string[];
     dotted: boolean;
-    color: string | null;
+    color?: string;
 };
 
 export type KeyData = {

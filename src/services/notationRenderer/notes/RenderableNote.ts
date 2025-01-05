@@ -4,6 +4,8 @@ import {
     NoteDuration,
     NoteDurationValues,
     NoteModifier,
+    ParseNoteDuration,
+    ParseNoteModifier,
 } from '@services/notationRenderer/notes/Notes.enums';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
@@ -19,7 +21,7 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
     private readonly modifiers: NoteModifier[];
     private duration: NoteDuration;
     private dotted: boolean;
-    private color: string | null;
+    private color?: string;
     private absoluteX: number = 0;
 
     public toJSON() {
@@ -38,7 +40,7 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
         this.keys = keys;
         this.modifiers = modifiers;
         this.dotted = dotted;
-        this.color = color ?? null;
+        this.color = color;
     }
 
     set Duration(value: NoteDuration) {
@@ -169,20 +171,31 @@ export class RenderableNote implements IRecoverable<RenderableNote, RenderableNo
     ToData(): RenderableNoteData {
         return {
             keysData: this.keys.map(k => k.ToData()),
-            duration: this.Duration,
-            dotted: this.Dotted,
-            modifiers: this.modifiers,
+            duration: this.duration,
+            dotted: this.dotted,
+            modifiers: this.modifiers.map(modifier => modifier.toString()),
             color: this.color,
         };
     }
 
     static FromData(data: RenderableNoteData): RenderableNote {
+        const duration = ParseNoteDuration(data.duration);
+        if (!duration) {
+            throw new Error('Duration not set');
+        }
+        const keys = (data.keysData ?? []).map(key => Key.FromData(key)).filter(key => key);
+        if (keys.length === 0) {
+            throw new Error('Note has no keys.');
+        }
+
         return new RenderableNote(
-            NoteDuration.Quarter,
-            data.keysData.map(keyData => Key.FromData(keyData)),
-            [],
+            duration,
+            keys,
+            (data.modifiers ?? [])
+                .map(modifier => ParseNoteModifier(modifier))
+                .filter(modifier => modifier) as NoteModifier[],
             data.dotted,
-            // add color here
+            data.color,
         );
     }
 }

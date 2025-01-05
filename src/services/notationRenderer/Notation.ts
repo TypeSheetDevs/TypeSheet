@@ -3,6 +3,7 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { ParseNoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 
 export class Notation implements IRecoverable<Notation, NotationData> {
     private static _instance: Notation = null!;
@@ -19,6 +20,7 @@ export class Notation implements IRecoverable<Notation, NotationData> {
     constructor() {
         if (Notation._instance === null) {
             Notation._instance = this;
+            console.log(ParseNoteDuration('q'));
             return this;
         } else return Notation._instance;
     }
@@ -66,7 +68,7 @@ export class Notation implements IRecoverable<Notation, NotationData> {
             const notationData = await this._fileService.ReadJsonFile<NotationData>(filePath);
             this.FromData(notationData);
         } catch (error) {
-            console.warn(`Error saving to JSON: ${(error as Error).message}`);
+            console.warn(`Error reading from JSON: ${(error as Error).message}`);
         }
     }
 

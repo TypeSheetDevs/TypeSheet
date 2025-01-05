@@ -7,7 +7,8 @@ export enum KeyModifier {
 }
 
 export function ParseKeyModifier(modifierString?: string): KeyModifier | undefined {
-    if (!modifierString || Object.values(KeyModifier).includes(modifierString as KeyModifier))
-        return undefined;
-    return KeyModifier[modifierString as keyof typeof KeyModifier];
+    if (Object.values(KeyModifier).includes(modifierString as KeyModifier)) {
+        return modifierString as KeyModifier;
+    }
+    return undefined;
 }

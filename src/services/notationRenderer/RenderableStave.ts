@@ -57,7 +57,9 @@ class RenderableStave implements IRenderable, IRecoverable<RenderableStave, Rend
 
     static FromData(data: RenderableStaveData): RenderableStave {
         const stave = new RenderableStave(data.barsData.length);
-        stave.bars = data.barsData.map(barData => RenderableBar.FromData(barData));
+        stave.bars = (data.barsData ?? [])
+            .map(barData => RenderableBar.FromData(barData))
+            .filter(bar => bar);
         return stave;
     }
 }

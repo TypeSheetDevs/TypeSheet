@@ -130,7 +130,9 @@ export class RenderableVoice
     static FromData(data: RenderableVoiceData): RenderableVoice {
         return new RenderableVoice(
             data.beatValue,
-            data.notesData.map(noteData => RenderableNote.FromData(noteData)),
+            (data.notesData ?? [])
+                .map(noteData => RenderableNote.FromData(noteData))
+                .filter(note => note),
         );
     }
 }
