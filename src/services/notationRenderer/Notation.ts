@@ -4,7 +4,7 @@ import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 
-export class Notation implements IRecoverable<Notation> {
+export class Notation implements IRecoverable<Notation, NotationData> {
     private static _instance: Notation = null!;
     private _fileService: FileService = FileService.getInstance();
     static getInstance() {
@@ -79,8 +79,12 @@ export class Notation implements IRecoverable<Notation> {
         this.author = notationData.author;
     }
 
-    FromData<NotationData>(data: NotationData): Notation {
+    FromData(data: NotationData): Notation {
         console.log(data);
+        return null!;
+    }
+
+    ToData(): NotationData {
         return null!;
     }
 }

@@ -2,8 +2,11 @@ import { Beam, Formatter, RenderContext, Stave, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableVoiceData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoice> {
+export class RenderableVoice
+    implements IRenderable, IRecoverable<RenderableVoice, RenderableVoiceData>
+{
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
 
@@ -115,8 +118,12 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
         }, 0);
     }
 
-    FromData<RenderableVoiceData>(data: RenderableVoiceData): RenderableVoice {
+    FromData(data: RenderableVoiceData): RenderableVoice {
         console.log(data);
+        return null!;
+    }
+
+    ToData(): RenderableVoiceData {
         return null!;
     }
 }

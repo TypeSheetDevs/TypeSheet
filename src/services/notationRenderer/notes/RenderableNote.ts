@@ -6,11 +6,12 @@ import {
     NoteModifier,
 } from '@services/notationRenderer/notes/Notes.enums';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
-export class RenderableNote implements IRecoverable<RenderableNote> {
+export class RenderableNote implements IRecoverable<RenderableNote, RenderableNoteData> {
     private cachedStaveNote: StaveNote | null = null;
     private isNoteDirty: boolean = true;
 
@@ -160,8 +161,12 @@ export class RenderableNote implements IRecoverable<RenderableNote> {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
     }
 
-    FromData<RenderableNoteData>(data: RenderableNoteData): RenderableNote {
+    FromData(data: RenderableNoteData): RenderableNote {
         console.log(data);
+        return null!;
+    }
+
+    ToData(): RenderableNoteData {
         return null!;
     }
 }

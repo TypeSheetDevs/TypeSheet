@@ -7,8 +7,9 @@ import { Key } from '@services/notationRenderer/notes/Key';
 import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-class RenderableBar implements IRenderable, IRecoverable<RenderableBar> {
+class RenderableBar implements IRenderable, IRecoverable<RenderableBar, RenderableBarData> {
     private currentPosX = 0;
     private currentPosY = 0;
     private currentWidth = 0;
@@ -100,8 +101,12 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBar> {
         this.voices.splice(index, 1);
     }
 
-    FromData<RenderableBarData>(data: RenderableBarData): RenderableBar {
+    FromData(data: RenderableBarData): RenderableBar {
         console.log(data);
+        return null!;
+    }
+
+    ToData(): RenderableBarData {
         return null!;
     }
 }
