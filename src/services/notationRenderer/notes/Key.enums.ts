@@ -6,9 +6,8 @@ export enum KeyModifier {
     Natural = 'n',
 }
 
-export function ParseKeyModifier(durationString: string): KeyModifier | null {
-    if (Object.values(KeyModifier).includes(durationString as KeyModifier)) {
-        return KeyModifier[durationString as keyof typeof KeyModifier];
-    }
-    return null;
+export function ParseKeyModifier(modifierString?: string): KeyModifier | undefined {
+    if (!modifierString || Object.values(KeyModifier).includes(modifierString as KeyModifier))
+        return undefined;
+    return KeyModifier[modifierString as keyof typeof KeyModifier];
 }

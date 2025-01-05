@@ -28,5 +28,5 @@ export type RenderableNoteData = {
 
 export type KeyData = {
     pitch: string;
-    modifier: string | null;
+    modifier?: string;
 };

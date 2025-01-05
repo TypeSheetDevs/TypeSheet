@@ -1,15 +1,15 @@
-import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { KeyModifier, ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { KeyData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
 export class Key implements IRecoverable<Key, KeyData> {
     private pitch: string;
-    private modifier: KeyModifier | null;
+    private modifier?: KeyModifier;
     private isKeyDirty: boolean = false;
 
     constructor(pitch: string, modifier?: KeyModifier) {
         this.pitch = pitch;
-        this.modifier = modifier ?? null;
+        this.modifier = modifier;
     }
 
     public toJSON() {
@@ -51,6 +51,6 @@ export class Key implements IRecoverable<Key, KeyData> {
     }
 
     static FromData(data: KeyData): Key {
-        return new Key(data.pitch, KeyModifier.Flat);
+        return new Key(data.pitch, ParseKeyModifier(data.modifier));
     }
 }
