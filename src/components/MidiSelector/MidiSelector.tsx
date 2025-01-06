@@ -40,6 +40,7 @@ function MidiSelector() {
                   selectedPort === port.name
                     ? 'brightness(40%) saturate(0%)'
                     : 'brightness(70%) saturate(0%)',
+                transition: 'filter 0.3s ease',
               }}
             />
             <span>{port.name}</span>

@@ -28,6 +28,12 @@
     border-radius: 3px;
     padding: 2px 10px 2px 5px;
     background-color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.port-button:hover {
+    cursor: pointer;
+    transform: translateY(-1px);
 }
 
 .port-button-img {
