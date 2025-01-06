@@ -1,12 +1,12 @@
-export class MIDIService {
-    private static _instance: MIDIService | null = null;
+export class MidiService {
+    private static _instance: MidiService | null = null;
 
-    public static getInstance(): MIDIService {
-        if (!MIDIService._instance) {
-            MIDIService._instance = new MIDIService();
+    public static getInstance(): MidiService {
+        if (!MidiService._instance) {
+            MidiService._instance = new MidiService();
         }
 
-        return MIDIService._instance;
+        return MidiService._instance;
     }
 
     public async Connect(): Promise<void> {
@@ -31,6 +31,8 @@ export class MIDIService {
 
                 if (status === 144 && velocity > 0) {
                     console.log(`Note On: ${note}`);
+                } else if (status === 128 || velocity === 0) {
+                    console.log(`Note Off: ${note}`);
                 }
             };
         } catch (error) {
