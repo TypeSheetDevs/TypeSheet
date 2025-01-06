@@ -4,7 +4,7 @@ import TopBar from '@components/TopBar/TopBar';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { useEffect, useState } from 'react';
 import ConfigManager from '@components/ConfigManager/ConfigManager';
-import MidiPortSelector from '@components/MidiSelector/MidiSelector';
+import MidiSelector from '@components/MidiSelector/MidiSelector';
 
 function MainLayout(): JSX.Element {
   const [showConfigManager, setShowConfigManager] = useState<boolean>(false);
@@ -25,7 +25,7 @@ function MainLayout(): JSX.Element {
   return (
     <div className={styles.mainLayout}>
       <TopBar></TopBar>
-      <MidiPortSelector />
+      <MidiSelector />
       {visible && showConfigManager && <ConfigManager />}
       {visible && !showConfigManager && <MainView></MainView>}
     </div>

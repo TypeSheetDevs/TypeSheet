@@ -1,0 +1,46 @@
+.container {
+    border: 1px solid black;
+    border-radius: 8px;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 12px;
+    align-items: center;
+}
+
+.header {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: black;
+}
+
+.listItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.radioInput {
+    margin-right: 10px;
+    accent-color: #007bff;
+    color: black;
+}
+
+.label {
+    font-size: 1rem;
+    color: #555;
+}
+
+.labelConnected {
+    font-size: 0.9rem;
+    color: #28a745;
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+.noPorts {
+    font-size: 1rem;
+    color: #999;
+    text-align: center;
+    margin-top: 12px;
+}
