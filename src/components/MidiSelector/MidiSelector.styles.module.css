@@ -1,6 +1,6 @@
 .container {
-    border: 1px solid black;
-    border-radius: 8px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
     margin: 10px auto;
     display: flex;
     flex-direction: column;
@@ -14,33 +14,43 @@
     color: black;
 }
 
-.listItem {
+.ports {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.port-button {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    gap: 1rem;
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    padding: 2px 10px 2px 5px;
+    background-color: white;
 }
 
-.radioInput {
-    margin-right: 10px;
-    accent-color: #007bff;
-    color: black;
+.port-button-img {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
-.label {
+.disconnect-button {
+    margin-top: 8px;
+    padding: 8px 16px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 1rem;
-    color: #555;
+    transition: background-color 0.3s ease;
 }
 
-.labelConnected {
-    font-size: 0.9rem;
-    color: #28a745;
-    font-weight: bold;
-    margin-left: 6px;
+.disconnect-button:hover {
+    background-color: #c82333;
 }
 
-.noPorts {
-    font-size: 1rem;
-    color: #999;
-    text-align: center;
-    margin-top: 12px;
+.disconnect-button:disabled {
+    background-color: lightgray;
 }
