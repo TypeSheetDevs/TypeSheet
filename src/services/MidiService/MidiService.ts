@@ -2,6 +2,8 @@ import { MidiPort } from '@components/MidiSelector/MidiSelector.types';
 import MIDIAccess = WebMidi.MIDIAccess;
 import MIDIInput = WebMidi.MIDIInput;
 
+export const ChromaticScale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
 export class MidiService {
     private static _instance: MidiService | null = null;
     private access: MIDIAccess | null = null;
@@ -75,12 +77,25 @@ export class MidiService {
         if (status === 128 || (status === 144 && velocity === 0)) {
             const startTime = this.noteStartTimes.get(note);
             if (startTime) {
-                const duration = performance.now() - startTime;
-                console.log(`Note Off: ${note}. Duration: ${duration.toFixed(2)} ms`);
+                // const duration = performance.now() - startTime;
+                // console.log(`Note Off: ${note}. Duration: ${duration.toFixed(2)} ms`);
+                console.log(this.MapMidiToStringNote(note));
                 this.noteStartTimes.delete(note);
             } else {
                 console.warn(`Note Off received for ${note}, but no start time found.`);
             }
         }
+    }
+
+    private MapMidiToStringNote(note: number): string {
+        if (note < 21 || note > 108) {
+            console.warn('Note not in piano range.');
+            return '';
+        }
+
+        const octave = Math.floor(note / 12) - 1;
+        const pitch = ChromaticScale[note % 12];
+
+        return `${pitch}/${octave}`;
     }
 }
