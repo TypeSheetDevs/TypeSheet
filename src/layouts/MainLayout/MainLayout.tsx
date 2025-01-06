@@ -4,9 +4,11 @@ import TopBar from '@components/TopBar/TopBar';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { useEffect, useState } from 'react';
 import ConfigManager from '@components/ConfigManager/ConfigManager';
+import MidiPortSelector from '@components/MidiSelector/MidiSelector';
 
 function MainLayout(): JSX.Element {
   const [showConfigManager, setShowConfigManager] = useState<boolean>(false);
+  const visible = false;
 
   useEffect(() => {
     const toggleConfigManagerHandler = () => {
@@ -23,8 +25,9 @@ function MainLayout(): JSX.Element {
   return (
     <div className={styles.mainLayout}>
       <TopBar></TopBar>
-      {showConfigManager && <ConfigManager />}
-      {!showConfigManager && <MainView></MainView>}
+      <MidiPortSelector />
+      {visible && showConfigManager && <ConfigManager />}
+      {visible && !showConfigManager && <MainView></MainView>}
     </div>
   );
 }
