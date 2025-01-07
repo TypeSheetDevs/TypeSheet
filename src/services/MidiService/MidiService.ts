@@ -98,4 +98,38 @@ export class MidiService {
 
         return `${pitch}/${octave}`;
     }
+
+    // this needs to be moved to Notation later on, but didn't want to cause merge conflicts with the impending colossal PR coming
+    // private MapTimeToDuration(
+    //     time: number,
+    //     tempo: number,
+    // ): { duration: NoteDuration; dotted: boolean } {
+    //     const timeInQuarters = time / ((60 * 1000) / tempo);
+    //
+    //     let closestDuration: NoteDuration | null = null;
+    //     let closestValue: number = Infinity;
+    //     let dotted = false;
+    //
+    //     for (const duration of NoteDurationOrder) {
+    //         let durationInQuarters =
+    //             NoteDurationValues[duration] / NoteDurationValues['q'] / timeInQuarters;
+    //         let dottedDurationInQuarters = durationInQuarters * 1.5;
+    //         if (durationInQuarters < 1) durationInQuarters = 1 / durationInQuarters;
+    //         if (dottedDurationInQuarters < 1)
+    //             dottedDurationInQuarters = 1 / dottedDurationInQuarters;
+    //
+    //         if (durationInQuarters < closestValue) {
+    //             closestDuration = duration as unknown as NoteDuration;
+    //             closestValue = durationInQuarters;
+    //             dotted = false;
+    //         }
+    //
+    //         if (dottedDurationInQuarters < closestValue) {
+    //             closestDuration = duration as unknown as NoteDuration;
+    //             closestValue = dottedDurationInQuarters;
+    //             dotted = true;
+    //         }
+    //     }
+    //     return { duration: closestDuration as NoteDuration, dotted: dotted };
+    // }
 }
