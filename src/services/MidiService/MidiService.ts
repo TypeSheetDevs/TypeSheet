@@ -47,6 +47,30 @@ export class MidiService {
         }
     }
 
+    public async Refresh(): Promise<void> {
+        try {
+            if (!this.access) {
+                console.warn('No MIDIAccess available. Call Init() first.');
+                return;
+            }
+
+            const newInputs = Array.from(this.access.inputs.values());
+
+            if (newInputs.length === 0) {
+                console.warn('No MIDI inputs available.');
+            } else {
+                console.log('MIDI inputs refreshed.');
+            }
+
+            this.inputs = newInputs;
+            if (!this.connectedInput && !newInputs.includes(this.connectedInput!)) {
+                this.Disconnect();
+            }
+        } catch (error) {
+            console.error('Error while refreshing MIDI inputs:', error);
+        }
+    }
+
     public Disconnect(): void {
         if (this.connectedInput) {
             this.connectedInput.onmidimessage = null;

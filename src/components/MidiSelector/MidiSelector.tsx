@@ -5,17 +5,29 @@ import getButtonIcon from '@assets/icons/getIcon';
 
 function MidiSelector() {
   const midiService = MidiService.getInstance();
-  const ports = midiService.GetPorts();
-  const [selectedPort, setSelectedPort] = useState<string | null>(null);
+  const [ports, setPorts] = useState(midiService.GetPorts());
+  const [selectedPortName, setSelectedPortName] = useState<string | null>(getSelectedPortName());
+
+  function getSelectedPortName(): string | null {
+    return ports.find(port => port.connected)?.name ?? null;
+  }
 
   const handlePortSelection = (portName: string) => {
-    setSelectedPort(portName);
     midiService.ConnectToPort(portName);
+    setPorts(midiService.GetPorts());
+    setSelectedPortName(portName);
   };
 
   const handleDisconnect = () => {
     midiService.Disconnect();
-    setSelectedPort(null);
+    setPorts(midiService.GetPorts());
+    setSelectedPortName(null);
+  };
+
+  const handleRefresh = async () => {
+    await midiService.Refresh();
+    setPorts(midiService.GetPorts());
+    setSelectedPortName(getSelectedPortName());
   };
 
   return (
@@ -29,7 +41,7 @@ function MidiSelector() {
             onClick={() => handlePortSelection(port.name)}>
             <img
               src={getButtonIcon(
-                selectedPort === port.name
+                selectedPortName === port.name
                   ? 'radio_button_checked.svg'
                   : 'radio_button_unchecked.svg',
               )}
@@ -37,7 +49,7 @@ function MidiSelector() {
               className={styles.portButtonImg}
               style={{
                 filter:
-                  selectedPort === port.name
+                  selectedPortName === port.name
                     ? 'brightness(40%) saturate(0%)'
                     : 'brightness(70%) saturate(0%)',
                 transition: 'filter 0.3s ease',
@@ -48,9 +60,14 @@ function MidiSelector() {
         ))}
       </div>
       <button
-        className={styles.disconnectButton}
+        className={`${styles.button} ${styles.refreshButton}`}
+        onClick={handleRefresh}>
+        Refresh
+      </button>
+      <button
+        className={`${styles.button} ${styles.disconnectButton}`}
         onClick={handleDisconnect}
-        disabled={!selectedPort}>
+        disabled={!selectedPortName}>
         Disconnect
       </button>
     </div>
