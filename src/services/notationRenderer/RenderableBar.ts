@@ -30,7 +30,6 @@ class RenderableBar implements IRenderable {
 
         this.addVoice(voice1);
         this.addVoice(voice2);
-        this.voices[0].AddTie(0, 1);
     }
 
     get NextPositionX(): number {

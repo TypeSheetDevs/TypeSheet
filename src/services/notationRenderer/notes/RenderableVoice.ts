@@ -11,10 +11,10 @@ export class RenderableVoice implements IRenderable {
     private isVoiceDirty: boolean = true;
 
     private readonly notes: RenderableNote[];
-    private ties: { startIndex: number; endIndex: number }[] = [];
+    private ties: { firstIndex: number; lastIndex: number }[] = [];
     private hairpins: {
-        startIndex: number;
-        endIndex: number;
+        firstIndex: number;
+        lastIndex: number;
         type: HairpinType;
         position?: number;
     }[] = [];
@@ -76,8 +76,8 @@ export class RenderableVoice implements IRenderable {
         // if needed those could be cached
         this.ties.forEach(tie => {
             const staveTie = new StaveTie({
-                first_note: this.notes[tie.startIndex].GetAsVexFlowNote(),
-                last_note: this.notes[tie.endIndex].GetAsVexFlowNote(),
+                first_note: this.notes[tie.firstIndex].GetAsVexFlowNote(),
+                last_note: this.notes[tie.lastIndex].GetAsVexFlowNote(),
                 first_indices: [0],
                 last_indices: [0],
             });
@@ -86,15 +86,16 @@ export class RenderableVoice implements IRenderable {
     }
 
     private DrawHairpins(context: RenderContext) {
+        // if needed those could be cached
         this.hairpins.forEach(hairpin => {
-            const firstNote = this.notes[hairpin.startIndex];
-            const endNote = this.notes[hairpin.endIndex];
+            const firstNote = this.notes[hairpin.firstIndex];
+            const lastNote = this.notes[hairpin.lastIndex];
 
             let usedPosition: number | undefined = hairpin.position;
             if (usedPosition === undefined) {
                 usedPosition =
                     firstNote.GetModifierPosition() === POSITION_ABOVE &&
-                    endNote.GetModifierPosition() === POSITION_ABOVE
+                    lastNote.GetModifierPosition() === POSITION_ABOVE
                         ? POSITION_ABOVE
                         : POSITION_BELOW;
             }
@@ -102,7 +103,7 @@ export class RenderableVoice implements IRenderable {
             const staveHairpin = new StaveHairpin(
                 {
                     first_note: firstNote.GetAsVexFlowNote(),
-                    end_note: endNote.GetAsVexFlowNote(),
+                    last_note: lastNote.GetAsVexFlowNote(),
                 },
                 hairpin.type,
             );
@@ -141,13 +142,13 @@ export class RenderableVoice implements IRenderable {
             this.notes.splice(index, 0, note);
 
             this.ties.forEach(tie => {
-                if (tie.startIndex >= index) tie.startIndex++;
-                if (tie.endIndex >= index) tie.endIndex++;
+                if (tie.firstIndex >= index) tie.firstIndex++;
+                if (tie.lastIndex >= index) tie.lastIndex++;
             });
 
             this.hairpins.forEach(hairpin => {
-                if (hairpin.startIndex >= index) hairpin.startIndex++;
-                if (hairpin.endIndex >= index) hairpin.endIndex++;
+                if (hairpin.firstIndex >= index) hairpin.firstIndex++;
+                if (hairpin.lastIndex >= index) hairpin.lastIndex++;
             });
         } else {
             this.notes.push(note);
@@ -163,51 +164,51 @@ export class RenderableVoice implements IRenderable {
         }
         this.notes.splice(index, 1);
 
-        this.ties = this.ties.filter(tie => tie.startIndex !== index && tie.endIndex !== index);
+        this.ties = this.ties.filter(tie => tie.firstIndex !== index && tie.lastIndex !== index);
         this.hairpins = this.hairpins.filter(
-            hairpin => hairpin.startIndex !== index && hairpin.endIndex !== index,
+            hairpin => hairpin.firstIndex !== index && hairpin.lastIndex !== index,
         );
 
         this.ties.forEach(tie => {
-            if (tie.startIndex > index) tie.startIndex--;
-            if (tie.endIndex > index) tie.endIndex--;
+            if (tie.firstIndex > index) tie.firstIndex--;
+            if (tie.lastIndex > index) tie.lastIndex--;
         });
 
         this.hairpins.forEach(hairpin => {
-            if (hairpin.startIndex > index) hairpin.startIndex--;
-            if (hairpin.endIndex > index) hairpin.endIndex--;
+            if (hairpin.firstIndex > index) hairpin.firstIndex--;
+            if (hairpin.lastIndex > index) hairpin.lastIndex--;
         });
 
         this.numBeats = this.CalculateNumBeats();
         this.isVoiceDirty = true;
     }
 
-    AddTie(startIndex: number, endIndex: number): boolean {
+    AddTie(firstIndex: number, lastIndex: number): boolean {
         if (
-            startIndex < 0 ||
-            startIndex >= this.notes.length ||
-            endIndex < 0 ||
-            endIndex >= this.notes.length
+            firstIndex < 0 ||
+            firstIndex >= this.notes.length ||
+            lastIndex < 0 ||
+            lastIndex >= this.notes.length
         ) {
             return false;
         }
 
-        this.ties.push({ startIndex, endIndex });
+        this.ties.push({ firstIndex: firstIndex, lastIndex: lastIndex });
         return true;
     }
 
-    RemoveTie(startIndex: number, endIndex: number): void {
+    RemoveTie(firstIndex: number, lastIndex: number): void {
         if (
-            startIndex < 0 ||
-            startIndex >= this.notes.length ||
-            endIndex < 0 ||
-            endIndex >= this.notes.length
+            firstIndex < 0 ||
+            firstIndex >= this.notes.length ||
+            lastIndex < 0 ||
+            lastIndex >= this.notes.length
         ) {
             return;
         }
 
         for (let i = 0; i < this.ties.length; i++) {
-            if (this.ties[i].startIndex === startIndex && this.ties[i].endIndex === endIndex) {
+            if (this.ties[i].firstIndex === firstIndex && this.ties[i].lastIndex === lastIndex) {
                 this.ties.splice(i, 1);
                 break;
             }
@@ -215,39 +216,39 @@ export class RenderableVoice implements IRenderable {
     }
 
     AddHairpin(
-        startIndex: number,
-        endIndex: number,
+        firstIndex: number,
+        lastIndex: number,
         type: HairpinType,
         position?: number,
     ): boolean {
         if (
-            startIndex < 0 ||
-            startIndex >= this.notes.length ||
-            endIndex < 0 ||
-            endIndex >= this.notes.length
+            firstIndex < 0 ||
+            firstIndex >= this.notes.length ||
+            lastIndex < 0 ||
+            lastIndex >= this.notes.length
         ) {
             return false;
         }
         for (const hairpin of this.hairpins) {
-            if (startIndex >= hairpin.startIndex && startIndex <= hairpin.endIndex) {
+            if (firstIndex >= hairpin.firstIndex && firstIndex <= hairpin.lastIndex) {
                 return false;
             }
-            if (endIndex >= hairpin.startIndex && endIndex <= hairpin.endIndex) {
+            if (lastIndex >= hairpin.firstIndex && lastIndex <= hairpin.lastIndex) {
                 return false;
             }
         }
-        this.hairpins.push({ startIndex, endIndex, type, position });
+        this.hairpins.push({ firstIndex: firstIndex, lastIndex: lastIndex, type, position });
 
         return true;
     }
 
-    RemoveHairpin(startIndex: number) {
-        if (startIndex < 0 || startIndex >= this.notes.length) {
+    RemoveHairpin(firstIndex: number) {
+        if (firstIndex < 0 || firstIndex >= this.notes.length) {
             return;
         }
 
         for (let i = 0; i < this.hairpins.length; i++) {
-            if (this.hairpins[i][0] === startIndex) {
+            if (this.hairpins[i][0] === firstIndex) {
                 this.hairpins.splice(i, 1);
                 break;
             }
