@@ -1,14 +1,4 @@
-import {
-    Beam,
-    Formatter,
-    Note,
-    RenderContext,
-    Stave,
-    StaveHairpin,
-    StaveTie,
-    Vex,
-    Voice,
-} from 'vexflow';
+import { Beam, Formatter, RenderContext, Stave, StaveHairpin, StaveTie, Vex, Voice } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { HairpinType } from '@services/notationRenderer/notes/Voice.enums';
@@ -19,7 +9,6 @@ const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 export class RenderableVoice implements IRenderable {
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
-    private cachedNotes: Note[] = [];
 
     private readonly notes: RenderableNote[];
     private ties: { startIndex: number; endIndex: number }[] = [];
@@ -58,9 +47,7 @@ export class RenderableVoice implements IRenderable {
             beat_value: this.beatValue,
         });
 
-        this.cachedNotes = this.notes.map(note => note.GetAsVexFlowNote());
-
-        voice.addTickables(this.cachedNotes);
+        voice.addTickables(this.notes.map(note => note.GetAsVexFlowNote()));
 
         this.cachedVoice = voice;
         this.isVoiceDirty = false;
@@ -89,8 +76,8 @@ export class RenderableVoice implements IRenderable {
         // if needed those could be cached
         this.ties.forEach(tie => {
             const staveTie = new StaveTie({
-                first_note: this.cachedNotes[tie[0]],
-                last_note: this.cachedNotes[tie[1]],
+                first_note: this.notes[tie.startIndex].GetAsVexFlowNote(),
+                last_note: this.notes[tie.endIndex].GetAsVexFlowNote(),
                 first_indices: [0],
                 last_indices: [0],
             });
