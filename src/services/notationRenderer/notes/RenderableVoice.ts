@@ -1,7 +1,18 @@
-import { Beam, Formatter, RenderContext, Stave, StaveHairpin, StaveTie, Vex, Voice } from 'vexflow';
+import {
+    Beam,
+    Formatter,
+    RenderContext,
+    Stave,
+    StaveHairpin,
+    StaveTie,
+    TextDynamics,
+    TickContext,
+    Vex,
+    Voice,
+} from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
-import { HairpinType } from '@services/notationRenderer/notes/Voice.enums';
+import { DynamicModifier, HairpinType } from '@services/notationRenderer/notes/Voice.enums';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -20,6 +31,7 @@ export class RenderableVoice implements IRenderable {
     }[] = [];
     private numBeats: number;
     private beatValue: number;
+    private dynamics: { modifier: DynamicModifier; noteIndex: number; line: number }[] = [];
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
@@ -67,6 +79,7 @@ export class RenderableVoice implements IRenderable {
 
         this.DrawTies(context);
         this.DrawHairpins(context);
+        this.DrawDynamics(context, bar, voice.getTickables()[0].checkTickContext());
 
         const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
         this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
@@ -110,6 +123,20 @@ export class RenderableVoice implements IRenderable {
             staveHairpin.setPosition(usedPosition);
 
             staveHairpin.setContext(context).draw();
+        });
+    }
+
+    private DrawDynamics(context: RenderContext, bar: Stave, tickContext: TickContext) {
+        this.dynamics.forEach(dynamic => {
+            const textDynamics = new TextDynamics({
+                text: dynamic.modifier,
+                duration: 'q',
+                line: dynamic.line,
+            });
+            textDynamics.setContext(context);
+            textDynamics.setStave(bar);
+            textDynamics.setTickContext(tickContext);
+            textDynamics.draw();
         });
     }
 
@@ -253,6 +280,20 @@ export class RenderableVoice implements IRenderable {
                 break;
             }
         }
+    }
+
+    // let me know what parameters should RemoveDynamic method have
+    AddDynamic(modifier: DynamicModifier, noteIndex: number, line: number): boolean {
+        if (
+            this.dynamics.findIndex(d => d.noteIndex === noteIndex) !== -1 ||
+            noteIndex < 0 ||
+            noteIndex >= this.notes.length
+        ) {
+            return false;
+        }
+
+        this.dynamics.push({ modifier, noteIndex, line });
+        return true;
     }
 
     private CalculateNumBeats(): number {
