@@ -1,4 +1,14 @@
-import { Beam, Formatter, Note, RenderContext, Stave, StaveTie, Vex, Voice } from 'vexflow';
+import {
+    Beam,
+    Formatter,
+    Note,
+    RenderContext,
+    Stave,
+    StaveHairpin,
+    StaveTie,
+    Vex,
+    Voice,
+} from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { HairpinType } from '@services/notationRenderer/notes/Voice.enums';
@@ -12,8 +22,8 @@ export class RenderableVoice implements IRenderable {
     private cachedNotes: Note[] = [];
 
     private readonly notes: RenderableNote[];
-    private readonly ties: { startIndex: number; endIndex: number }[] = [];
-    private readonly hairpins: {
+    private ties: { startIndex: number; endIndex: number }[] = [];
+    private hairpins: {
         startIndex: number;
         endIndex: number;
         type: HairpinType;
@@ -68,6 +78,14 @@ export class RenderableVoice implements IRenderable {
         voice.draw(context, bar);
         beams.forEach(beam => beam.setContext(context).draw());
 
+        this.DrawTies(context);
+        this.DrawHairpins(context);
+
+        const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
+        this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
+    }
+
+    private DrawTies(context: RenderContext) {
         // if needed those could be cached
         this.ties.forEach(tie => {
             const staveTie = new StaveTie({
@@ -78,19 +96,33 @@ export class RenderableVoice implements IRenderable {
             });
             staveTie.setContext(context).draw();
         });
+    }
 
-        const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
-        this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
+    private DrawHairpins(context: RenderContext) {
+        this.hairpins.forEach(hairpin => {
+            const firstNote = this.notes[hairpin.startIndex];
+            const endNote = this.notes[hairpin.endIndex];
 
-        if (this.notes.length < 2) return;
-        const hairpin = new Vex.Flow.StaveHairpin(
-            {
-                first_note: this.notes[0].GetAsVexFlowNote(),
-                last_note: this.notes[1].GetAsVexFlowNote(),
-            },
-            1,
-        );
-        hairpin.setContext(context).draw();
+            let usedPosition: number | undefined = hairpin.position;
+            if (usedPosition === undefined) {
+                usedPosition =
+                    firstNote.GetModifierPosition() === POSITION_ABOVE &&
+                    endNote.GetModifierPosition() === POSITION_ABOVE
+                        ? POSITION_ABOVE
+                        : POSITION_BELOW;
+            }
+
+            const staveHairpin = new StaveHairpin(
+                {
+                    first_note: firstNote.GetAsVexFlowNote(),
+                    end_note: endNote.GetAsVexFlowNote(),
+                },
+                hairpin.type,
+            );
+            staveHairpin.setPosition(usedPosition);
+
+            staveHairpin.setContext(context).draw();
+        });
     }
 
     GetNoteIndexByPositionX(positionX: number): number {
@@ -120,6 +152,16 @@ export class RenderableVoice implements IRenderable {
                 throw new Error('Index out of bounds.');
             }
             this.notes.splice(index, 0, note);
+
+            this.ties.forEach(tie => {
+                if (tie.startIndex >= index) tie.startIndex++;
+                if (tie.endIndex >= index) tie.endIndex++;
+            });
+
+            this.hairpins.forEach(hairpin => {
+                if (hairpin.startIndex >= index) hairpin.startIndex++;
+                if (hairpin.endIndex >= index) hairpin.endIndex++;
+            });
         } else {
             this.notes.push(note);
         }
@@ -133,6 +175,21 @@ export class RenderableVoice implements IRenderable {
             throw new Error('Index out of bounds.');
         }
         this.notes.splice(index, 1);
+
+        this.ties = this.ties.filter(tie => tie.startIndex !== index && tie.endIndex !== index);
+        this.hairpins = this.hairpins.filter(
+            hairpin => hairpin.startIndex !== index && hairpin.endIndex !== index,
+        );
+
+        this.ties.forEach(tie => {
+            if (tie.startIndex > index) tie.startIndex--;
+            if (tie.endIndex > index) tie.endIndex--;
+        });
+
+        this.hairpins.forEach(hairpin => {
+            if (hairpin.startIndex > index) hairpin.startIndex--;
+            if (hairpin.endIndex > index) hairpin.endIndex--;
+        });
 
         this.numBeats = this.CalculateNumBeats();
         this.isVoiceDirty = true;
