@@ -6,6 +6,7 @@ import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { Notation } from '@services/notationRenderer/Notation';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import LabeledToggle from '@components/LabeledToggle/LabeledToggle';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(
@@ -14,12 +15,14 @@ function MainView() {
 
   return (
     <div className={styles.mainView}>
-      <button
-        onClick={() =>
+      <LabeledToggle
+        toggled={currentView == ViewType.Paged}
+        onToggle={() =>
           setCurrentView(currentView == ViewType.Paged ? ViewType.Scrollable : ViewType.Paged)
-        }>
-        Change View
-      </button>
+        }
+        toggledText="Paged"
+        unToggledText="Scrollable"
+      />
       <button
         onClick={() => {
           Notation.getInstance().AddNewStave(Math.floor(Math.random() * 7) + 1);

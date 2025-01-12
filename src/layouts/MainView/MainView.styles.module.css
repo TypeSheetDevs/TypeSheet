@@ -7,4 +7,5 @@
     min-width: 0;
     font-size: var(--main-view-font-size);
     font-family: Bravura;
+    background-color: var(--main-view-background-color);
 }
