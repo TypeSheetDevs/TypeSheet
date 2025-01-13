@@ -150,7 +150,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         return this.keys.every(key => !this.IsHighPitch(key.Pitch)) ? 1 : -1;
     }
 
-    private GetModifierPosition(): number {
+    GetModifierPosition(): number {
         return this.keys.some(key => this.IsHighPitch(key.Pitch)) ? POSITION_ABOVE : POSITION_BELOW;
     }
 

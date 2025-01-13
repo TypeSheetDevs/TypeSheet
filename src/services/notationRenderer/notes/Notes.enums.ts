@@ -7,6 +7,14 @@ export enum NoteDuration {
     ThirtySecond = '32',
     SixtyFourth = '64',
     OneTwentyEighth = '128',
+    WholeRest = 'wr',
+    HalfRest = 'hr',
+    QuarterRest = 'qr',
+    EighthRest = '8r',
+    SixteenthRest = '16r',
+    ThirtySecondRest = '32r',
+    SixtyFourthRest = '64r',
+    OneTwentyEighthRest = '128r',
 }
 
 export function ParseNoteDuration(durationString: string): NoteDuration | undefined {
@@ -25,7 +33,27 @@ export const NoteDurationValues = {
     [NoteDuration.ThirtySecond]: 0.125,
     [NoteDuration.SixtyFourth]: 0.0625,
     [NoteDuration.OneTwentyEighth]: 0.03125,
+    [NoteDuration.WholeRest]: 4,
+    [NoteDuration.HalfRest]: 2,
+    [NoteDuration.QuarterRest]: 1,
+    [NoteDuration.EighthRest]: 0.5,
+    [NoteDuration.SixteenthRest]: 0.25,
+    [NoteDuration.ThirtySecondRest]: 0.125,
+    [NoteDuration.SixtyFourthRest]: 0.0625,
+    [NoteDuration.OneTwentyEighthRest]: 0.03125,
 };
+
+// used for enumerating over NoteDuration in order
+export const NoteDurationOrder = [
+    NoteDuration.Whole,
+    NoteDuration.Half,
+    NoteDuration.Quarter,
+    NoteDuration.Eighth,
+    NoteDuration.Sixteenth,
+    NoteDuration.ThirtySecond,
+    NoteDuration.SixtyFourth,
+    NoteDuration.OneTwentyEighth,
+];
 
 export enum NoteModifier {
     Staccato = 'a.',

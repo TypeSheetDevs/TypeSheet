@@ -8,6 +8,7 @@ import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
+import { DynamicModifier } from '@services/notationRenderer/notes/Voice.enums';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
@@ -24,7 +25,7 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
             new RenderableNote(NoteDuration.Quarter, [new Key('e/4')]),
             new RenderableNote(NoteDuration.Quarter, [new Key('g/4')]),
             new RenderableNote(NoteDuration.Eighth, [new Key('c/5')], [], true),
-            new RenderableNote(NoteDuration.Sixteenth, [new Key('a/4')]),
+            new RenderableNote(NoteDuration.SixteenthRest, [new Key('a/4')]),
         ]);
         const voice2 = new RenderableVoice(4, [
             new RenderableNote(NoteDuration.Whole, [new Key('a/3')]),
@@ -32,6 +33,7 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
 
         this.addVoice(voice1);
         this.addVoice(voice2);
+        this.voices[0].AddDynamic(DynamicModifier.Forte, 2, 1);
     }
 
     get NextPositionX(): number {

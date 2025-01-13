@@ -4,14 +4,14 @@
     padding: 6px;
     gap: 6px;
     align-items: center;
+    background-color: white;
+    overflow-y: auto;
 }
 
 .config-item {
     width: 50%;
     min-width: 500px;
     height: 40px;
-
-
     display: flex;
     flex-direction: row;
     justify-content: space-between;
