@@ -14,8 +14,8 @@ type BarAudioData = {
 };
 
 export class AudioPlayer {
-    private notation: Notation = Notation.getInstance();
     private static _instance: AudioPlayer = null!;
+    private notation: Notation = Notation.getInstance();
     private currentStave: RenderableStave | null = null;
     private currentBar: RenderableBar | null = null;
     private barAudioData: BarAudioData[] = [];
@@ -27,7 +27,7 @@ export class AudioPlayer {
         return this._instance;
     }
 
-    async Play() {
+    async Resume() {
         await Tone.start();
 
         const staveIndex = this.GetStaveIndex();
@@ -92,6 +92,26 @@ export class AudioPlayer {
         return barIndex;
     }
 
+    GetNextBar() {
+        this.barAudioData = [];
+        let barIndex = this.GetBarIndex();
+        if (barIndex < 0) {
+            return;
+        }
+        if (barIndex === this.currentStave!.bars.length - 1) {
+            let staveIndex = this.GetStaveIndex();
+            if (staveIndex < 0) {
+                return;
+            }
+            staveIndex++;
+            this.currentStave = this.notation.getStaves()[staveIndex] ?? null;
+            this.currentBar = this.currentStave.bars[0] ?? null;
+            return;
+        }
+        barIndex++;
+        this.currentBar = this.currentStave!.bars[barIndex];
+    }
+
     InitBarAudioData() {
         for (const voice of this.currentBar!.voices) {
             this.barAudioData.push({
@@ -110,6 +130,7 @@ export class AudioPlayer {
         if (noteIndex === voice.NotesLength - 1) {
             return false;
         }
+
         data.noteIndex++;
         data.synth = new Tone.Synth();
         return true;
