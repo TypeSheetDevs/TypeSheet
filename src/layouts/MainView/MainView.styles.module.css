@@ -6,5 +6,7 @@
     flex-direction: column;
     min-width: 0;
     font-size: var(--main-view-font-size);
-    font-family: Bravura;
+    font-family: sans-serif;
+    background-color: var(--main-view-background-color);
+    scrollbar-color: white var(--main-view-background-color);
 }

@@ -9,3 +9,41 @@
     display: flex;
     flex: 1 1 0;
 }
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    margin: 0 4px;
+}
+
+.staves-per-page {
+    display: flex;
+    gap: 1rem;
+}
+
+.pages {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+
+.pages-input {
+    padding: 0.25rem;
+    width: 50px;
+    -moz-appearance: textfield;
+    border: 1px solid black;
+    outline: none;
+}
+
+.pages-input::-webkit-inner-spin-button,
+.pages-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.pages-buttons {
+    display: flex;
+}

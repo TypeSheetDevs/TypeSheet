@@ -25,6 +25,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "music21j": "^0.14.1",
+    "@midival/core": "^0.1.7",
+    "@types/webmidi": "^2.1.0",
     "vexflow": "^4.2.5"
   },
   "devDependencies": {
