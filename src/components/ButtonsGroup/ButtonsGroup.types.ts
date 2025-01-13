@@ -1,3 +1,0 @@
-type ButtonsGroupType = {
-    buttons: ButtonType[];
-};

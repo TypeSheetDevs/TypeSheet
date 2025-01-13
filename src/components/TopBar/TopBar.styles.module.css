@@ -2,25 +2,9 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    padding: 1px 0;
+    padding: 1px 5px 1px 0;
+    z-index: 1;
+    gap: 5px;
 }
 
-.group-container {
-    display: flex;
-    flex-direction: row;
-}
 
-.draggable-component {
-    padding: 0 5px;
-}
-
-.draggable-component:hover {
-    background-color: #010d4e;
-}
-
-.separator {
-    margin: 2px 4px;
-    background-color: #ccc;
-    width: 2px;
-    height: auto;
-}

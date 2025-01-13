@@ -2,6 +2,7 @@
 
 import { SavedParameterName, ValueOf } from '@services/ConfigService/ConfigService.types';
 import { ViewType } from '@layouts/MainView/MainView.types';
+import { NotationRenderEngine } from '@utils/getRendererEngine';
 
 export enum EditorType {
     Text,
@@ -59,5 +60,11 @@ export const EditorConfigMap: EditorConfigMapType = {
     },
     [SavedParameterName.TopBarColor]: {
         editorType: EditorType.Color,
+    },
+    [SavedParameterName.RendererEngine]: {
+        editorType: EditorType.Enum,
+        extraParams: {
+            options: [NotationRenderEngine.SVG, NotationRenderEngine.Canvas],
+        },
     },
 };
