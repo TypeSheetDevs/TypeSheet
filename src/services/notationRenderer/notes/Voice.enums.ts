@@ -12,3 +12,10 @@ export enum DynamicModifier {
     Fortissimo = 'ff',
     Sforzando = 'sfz',
 }
+
+export function ParseDynamicModifier(modifierString: string): DynamicModifier | undefined {
+    if (Object.values(DynamicModifier).includes(modifierString as DynamicModifier)) {
+        return modifierString as DynamicModifier;
+    }
+    return undefined;
+}

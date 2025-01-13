@@ -12,16 +12,24 @@ import {
 } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
-import { DynamicModifier, HairpinType } from '@services/notationRenderer/notes/Voice.enums';
+import {
+    DynamicModifier,
+    HairpinType,
+    ParseDynamicModifier,
+} from '@services/notationRenderer/notes/Voice.enums';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableVoiceData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
-export class RenderableVoice implements IRenderable {
+export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoiceData> {
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
 
     private readonly notes: RenderableNote[];
+    private numBeats: number;
+    private beatValue: number;
     private ties: { firstIndex: number; lastIndex: number }[] = [];
     private hairpins: {
         firstIndex: number;
@@ -29,8 +37,6 @@ export class RenderableVoice implements IRenderable {
         type: HairpinType;
         position?: number;
     }[] = [];
-    private numBeats: number;
-    private beatValue: number;
     private dynamics: { modifier: DynamicModifier; noteIndex: number; line: number }[] = [];
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
@@ -305,5 +311,53 @@ export class RenderableVoice implements IRenderable {
             const noteDurationValue = note.DurationValue;
             return totalBeats + noteDurationValue;
         }, 0);
+    }
+
+    ToData(): RenderableVoiceData {
+        return {
+            notesData: this.notes.map(note => note.ToData()),
+            beatValue: this.beatValue,
+            ties: this.ties,
+            hairpins: this.hairpins.map(h => {
+                return {
+                    firstIndex: h.firstIndex,
+                    lastIndex: h.lastIndex,
+                    type: h.type,
+                    position: h.position,
+                };
+            }),
+            dynamics: this.dynamics.map(d => {
+                return { modifier: d.modifier, noteIndex: d.noteIndex, line: d.line };
+            }),
+        };
+    }
+
+    static FromData(data: RenderableVoiceData): RenderableVoice {
+        const voice = new RenderableVoice(
+            data.beatValue,
+            (data.notesData ?? [])
+                .map(noteData => RenderableNote.FromData(noteData))
+                .filter(note => note),
+        );
+        voice.ties = (data.ties ?? []).map(tie => {
+            return { firstIndex: tie.firstIndex, lastIndex: tie.lastIndex };
+        });
+        voice.hairpins = (data.hairpins ?? []).map(hairpin => {
+            return {
+                firstIndex: hairpin.firstIndex,
+                lastIndex: hairpin.firstIndex,
+                type: hairpin.type,
+                position: hairpin.position,
+            };
+        });
+        voice.dynamics = (data.dynamics ?? [])
+            .filter(dynamic => ParseDynamicModifier(dynamic.modifier))
+            .map(dynamic => ({
+                modifier: ParseDynamicModifier(dynamic.modifier)!,
+                noteIndex: dynamic.noteIndex,
+                line: dynamic.line,
+            }));
+
+        return voice;
     }
 }

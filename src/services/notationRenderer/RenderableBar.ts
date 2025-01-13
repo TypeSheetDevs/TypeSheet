@@ -6,9 +6,11 @@ import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote'
 import { Key } from '@services/notationRenderer/notes/Key';
 import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
-import { DynamicModifier } from '@services/notationRenderer/notes/Voice.enums';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
+import { HairpinType } from '@services/notationRenderer/notes/Voice.enums';
 
-class RenderableBar implements IRenderable {
+class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
     private currentPosY = 0;
     private currentWidth = 0;
@@ -31,7 +33,8 @@ class RenderableBar implements IRenderable {
 
         this.addVoice(voice1);
         this.addVoice(voice2);
-        this.voices[0].AddDynamic(DynamicModifier.Forte, 2, 1);
+        this.voices[0].AddTie(0, 2);
+        this.voices[0].AddHairpin(0, 2, HairpinType.Crescendo);
     }
 
     get NextPositionX(): number {
@@ -99,6 +102,18 @@ class RenderableBar implements IRenderable {
             throw new Error('Index out of bounds.');
         }
         this.voices.splice(index, 1);
+    }
+
+    ToData(): RenderableBarData {
+        return { ratio: this.ratio, voicesData: this.voices.map(voice => voice.ToData()) };
+    }
+
+    static FromData(data: RenderableBarData): RenderableBar {
+        const bar = new RenderableBar(data.ratio);
+        bar.voices = (data.voicesData ?? [])
+            .map(voiceData => RenderableVoice.FromData(voiceData))
+            .filter(voice => voice);
+        return bar;
     }
 }
 
