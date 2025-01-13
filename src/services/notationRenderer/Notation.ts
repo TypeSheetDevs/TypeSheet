@@ -1,5 +1,7 @@
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { HarmonicsService } from '@services/HarmonicsService/HarmonicsService';
+import { ChordType } from '@services/HarmonicsService/Harmonics.chords.enums';
 
 export class Notation {
     private static _instance: Notation = null!;
@@ -11,6 +13,7 @@ export class Notation {
 
     constructor() {
         if (Notation._instance === null) {
+            console.log(HarmonicsService.GenerateChord('Bb', ChordType.MajorSeventhChord));
             Notation._instance = this;
             return this;
         } else return Notation._instance;

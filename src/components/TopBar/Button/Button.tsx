@@ -5,7 +5,10 @@ function Button({ iconPath, onClick }: ButtonType) {
     <button
       className={styles.button}
       onClick={onClick}>
-      <img src={iconPath} />
+      <img
+        draggable={false}
+        src={iconPath}
+      />
     </button>
   );
 }

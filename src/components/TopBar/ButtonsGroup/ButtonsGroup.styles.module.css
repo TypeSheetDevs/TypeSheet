@@ -1,0 +1,11 @@
+.buttons-group {
+    display: flex;
+    flex-direction: row;
+}
+
+.separator {
+    margin: 2px 4px;
+    background-color: #ccc;
+    width: 2px;
+    height: auto;
+}
