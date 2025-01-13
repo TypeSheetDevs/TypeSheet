@@ -1,0 +1,19 @@
+.btn {
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 2.6rem;
+    height: 2.6rem;
+}
+
+.btn:hover {
+    opacity: 0.5;
+}
+
+.right {
+    rotate: 180deg;
+    translate: -3px -1px;
+}
+
+.left {
+    rotate: 0deg;
+}
