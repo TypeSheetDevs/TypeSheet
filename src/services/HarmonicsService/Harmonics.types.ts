@@ -25,6 +25,7 @@ export const ChromaticScaleMap: Record<string, string> = {
     Abb: 'G',
     Bbb: 'A',
     'B#': 'C',
+    'E#': 'F',
     'C##': 'D',
     'D##': 'E',
     'E##': 'F#',

@@ -47,7 +47,10 @@ export class HarmonicsService {
     public static GenerateChord(rootNote: string, chordType: ChordType): string[] {
         const intervals = ChordIntervals[chordType];
         const chromaticRootNote =
-            rootNote === 'B#' || rootNote.includes('b') || rootNote.includes('##')
+            rootNote === 'E#' ||
+            rootNote === 'B#' ||
+            rootNote.includes('b') ||
+            rootNote.includes('##')
                 ? ChromaticScaleMap[rootNote]
                 : rootNote;
 
