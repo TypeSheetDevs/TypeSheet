@@ -4,7 +4,6 @@ import { ViewType } from '@layouts/MainView/MainView.types';
 import PagedView from '@layouts/PagedView/PagedView';
 import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 import { ConfigService } from '@services/ConfigService/ConfigService';
-import { Notation } from '@services/notationRenderer/Notation';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import LabeledToggle from '@components/LabeledToggle/LabeledToggle';
 
@@ -23,12 +22,6 @@ function MainView() {
         toggledText="Paged"
         unToggledText="Scrollable"
       />
-      <button
-        onClick={() => {
-          Notation.getInstance().AddNewStave(Math.floor(Math.random() * 7) + 1);
-        }}>
-        Add Bar
-      </button>
       {GetViewComponent(currentView)}
     </div>
   );
