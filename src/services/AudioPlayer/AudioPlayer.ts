@@ -47,6 +47,16 @@ export class AudioPlayer {
         console.log('Playback started.');
     }
 
+    async PlayNotes() {
+        if (this.barAudioData.length === 0) {
+            return;
+        }
+    }
+
+    PlayNextNote(dataIndex: number) {
+        const data = this.barAudioData[dataIndex];
+    }
+
     GetStaveIndex(): number {
         const staves = this.notation.getStaves();
 
@@ -123,17 +133,18 @@ export class AudioPlayer {
         }
     }
 
-    InitNextNote(dataIndex: number): boolean {
+    InitNextNote(dataIndex: number) {
         const data = this.barAudioData[dataIndex];
         const voice = data.voice;
         const noteIndex = data.noteIndex;
         if (noteIndex === voice.NotesLength - 1) {
-            return false;
+            this.barAudioData.splice(dataIndex, 1);
+            return;
         }
 
         data.noteIndex++;
+        data.timeLeft = 500;
         data.synth = new Tone.Synth();
-        return true;
     }
 
     Stop() {
