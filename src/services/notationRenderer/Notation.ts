@@ -3,6 +3,8 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { HarmonicsService } from '@services/HarmonicsService/HarmonicsService';
+import { ChordType } from '@services/HarmonicsService/Harmonics.chords.enums';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -18,6 +20,7 @@ export class Notation implements IRecoverable<NotationData> {
     constructor() {
         if (Notation._instance === null) {
             Notation._instance = this;
+            console.log(HarmonicsService.GenerateChord('B#', ChordType.MajorTriad));
             return this;
         } else return Notation._instance;
     }

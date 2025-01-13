@@ -47,9 +47,10 @@ export class HarmonicsService {
     public static GenerateChord(rootNote: string, chordType: ChordType): string[] {
         const intervals = ChordIntervals[chordType];
         const chromaticRootNote =
-            rootNote.includes('b') || rootNote.includes('##')
+            rootNote === 'B#' || rootNote.includes('b') || rootNote.includes('##')
                 ? ChromaticScaleMap[rootNote]
                 : rootNote;
+
         const chromaticChord = [chromaticRootNote];
         const chromaticIndex = ChromaticScale.indexOf(chromaticRootNote);
 
@@ -76,9 +77,9 @@ export class HarmonicsService {
 
             const chromaticNoteCIndex = ChromaticScale.indexOf(chromaticNote);
             const expectedNoteCIndex = ChromaticScale.indexOf(expectedNote);
-            // console.log(
-            //     `Chromatic note index: ${chromaticNoteCIndex}, Expected note index: ${expectedNoteCIndex}`,
-            // );
+            console.log(
+                `Chromatic note index: ${chromaticNoteCIndex}, Expected note index: ${expectedNoteCIndex}`,
+            );
             let distance = 0;
             const inwardDistance = Math.abs(chromaticNoteCIndex - expectedNoteCIndex);
             const outwardDistance = Math.abs(ChromaticScale.length - inwardDistance);
@@ -89,9 +90,9 @@ export class HarmonicsService {
                 distance = Math.sign(expectedNoteCIndex - chromaticNoteCIndex) * outwardDistance;
             }
 
-            // console.log(
-            //     `Chromatic note: ${chromaticNote}, Expected note: ${expectedNote}, Distance: ${distance}`,
-            // );
+            console.log(
+                `Chromatic note: ${chromaticNote}, Expected note: ${expectedNote}, Distance: ${distance}`,
+            );
 
             refinedChord.push(expectedNote + (distance < 0 ? 'b' : '#').repeat(Math.abs(distance)));
         }
