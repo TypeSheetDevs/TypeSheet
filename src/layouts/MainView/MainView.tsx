@@ -6,7 +6,6 @@ import ScrollableView from '@layouts/ScrollableView/ScrollableView';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import LabeledToggle from '@components/LabeledToggle/LabeledToggle';
-import { Notation } from '@services/notationRenderer/Notation';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(
@@ -23,8 +22,6 @@ function MainView() {
         toggledText="Paged"
         unToggledText="Scrollable"
       />
-      <button onClick={async () => Notation.getInstance().SaveToJson()}>save</button>
-      <button onClick={async () => Notation.getInstance().ReadFromJson()}>read</button>
       {GetViewComponent(currentView)}
     </div>
   );
