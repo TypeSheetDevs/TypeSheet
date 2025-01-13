@@ -8,4 +8,4 @@ out
 /blob-report/
 /playwright/.cache/
 
-src/data/configJson.json
+/src/data/configJson.json
