@@ -36,6 +36,18 @@ export const NoteDurationValues = {
     [NoteDuration.OneTwentyEighthRest]: 0.03125,
 };
 
+// used for enumerating over NoteDuration in order
+export const NoteDurationOrder = [
+    NoteDuration.Whole,
+    NoteDuration.Half,
+    NoteDuration.Quarter,
+    NoteDuration.Eighth,
+    NoteDuration.Sixteenth,
+    NoteDuration.ThirtySecond,
+    NoteDuration.SixtyFourth,
+    NoteDuration.OneTwentyEighth,
+];
+
 export enum NoteModifier {
     Staccato = 'a.',
     Staccatissimo = 'a..',
