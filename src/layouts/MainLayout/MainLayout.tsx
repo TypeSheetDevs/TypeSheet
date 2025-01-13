@@ -1,9 +1,9 @@
 import styles from './MainLayout.styles.module.css';
 import MainView from '@layouts/MainView/MainView';
-import TopBar from '@components/TopBar/TopBar';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { useEffect, useState } from 'react';
 import ConfigManager from '@components/ConfigManager/ConfigManager';
+import TopBarMainLayout from '@components/TopBar/TopBarMainLayout';
 
 function MainLayout(): JSX.Element {
   const [showConfigManager, setShowConfigManager] = useState<boolean>(false);
@@ -22,7 +22,7 @@ function MainLayout(): JSX.Element {
 
   return (
     <div className={styles.mainLayout}>
-      <TopBar></TopBar>
+      <TopBarMainLayout />
       {showConfigManager && <ConfigManager />}
       {!showConfigManager && <MainView></MainView>}
     </div>
