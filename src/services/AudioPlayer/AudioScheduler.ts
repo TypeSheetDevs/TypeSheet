@@ -1,4 +1,4 @@
-class AudioScheduler {
+export class AudioScheduler {
     private events: Map<number, NodeJS.Timeout> = new Map();
     private nextId = 1;
 

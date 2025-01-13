@@ -26,6 +26,12 @@ function MainView() {
         }}>
         Add Bar
       </button>
+      <button
+        onClick={() => {
+          Notation.getInstance().Play();
+        }}>
+        Play
+      </button>
       {GetViewComponent(currentView)}
     </div>
   );

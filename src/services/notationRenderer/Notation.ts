@@ -1,8 +1,10 @@
 import RenderableStave from './RenderableStave';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
 
 export class Notation {
     private static _instance: Notation = null!;
+    private _player: AudioPlayer = AudioPlayer.getInstance();
     static getInstance() {
         return Notation._instance || new Notation();
     }
@@ -23,5 +25,9 @@ export class Notation {
 
     getStaves(): RenderableStave[] {
         return this.staves;
+    }
+
+    Play() {
+        this._player.PlayNotes();
     }
 }

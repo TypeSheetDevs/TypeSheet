@@ -1,9 +1,10 @@
 import * as Tone from 'tone';
 import { Notation } from '@services/notationRenderer/Notation';
-import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
-import RenderableStave from '@services/notationRenderer/RenderableStave';
 import { Synth } from 'tone';
+import RenderableBar from '@services/notationRenderer/RenderableBar';
+import RenderableStave from '@services/notationRenderer/RenderableStave';
+import { AudioScheduler } from '@services/AudioPlayer/AudioScheduler';
 
 type BarAudioData = {
     voice: RenderableVoice;
@@ -15,14 +16,16 @@ type BarAudioData = {
 
 export class AudioPlayer {
     private static _instance: AudioPlayer = null!;
-    private notation: Notation = Notation.getInstance();
+    private scheduler: AudioScheduler = new AudioScheduler();
+    private notation: Notation = null!;
     private currentStave: RenderableStave | null = null;
     private currentBar: RenderableBar | null = null;
     private barAudioData: BarAudioData[] = [];
 
-    private static getInstance() {
+    static getInstance() {
         if (!this._instance) {
             this._instance = new AudioPlayer();
+            this._instance.notation = Notation.getInstance();
         }
         return this._instance;
     }
@@ -44,17 +47,30 @@ export class AudioPlayer {
             this.InitBarAudioData();
         }
 
-        console.log('Playback started.');
+        this.PlayNotes();
     }
 
-    async PlayNotes() {
+    PlayNotes() {
         if (this.barAudioData.length === 0) {
             return;
         }
+        for (let i = 0; i < this.barAudioData.length; i++) {
+            this.PlayNote(i);
+        }
     }
 
-    PlayNextNote(dataIndex: number) {
+    PlayNote(dataIndex: number) {
         const data = this.barAudioData[dataIndex];
+        const duration = data.timeLeft;
+        data.synth = new Synth();
+        const now = Tone.now();
+        data.timeStarted = now;
+
+        this.scheduler.AddEvent(() => {
+            if (this.InitNextNote(dataIndex)) this.PlayNote(dataIndex);
+        }, duration);
+
+        data.synth.triggerAttackRelease('C4', duration, now);
     }
 
     GetStaveIndex(): number {
@@ -133,18 +149,18 @@ export class AudioPlayer {
         }
     }
 
-    InitNextNote(dataIndex: number) {
+    InitNextNote(dataIndex: number): boolean {
         const data = this.barAudioData[dataIndex];
         const voice = data.voice;
         const noteIndex = data.noteIndex;
         if (noteIndex === voice.NotesLength - 1) {
             this.barAudioData.splice(dataIndex, 1);
-            return;
+            return false;
         }
 
         data.noteIndex++;
         data.timeLeft = 500;
-        data.synth = new Tone.Synth();
+        return true;
     }
 
     Stop() {
