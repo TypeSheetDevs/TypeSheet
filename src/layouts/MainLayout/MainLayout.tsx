@@ -7,7 +7,6 @@ import TopBarMainLayout from '@components/TopBar/TopBarMainLayout';
 
 function MainLayout(): JSX.Element {
   const [showConfigManager, setShowConfigManager] = useState<boolean>(false);
-  const visible = false;
 
   useEffect(() => {
     const toggleConfigManagerHandler = () => {
