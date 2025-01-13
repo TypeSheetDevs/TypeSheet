@@ -65,6 +65,7 @@ export class Notation implements IRecoverable<NotationData> {
             const notationData = await this._fileService.ReadJsonFile<NotationData>(filePath);
             this.FromData(notationData);
             EventNotifier.Notify('needsRender');
+            console.log(this);
         } catch (error) {
             console.warn(`Error reading from JSON: ${(error as Error).message}`);
         }

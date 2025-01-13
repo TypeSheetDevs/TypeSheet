@@ -8,7 +8,7 @@ import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
-import { DynamicModifier } from '@services/notationRenderer/notes/Voice.enums';
+import { HairpinType } from '@services/notationRenderer/notes/Voice.enums';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
@@ -33,7 +33,8 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
 
         this.addVoice(voice1);
         this.addVoice(voice2);
-        this.voices[0].AddDynamic(DynamicModifier.Forte, 2, 1);
+        this.voices[0].AddTie(0, 2);
+        this.voices[0].AddHairpin(0, 2, HairpinType.Crescendo);
     }
 
     get NextPositionX(): number {

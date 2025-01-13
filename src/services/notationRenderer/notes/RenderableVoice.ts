@@ -12,7 +12,11 @@ import {
 } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
-import { DynamicModifier, HairpinType } from '@services/notationRenderer/notes/Voice.enums';
+import {
+    DynamicModifier,
+    HairpinType,
+    ParseDynamicModifier,
+} from '@services/notationRenderer/notes/Voice.enums';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableVoiceData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
@@ -329,11 +333,31 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
     }
 
     static FromData(data: RenderableVoiceData): RenderableVoice {
-        return new RenderableVoice(
+        const voice = new RenderableVoice(
             data.beatValue,
             (data.notesData ?? [])
                 .map(noteData => RenderableNote.FromData(noteData))
                 .filter(note => note),
         );
+        voice.ties = (data.ties ?? []).map(tie => {
+            return { firstIndex: tie.firstIndex, lastIndex: tie.lastIndex };
+        });
+        voice.hairpins = (data.hairpins ?? []).map(hairpin => {
+            return {
+                firstIndex: hairpin.firstIndex,
+                lastIndex: hairpin.firstIndex,
+                type: hairpin.type,
+                position: hairpin.position,
+            };
+        });
+        voice.dynamics = (data.dynamics ?? [])
+            .filter(dynamic => ParseDynamicModifier(dynamic.modifier))
+            .map(dynamic => ({
+                modifier: ParseDynamicModifier(dynamic.modifier)!,
+                noteIndex: dynamic.noteIndex,
+                line: dynamic.line,
+            }));
+
+        return voice;
     }
 }
