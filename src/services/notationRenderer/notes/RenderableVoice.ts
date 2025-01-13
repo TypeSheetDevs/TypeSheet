@@ -1,16 +1,37 @@
-import { Beam, Formatter, Note, RenderContext, Stave, StaveTie, Voice } from 'vexflow';
+import {
+    Beam,
+    Formatter,
+    RenderContext,
+    Stave,
+    StaveHairpin,
+    StaveTie,
+    TextDynamics,
+    TickContext,
+    Vex,
+    Voice,
+} from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
+import { DynamicModifier, HairpinType } from '@services/notationRenderer/notes/Voice.enums';
+
+const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
+const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
 export class RenderableVoice implements IRenderable {
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
-    private cachedNotes: Note[] = [];
 
     private readonly notes: RenderableNote[];
-    private readonly ties: [number, number][] = [];
+    private ties: { firstIndex: number; lastIndex: number }[] = [];
+    private hairpins: {
+        firstIndex: number;
+        lastIndex: number;
+        type: HairpinType;
+        position?: number;
+    }[] = [];
     private numBeats: number;
     private beatValue: number;
+    private dynamics: { modifier: DynamicModifier; noteIndex: number; line: number }[] = [];
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
         this.beatValue = beatValue;
@@ -42,9 +63,7 @@ export class RenderableVoice implements IRenderable {
             beat_value: this.beatValue,
         });
 
-        this.cachedNotes = this.notes.map(note => note.GetAsVexFlowNote());
-
-        voice.addTickables(this.cachedNotes);
+        voice.addTickables(this.notes.map(note => note.GetAsVexFlowNote()));
 
         this.cachedVoice = voice;
         this.isVoiceDirty = false;
@@ -62,18 +81,67 @@ export class RenderableVoice implements IRenderable {
         voice.draw(context, bar);
         beams.forEach(beam => beam.setContext(context).draw());
 
+        this.DrawTies(context);
+        this.DrawHairpins(context);
+        this.DrawDynamics(context, bar, voice.getTickables()[0].checkTickContext());
+
+        const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
+        this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
+    }
+
+    private DrawTies(context: RenderContext) {
+        // if needed those could be cached
         this.ties.forEach(tie => {
             const staveTie = new StaveTie({
-                first_note: this.cachedNotes[tie[0]],
-                last_note: this.cachedNotes[tie[1]],
+                first_note: this.notes[tie.firstIndex].GetAsVexFlowNote(),
+                last_note: this.notes[tie.lastIndex].GetAsVexFlowNote(),
                 first_indices: [0],
                 last_indices: [0],
             });
             staveTie.setContext(context).draw();
         });
+    }
 
-        const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
-        this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
+    private DrawHairpins(context: RenderContext) {
+        // if needed those could be cached
+        this.hairpins.forEach(hairpin => {
+            const firstNote = this.notes[hairpin.firstIndex];
+            const lastNote = this.notes[hairpin.lastIndex];
+
+            let usedPosition: number | undefined = hairpin.position;
+            if (usedPosition === undefined) {
+                usedPosition =
+                    firstNote.GetModifierPosition() === POSITION_ABOVE &&
+                    lastNote.GetModifierPosition() === POSITION_ABOVE
+                        ? POSITION_ABOVE
+                        : POSITION_BELOW;
+            }
+
+            const staveHairpin = new StaveHairpin(
+                {
+                    first_note: firstNote.GetAsVexFlowNote(),
+                    last_note: lastNote.GetAsVexFlowNote(),
+                },
+                hairpin.type,
+            );
+            staveHairpin.setPosition(usedPosition);
+
+            staveHairpin.setContext(context).draw();
+        });
+    }
+
+    private DrawDynamics(context: RenderContext, bar: Stave, tickContext: TickContext) {
+        this.dynamics.forEach(dynamic => {
+            const textDynamics = new TextDynamics({
+                text: dynamic.modifier,
+                duration: 'q',
+                line: dynamic.line,
+            });
+            textDynamics.setContext(context);
+            textDynamics.setStave(bar);
+            textDynamics.setTickContext(tickContext);
+            textDynamics.draw();
+        });
     }
 
     GetNoteIndexByPositionX(positionX: number): number {
@@ -103,6 +171,16 @@ export class RenderableVoice implements IRenderable {
                 throw new Error('Index out of bounds.');
             }
             this.notes.splice(index, 0, note);
+
+            this.ties.forEach(tie => {
+                if (tie.firstIndex >= index) tie.firstIndex++;
+                if (tie.lastIndex >= index) tie.lastIndex++;
+            });
+
+            this.hairpins.forEach(hairpin => {
+                if (hairpin.firstIndex >= index) hairpin.firstIndex++;
+                if (hairpin.lastIndex >= index) hairpin.lastIndex++;
+            });
         } else {
             this.notes.push(note);
         }
@@ -117,39 +195,109 @@ export class RenderableVoice implements IRenderable {
         }
         this.notes.splice(index, 1);
 
+        this.ties = this.ties.filter(tie => tie.firstIndex !== index && tie.lastIndex !== index);
+        this.hairpins = this.hairpins.filter(
+            hairpin => hairpin.firstIndex !== index && hairpin.lastIndex !== index,
+        );
+
+        this.ties.forEach(tie => {
+            if (tie.firstIndex > index) tie.firstIndex--;
+            if (tie.lastIndex > index) tie.lastIndex--;
+        });
+
+        this.hairpins.forEach(hairpin => {
+            if (hairpin.firstIndex > index) hairpin.firstIndex--;
+            if (hairpin.lastIndex > index) hairpin.lastIndex--;
+        });
+
         this.numBeats = this.CalculateNumBeats();
         this.isVoiceDirty = true;
     }
 
-    AddTie(startNoteIndex: number, endNoteIndex: number): void {
+    AddTie(firstIndex: number, lastIndex: number): boolean {
         if (
-            startNoteIndex < 0 ||
-            startNoteIndex >= this.notes.length ||
-            endNoteIndex < 0 ||
-            endNoteIndex >= this.notes.length
+            firstIndex < 0 ||
+            firstIndex >= this.notes.length ||
+            lastIndex < 0 ||
+            lastIndex >= this.notes.length
         ) {
-            throw new Error('Index out of bounds for tie.');
+            return false;
         }
 
-        this.ties.push([startNoteIndex, endNoteIndex]);
+        this.ties.push({ firstIndex: firstIndex, lastIndex: lastIndex });
+        return true;
     }
 
-    RemoveTie(startNoteIndex: number, endNoteIndex: number): void {
+    RemoveTie(firstIndex: number, lastIndex: number): void {
         if (
-            startNoteIndex < 0 ||
-            startNoteIndex >= this.notes.length ||
-            endNoteIndex < 0 ||
-            endNoteIndex >= this.notes.length
+            firstIndex < 0 ||
+            firstIndex >= this.notes.length ||
+            lastIndex < 0 ||
+            lastIndex >= this.notes.length
         ) {
-            throw new Error('Index out of bounds for tie.');
+            return;
         }
 
         for (let i = 0; i < this.ties.length; i++) {
-            if (this.ties[i][0] === startNoteIndex && this.ties[i][1] === endNoteIndex) {
+            if (this.ties[i].firstIndex === firstIndex && this.ties[i].lastIndex === lastIndex) {
                 this.ties.splice(i, 1);
                 break;
             }
         }
+    }
+
+    AddHairpin(
+        firstIndex: number,
+        lastIndex: number,
+        type: HairpinType,
+        position?: number,
+    ): boolean {
+        if (
+            firstIndex < 0 ||
+            firstIndex >= this.notes.length ||
+            lastIndex < 0 ||
+            lastIndex >= this.notes.length
+        ) {
+            return false;
+        }
+        for (const hairpin of this.hairpins) {
+            if (firstIndex >= hairpin.firstIndex && firstIndex <= hairpin.lastIndex) {
+                return false;
+            }
+            if (lastIndex >= hairpin.firstIndex && lastIndex <= hairpin.lastIndex) {
+                return false;
+            }
+        }
+        this.hairpins.push({ firstIndex: firstIndex, lastIndex: lastIndex, type, position });
+
+        return true;
+    }
+
+    RemoveHairpin(firstIndex: number) {
+        if (firstIndex < 0 || firstIndex >= this.notes.length) {
+            return;
+        }
+
+        for (let i = 0; i < this.hairpins.length; i++) {
+            if (this.hairpins[i][0] === firstIndex) {
+                this.hairpins.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    // let me know what parameters should RemoveDynamic method have
+    AddDynamic(modifier: DynamicModifier, noteIndex: number, line: number): boolean {
+        if (
+            this.dynamics.findIndex(d => d.noteIndex === noteIndex) !== -1 ||
+            noteIndex < 0 ||
+            noteIndex >= this.notes.length
+        ) {
+            return false;
+        }
+
+        this.dynamics.push({ modifier, noteIndex, line });
+        return true;
     }
 
     private CalculateNumBeats(): number {
