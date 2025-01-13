@@ -24,6 +24,8 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
     private isVoiceDirty: boolean = true;
 
     private readonly notes: RenderableNote[];
+    private numBeats: number;
+    private beatValue: number;
     private ties: { firstIndex: number; lastIndex: number }[] = [];
     private hairpins: {
         firstIndex: number;
@@ -31,8 +33,6 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
         type: HairpinType;
         position?: number;
     }[] = [];
-    private numBeats: number;
-    private beatValue: number;
     private dynamics: { modifier: DynamicModifier; noteIndex: number; line: number }[] = [];
 
     constructor(beatValue: number, notes: RenderableNote[] = []) {
@@ -310,7 +310,22 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
     }
 
     ToData(): RenderableVoiceData {
-        return { beatValue: this.beatValue, notesData: this.notes.map(note => note.ToData()) };
+        return {
+            notesData: this.notes.map(note => note.ToData()),
+            beatValue: this.beatValue,
+            ties: this.ties,
+            hairpins: this.hairpins.map(h => {
+                return {
+                    firstIndex: h.firstIndex,
+                    lastIndex: h.lastIndex,
+                    type: h.type,
+                    position: h.position,
+                };
+            }),
+            dynamics: this.dynamics.map(d => {
+                return { modifier: d.modifier, noteIndex: d.noteIndex, line: d.line };
+            }),
+        };
     }
 
     static FromData(data: RenderableVoiceData): RenderableVoice {
