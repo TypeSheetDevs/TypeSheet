@@ -28,6 +28,10 @@ export class RenderableVoice implements IRenderable {
         this.isVoiceDirty = true;
     }
 
+    get NotesLength(): number {
+        return this.notes.length;
+    }
+
     GetAsVexFlowVoice(): Voice {
         if (this.cachedVoice && !this.isVoiceDirty) {
             return this.cachedVoice;

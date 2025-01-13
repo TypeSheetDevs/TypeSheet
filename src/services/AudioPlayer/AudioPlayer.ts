@@ -3,11 +3,14 @@ import { Notation } from '@services/notationRenderer/Notation';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
 import RenderableStave from '@services/notationRenderer/RenderableStave';
+import { Synth } from 'tone';
 
 type BarAudioData = {
     voice: RenderableVoice;
     noteIndex: number;
+    timeStarted?: number;
     timeLeft: number;
+    synth: Synth;
 };
 
 export class AudioPlayer {
@@ -35,6 +38,10 @@ export class AudioPlayer {
         const barIndex = this.GetBarIndex();
         if (barIndex < 0) {
             return;
+        }
+
+        if (this.barAudioData.length === 0) {
+            this.InitBarAudioData();
         }
 
         console.log('Playback started.');
@@ -83,6 +90,29 @@ export class AudioPlayer {
         }
         this.currentBar = bars[barIndex];
         return barIndex;
+    }
+
+    InitBarAudioData() {
+        for (const voice of this.currentBar!.voices) {
+            this.barAudioData.push({
+                voice: voice,
+                noteIndex: 0,
+                timeLeft: 0,
+                synth: new Tone.Synth().toDestination(),
+            });
+        }
+    }
+
+    InitNextNote(dataIndex: number): boolean {
+        const data = this.barAudioData[dataIndex];
+        const voice = data.voice;
+        const noteIndex = data.noteIndex;
+        if (noteIndex === voice.NotesLength - 1) {
+            return false;
+        }
+        data.noteIndex++;
+        data.synth = new Tone.Synth();
+        return true;
     }
 
     Stop() {
