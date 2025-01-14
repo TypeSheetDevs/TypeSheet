@@ -22,7 +22,7 @@ function TopBar({ buttonsGroups }: { buttonsGroups: Omit<ButtonsGroupProps, 'isL
       ))}
       <OpenCloseButton
         style={{ marginLeft: 'auto', order: 100 }}
-        onToggle={() => EventNotifier.Notify('toggleConfigManager')}
+        onToggle={EventNotifier.NotifyAction('toggleConfigManager')}
       />
     </div>
   );

@@ -48,13 +48,15 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                         options: [
                             {
                                 text: 'Add bar',
-                                onClick: () =>
-                                    EventNotifier.Notify('addNewBar', { newStave: false }),
+                                onClick: EventNotifier.NotifyAction('addNewBar', {
+                                    newStave: false,
+                                }),
                             },
                             {
                                 text: 'Add bar in next line',
-                                onClick: () =>
-                                    EventNotifier.Notify('addNewBar', { newStave: true }),
+                                onClick: EventNotifier.NotifyAction('addNewBar', {
+                                    newStave: true,
+                                }),
                             },
                         ],
                     },
@@ -64,9 +66,29 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                 ],
             },
             {
-                type: 'button',
+                type: 'multiselect',
                 iconPath: getButtonIcon('minus.svg'),
-                onClick: () => {},
+                groups: [
+                    {
+                        options: [
+                            {
+                                text: 'Remove bar',
+                                onClick: EventNotifier.NotifyAction('addNewBar', {
+                                    newStave: false,
+                                }),
+                            },
+                            {
+                                text: 'Remove stave',
+                                onClick: EventNotifier.NotifyAction('addNewBar', {
+                                    newStave: true,
+                                }),
+                            },
+                        ],
+                    },
+                    {
+                        options: [],
+                    },
+                ],
             },
         ],
     },

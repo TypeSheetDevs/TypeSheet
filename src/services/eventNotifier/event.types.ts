@@ -29,4 +29,10 @@ type NotationEvent =
           params: {
               newStave: boolean;
           };
+      }
+    | {
+          name: 'removeBar';
+          params: {
+              stave: boolean;
+          };
       };
