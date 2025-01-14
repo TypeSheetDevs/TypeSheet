@@ -8,7 +8,6 @@ import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
-import { HairpinType } from '@services/notationRenderer/notes/Voice.enums';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
@@ -20,21 +19,24 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     voices: RenderableVoice[] = [];
 
     constructor(ratio?: number) {
+        const notes = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
         this.ratio = ratio ?? 1;
         const voice1 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Quarter, [new Key('e/4')]),
-            new RenderableNote(NoteDuration.Quarter, [new Key('g/4')]),
-            new RenderableNote(NoteDuration.Eighth, [new Key('c/5')], [], true),
-            new RenderableNote(NoteDuration.SixteenthRest, [new Key('a/4')]),
-        ]);
-        const voice2 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Whole, [new Key('a/3')]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
         ]);
 
         this.addVoice(voice1);
-        this.addVoice(voice2);
-        this.voices[0].AddTie(0, 2);
-        this.voices[0].AddHairpin(0, 2, HairpinType.Crescendo);
     }
 
     get NextPositionX(): number {

@@ -23,6 +23,7 @@ export class NotationRenderer {
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
     private selectedBar: RenderableBar | null = null;
+    private selectedStaveIndex: number = -1;
     private state: NotationRendererState = NotationRendererState.Idle;
 
     constructor() {
@@ -32,11 +33,30 @@ export class NotationRenderer {
             EventNotifier.AddListener('resized', this.OnResize.bind(this));
             EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
             EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
+            EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
             return this;
         } else return NotationRenderer._instance;
     }
 
-    private FindBarByPosition(positionX: number, positionY: number) {
+    private AddNewBar(params: EventParams<'addNewBar'>) {
+        if (!this.selectedBar || this.selectedStaveIndex < 0) {
+            this.notation.AddNewBar(params.newStave, this.notation.getStaves().length);
+            return;
+        }
+
+        this.notation.AddNewBar(
+            params.newStave,
+            this.selectedStaveIndex,
+            this.notation
+                .getStaves()
+                [this.selectedStaveIndex].bars.findIndex(b => b === this.selectedBar),
+        );
+    }
+
+    private FindBarByPosition(
+        positionX: number,
+        positionY: number,
+    ): [RenderableBar | null, number] {
         const staves = this.notation.getStaves();
         for (
             let i = this.viewport.startingStaveIndex;
@@ -45,10 +65,10 @@ export class NotationRenderer {
         ) {
             const foundBarIndex = staves[i].GetClickedBar(positionX, positionY);
             if (foundBarIndex != -1) {
-                return staves[i].bars[foundBarIndex];
+                return [staves[i].bars[foundBarIndex], i];
             }
         }
-        return null;
+        return [null, -1];
     }
 
     private DrawVisibleBars() {
@@ -78,6 +98,7 @@ export class NotationRenderer {
 
     ClearSelectedBar(): void {
         this.selectedBar = null;
+        this.selectedStaveIndex = -1;
         this.OnRender();
     }
 
@@ -103,7 +124,10 @@ export class NotationRenderer {
     private OnClick(params: EventParams<'clickedInsideRenderer'>) {
         switch (this.state) {
             case NotationRendererState.Idle: {
-                this.selectedBar = this.FindBarByPosition(params.positionX, params.positionY);
+                [this.selectedBar, this.selectedStaveIndex] = this.FindBarByPosition(
+                    params.positionX,
+                    params.positionY,
+                );
                 break;
             }
             case NotationRendererState.RemovingNote:

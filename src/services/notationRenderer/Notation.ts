@@ -21,10 +21,21 @@ export class Notation implements IRecoverable<NotationData> {
             return this;
         } else return Notation._instance;
     }
+    AddNewBar(newLine: boolean, staveIndex: number, barIndex?: number) {
+        if (staveIndex >= this.staves.length) {
+            this.staves.push(new RenderableStave(1));
+            EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+            return;
+        }
 
-    AddNewStave(numberOfBars?: number) {
-        this.staves.push(new RenderableStave(numberOfBars));
-        EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+        if (newLine) {
+            this.staves.splice(staveIndex + 1, 0, new RenderableStave(1));
+            EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+            return;
+        }
+
+        this.staves[staveIndex].AddNewBar(barIndex);
+        EventNotifier.Notify('needsRender');
     }
 
     getStaves(): RenderableStave[] {
