@@ -7,10 +7,11 @@ import OpenCloseButton from './OpenCloseButton/OpenCloseButton';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 function TopBar() {
-  const buttonsGroups = [
+  const buttonsGroups: Omit<ButtonsGroupProps, 'isLast'>[] = [
     {
       buttons: [
         {
+          type: 'button',
           iconPath: getButtonIcon('music_note.svg'),
           onClick: () => {
             console.log('logo');
@@ -21,18 +22,21 @@ function TopBar() {
     {
       buttons: [
         {
+          type: 'button',
           iconPath: getButtonIcon('skip_previous.svg'),
           onClick: () => {
             console.log('skip previous');
           },
         },
         {
+          type: 'button',
           iconPath: getButtonIcon('play_arrow.svg'),
           onClick: () => {
             console.log('play');
           },
         },
         {
+          type: 'button',
           iconPath: getButtonIcon('skip_next.svg'),
           onClick: () => {
             console.log('skip next');
@@ -41,10 +45,15 @@ function TopBar() {
       ],
     },
     {
-      // test buttonGroup
       buttons: [
         {
-          iconPath: getButtonIcon('skip_previous.svg'),
+          type: 'button',
+          iconPath: getButtonIcon('plus.svg'),
+          onClick: () => {},
+        },
+        {
+          type: 'button',
+          iconPath: getButtonIcon('minus.svg'),
           onClick: () => {},
         },
       ],

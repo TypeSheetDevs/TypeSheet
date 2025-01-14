@@ -1,16 +1,24 @@
 import Button from '@components/TopBar/Button/Button';
 import styles from './ButtonsGroup.styles.module.css';
 
+function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
+  switch (button.type) {
+    case 'button':
+      return (
+        <Button
+          key={index}
+          iconPath={button.iconPath}
+          onClick={button.onClick}
+        />
+      );
+  }
+}
+
 function ButtonsGroup({ buttons, isLast }: ButtonsGroupProps) {
   return (
     <>
       <div className={styles.buttonsGroup}>
-        {buttons.map((button, index) => (
-          <Button
-            key={index}
-            iconPath={button.iconPath}
-            onClick={button.onClick}></Button>
-        ))}
+        {buttons.map((button, index) => getButtonFromType(button, index))}
       </div>
       {isLast && <div className={styles.separator} />}
     </>
