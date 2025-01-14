@@ -111,6 +111,8 @@ ipcMain.handle(
     'save-file',
     async (_, { filePath, content }: { filePath: string; content: string }) => {
         try {
+            const dir = path.dirname(filePath);
+            fs.mkdirSync(dir, { recursive: true });
             fs.writeFileSync(filePath, content, 'utf8');
             return { success: true };
         } catch (error) {

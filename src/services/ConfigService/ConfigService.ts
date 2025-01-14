@@ -1,6 +1,11 @@
 // noinspection ExceptionCaughtLocallyJS
 
-import { AppConfig, SavedParameter, ValueOf } from '@services/ConfigService/ConfigService.types';
+import {
+    AppConfig,
+    SavedParameter,
+    SavedParameterName,
+    ValueOf,
+} from '@services/ConfigService/ConfigService.types';
 import DefaultConfig from '@services/ConfigService/DefaultConfig';
 import { FileService } from '@services/FileService/FileService';
 
@@ -38,8 +43,20 @@ export class ConfigService {
                 throw new Error(`Failed to parse config file: ${(error as Error).message}`);
             }
         } catch (error) {
+            await this.CreateConfigFile();
             console.error('Error loading config:', error);
         }
+    }
+
+    private async CreateConfigFile(): Promise<void> {
+        const appConfig: AppConfig = {
+            configs: Object.entries(DefaultConfig).map(([name, value]) => ({
+                name: name as SavedParameterName,
+                value,
+            })) as SavedParameter[],
+        };
+
+        await this._fileService.SaveFile(this._configFilePath, JSON.stringify(appConfig, null, 2));
     }
 
     public getValue<T extends SavedParameter['name']>(name: T): ValueOf<T> {
