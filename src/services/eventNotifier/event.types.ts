@@ -1,6 +1,8 @@
 type NotationEvent =
     | { name: 'needsRender' }
     | { name: 'toggleConfigManager' }
+    | { name: 'removeBar' }
+    | { name: 'removeStave' }
     | { name: 'numberOfStavesChanged'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }
     | {
@@ -28,11 +30,5 @@ type NotationEvent =
           name: 'addNewBar';
           params: {
               newStave: boolean;
-          };
-      }
-    | {
-          name: 'removeBar';
-          params: {
-              stave: boolean;
           };
       };

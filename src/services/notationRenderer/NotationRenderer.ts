@@ -34,6 +34,8 @@ export class NotationRenderer {
             EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
             EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
             EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
+            EventNotifier.AddListener('removeBar', this.RemoveBar.bind(this));
+            EventNotifier.AddListener('removeStave', this.RemoveStave.bind(this));
             return this;
         } else return NotationRenderer._instance;
     }
@@ -51,6 +53,23 @@ export class NotationRenderer {
                 .getStaves()
                 [this.selectedStaveIndex].bars.findIndex(b => b === this.selectedBar),
         );
+    }
+    //TODO: check for state
+    private RemoveStave() {
+        if (this.selectedStaveIndex < 0) return;
+        this.notation.RemoveStave(this.selectedStaveIndex);
+        this.selectedStaveIndex = this.selectedStaveIndex === 0 ? 0 : this.selectedStaveIndex - 1;
+        this.selectedBar = null;
+    }
+
+    //TODO: check for state
+    private RemoveBar() {
+        // if (this.selectedStaveIndex < 0 || !this.selectedBar) return;
+        // const selectedBarIndex = this.notation
+        //     .getStaves()
+        //     [this.selectedStaveIndex].bars.findIndex(b => b === this.selectedBar);
+        // this.notation.RemoveBar(this.selectedStaveIndex, selectedBarIndex);
+        // this.selectedBar = selectedBarIndex === 0 ? 0 : this.selectedStaveIndex - 1;
     }
 
     private FindBarByPosition(

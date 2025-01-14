@@ -73,15 +73,11 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                         options: [
                             {
                                 text: 'Remove bar',
-                                onClick: EventNotifier.NotifyAction('addNewBar', {
-                                    newStave: false,
-                                }),
+                                onClick: EventNotifier.NotifyAction('removeBar'),
                             },
                             {
                                 text: 'Remove stave',
-                                onClick: EventNotifier.NotifyAction('addNewBar', {
-                                    newStave: true,
-                                }),
+                                onClick: EventNotifier.NotifyAction('removeStave'),
                             },
                         ],
                     },

@@ -37,6 +37,13 @@ export class Notation implements IRecoverable<NotationData> {
         this.staves[staveIndex].AddNewBar(barIndex);
         EventNotifier.Notify('needsRender');
     }
+    RemoveStave(staveIndex: number) {
+        if (staveIndex < 0 || staveIndex >= this.staves.length) return;
+        this.staves.splice(staveIndex, 1);
+        EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+    }
+
+    RemoveBar(staveIndex: number, barIndex: number) {}
 
     getStaves(): RenderableStave[] {
         return this.staves;
