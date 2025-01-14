@@ -47,13 +47,44 @@ function TopBar() {
     {
       buttons: [
         {
-          type: 'button',
+          type: 'multiselect',
           iconPath: getButtonIcon('plus.svg'),
-          onClick: () => {},
+          groups: [
+            {
+              options: [
+                {
+                  onClick: () => console.log('clicked a'),
+                  text: 'a',
+                },
+              ],
+            },
+            {
+              options: [
+                {
+                  onClick: () => console.log('clicked b'),
+                  text: 'b',
+                },
+              ],
+            },
+          ],
         },
         {
           type: 'button',
           iconPath: getButtonIcon('minus.svg'),
+          onClick: () => {},
+        },
+      ],
+    },
+    {
+      buttons: [
+        {
+          type: 'button',
+          iconPath: getButtonIcon('save.svg'),
+          onClick: () => {},
+        },
+        {
+          type: 'button',
+          iconPath: getButtonIcon('load.svg'),
           onClick: () => {},
         },
       ],

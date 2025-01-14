@@ -3,6 +3,6 @@ type ButtonsGroupProps = {
     isLast: boolean;
 };
 
-type ButtonsGroupButtonType = {
-    type: 'button';
-} & ButtonType;
+type ButtonsGroupButtonType =
+    | ({ type: 'button' } & ButtonType)
+    | ({ type: 'multiselect' } & MultiSelectProps);
