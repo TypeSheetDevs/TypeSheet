@@ -1,4 +1,5 @@
 import getButtonIcon from '@assets/icons/getIcon';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
     {
@@ -46,18 +47,19 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                     {
                         options: [
                             {
-                                onClick: () => console.log('clicked a'),
-                                text: 'a',
+                                text: 'Add bar',
+                                onClick: () =>
+                                    EventNotifier.Notify('addNewBar', { newStave: false }),
+                            },
+                            {
+                                text: 'Add bar in next line',
+                                onClick: () =>
+                                    EventNotifier.Notify('addNewBar', { newStave: true }),
                             },
                         ],
                     },
                     {
-                        options: [
-                            {
-                                onClick: () => console.log('clicked b'),
-                                text: 'b',
-                            },
-                        ],
+                        options: [],
                     },
                 ],
             },
