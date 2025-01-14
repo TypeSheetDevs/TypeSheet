@@ -124,7 +124,8 @@ export class NotationRenderer {
 
         const selectedRect = this.selectedBar.Rect;
         this.context
+            .setStrokeStyle('')
             .rect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height)
-            .fill({ fillColor: 'pink' });
+            .stroke();
     }
 }
