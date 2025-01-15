@@ -158,14 +158,13 @@ export class RenderableNote {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
     }
 
-    async Play(startTime: number): Promise<Tone.PolySynth> {
+    Play(startTime: number): Tone.PolySynth {
         if (!this.keys.length) {
             console.warn('No keys to play.');
             return new PolySynth();
         }
 
         if (Rests.includes(this.duration)) {
-            console.log('sraka');
             return new PolySynth();
         }
 

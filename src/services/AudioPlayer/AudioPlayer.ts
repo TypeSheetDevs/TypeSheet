@@ -2,6 +2,7 @@ import * as Tone from 'tone';
 import { Notation } from '@services/notationRenderer/Notation';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
 import RenderableStave from '@services/notationRenderer/RenderableStave';
+import { delay } from '@utils/delay';
 
 export class AudioPlayer {
     private static _instance: AudioPlayer = null!;
@@ -9,6 +10,7 @@ export class AudioPlayer {
     private currentStave: RenderableStave | null = null;
     private currentBar: RenderableBar | null = null;
     private activeSynths: Tone.PolySynth[] = [];
+    private isPlaying: boolean = true;
 
     static getInstance() {
         if (!this._instance) {
@@ -21,45 +23,84 @@ export class AudioPlayer {
     async Play() {
         await Tone.start();
 
-        // const staveIndex = this.GetStaveIndex();
-        // if (staveIndex < 0) {
-        //     return;
-        // }
-        //
-        // const barIndex = this.GetBarIndex();
-        // if (barIndex < 0) {
-        //     return;
-        // }
-        //
-        // if (this.barAudioData.length === 0) {
-        //     this.InitBarAudioData();
-        // }
+        if (!this.currentStave) this.SetStaveToIndex(0);
+        if (!this.currentBar) this.SetBarToIndex(0);
 
-        this.currentBar = new RenderableBar();
+        await this.PlayVoices();
+    }
 
-        this.PlayVoices();
+    private async PlayVoices() {
+        if (!this.currentBar) {
+            console.warn('No current bar to play.');
+            return;
+        }
+        this.isPlaying = true;
+
+        while (this.isPlaying) {
+            this.currentBar.voices.forEach(voice => {
+                let startTime = Tone.now();
+                for (let i = 0; i < voice.NotesLength; i++) {
+                    const note = voice.GetNote(i);
+                    this.activeSynths.push(note.Play(startTime));
+                    startTime += note.DurationValue;
+                }
+            });
+            await delay(this.currentBar.BarDuration);
+            if (this.IsLastBarInStave && this.IsLastStaveInNotation) {
+                this.isPlaying = false;
+                continue;
+            }
+            if (this.IsLastBarInStave) {
+                this.SetStaveToIndex(this.notation.getStaves().indexOf(this.currentStave!) + 1);
+                this.SetBarToIndex(0);
+                continue;
+            }
+            this.SetBarToIndex(this.currentStave!.bars.indexOf(this.currentBar) + 1);
+        }
     }
 
     Stop() {
+        this.isPlaying = false;
         this.activeSynths.forEach(synth => synth.dispose());
         this.activeSynths = [];
 
         console.log('Playback stopped.');
     }
 
-    private PlayVoices() {
-        if (!this.currentBar) {
-            console.warn('No current bar to play.');
+    private SetStaveToIndex(index: number) {
+        const staves = this.notation.getStaves();
+        if (staves.length === 0) {
+            this.currentStave = null;
             return;
         }
+        if (index < 0 || index > staves.length - 1) {
+            index = 0;
+        }
+        this.currentStave = staves[index];
+    }
 
-        this.currentBar.voices.forEach(async voice => {
-            let startTime = Tone.now();
-            for (let i = 0; i < voice.NotesLength; i++) {
-                const note = voice.GetNote(i);
-                this.activeSynths.push(await note.Play(startTime));
-                startTime += note.DurationValue;
-            }
-        });
+    private SetBarToIndex(index: number) {
+        const bars = this.currentStave?.bars;
+        if (!bars || bars.length === 0) {
+            this.currentBar = null;
+            return;
+        }
+        if (index < 0 || index > bars.length - 1) {
+            index = 0;
+        }
+        this.currentBar = bars[index];
+    }
+
+    private get IsLastBarInStave() {
+        const bars = this.currentStave?.bars;
+        if (!bars || bars.length === 0) {
+            return true;
+        }
+        return bars.indexOf(this.currentBar!) === bars.length - 1;
+    }
+
+    private get IsLastStaveInNotation() {
+        const staves = this.notation.getStaves();
+        return staves.indexOf(this.currentStave!) === staves.length - 1;
     }
 }

@@ -19,10 +19,7 @@ class RenderableBar implements IRenderable {
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
         const voice1 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Quarter, [new Key('c/4')]),
-            new RenderableNote(NoteDuration.Quarter, [new Key('d/4')]),
-            new RenderableNote(NoteDuration.QuarterRest, [new Key('e/4')]),
-            new RenderableNote(NoteDuration.Quarter, [new Key('f/4')]),
+            new RenderableNote(NoteDuration.Eighth, [new Key('c/4')]),
         ]);
         const voice2 = new RenderableVoice(4, [
             new RenderableNote(NoteDuration.Half, [new Key('a/3')]),
@@ -31,11 +28,24 @@ class RenderableBar implements IRenderable {
 
         this.addVoice(voice1);
         // this.addVoice(voice2);
-        this.voices[0].AddTie(0, 1);
+        // this.voices[0].AddTie(0, 1);
     }
 
     get NextPositionX(): number {
         return this.currentPosX + this.currentWidth;
+    }
+
+    get BarDuration(): number {
+        const voiceDurations = this.voices.map(voice => {
+            let totalDuration = 0;
+            for (let i = 0; i < voice.NotesLength; i++) {
+                const note = voice.GetNote(i);
+                totalDuration += note.DurationValue;
+            }
+            return totalDuration;
+        });
+
+        return Math.max(...voiceDurations) * 1000;
     }
 
     get NextPositionY(): number {
