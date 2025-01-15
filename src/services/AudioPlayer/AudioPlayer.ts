@@ -28,6 +28,10 @@ export class AudioPlayer {
         return this._instance;
     }
 
+    public get IsPlaying(): boolean {
+        return this.playbackState.isPlaying;
+    }
+
     public async Play(): Promise<void> {
         await Tone.start();
 
@@ -47,6 +51,40 @@ export class AudioPlayer {
         this.ResetSynths();
         this.InitPosition();
         this.playbackState.isStopped = true;
+    }
+
+    MoveToNextBar(): boolean {
+        if (!this.position) return true;
+
+        if (this.IsLastPosition) {
+            this.InitPosition();
+            return true;
+        }
+
+        if (this.IsLastBarInStave) {
+            this.MoveToNextStave();
+            return false;
+        }
+
+        this.MoveToNextBarInStave();
+        return false;
+    }
+
+    MoveToPreviousBar(): boolean {
+        if (!this.position) return true;
+
+        if (this.IsFirstPosition) {
+            this.MoveToLastPosition();
+            return true;
+        }
+
+        if (this.IsFirstBarInStave) {
+            this.MoveToPreviousStave();
+            return false;
+        }
+
+        this.MoveToPreviousBarInStave();
+        return false;
     }
 
     // Private Playback Methods
@@ -100,40 +138,6 @@ export class AudioPlayer {
                 bar: this.GetBarAt(firstStave, 0) ?? null!,
             };
         }
-    }
-
-    private MoveToNextBar(): boolean {
-        if (!this.position) return true;
-
-        if (this.IsLastPosition) {
-            this.InitPosition();
-            return true;
-        }
-
-        if (this.IsLastBarInStave) {
-            this.MoveToNextStave();
-            return false;
-        }
-
-        this.MoveToNextBarInStave();
-        return false;
-    }
-
-    private MoveToPreviousBar(): boolean {
-        if (!this.position) return true;
-
-        if (this.IsFirstPosition) {
-            this.MoveToLastPosition();
-            return true;
-        }
-
-        if (this.IsFirstBarInStave) {
-            this.MoveToPreviousStave();
-            return false;
-        }
-
-        this.MoveToPreviousBarInStave();
-        return false;
     }
 
     // Position Helpers

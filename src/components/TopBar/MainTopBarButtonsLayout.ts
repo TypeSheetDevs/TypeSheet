@@ -18,23 +18,30 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         buttons: [
             {
                 type: 'button',
-                iconPath: getButtonIcon('skip_previous.svg'),
+                iconPath: getButtonIcon('chevron_left.svg'),
                 onClick: () => {
-                    console.log('skip previous');
+                    AudioPlayer.getInstance().MoveToNextBar();
                 },
             },
             {
                 type: 'button',
-                iconPath: getButtonIcon('play_arrow.svg'),
+                iconPath: getButtonIcon('play.svg'),
                 onClick: async () => {
                     await AudioPlayer.getInstance().Play();
                 },
             },
             {
                 type: 'button',
-                iconPath: getButtonIcon('skip_next.svg'),
+                iconPath: getButtonIcon('stop.svg'),
                 onClick: () => {
-                    AudioPlayer.getInstance().Pause();
+                    AudioPlayer.getInstance().Stop();
+                },
+            },
+            {
+                type: 'button',
+                iconPath: getButtonIcon('chevron_right.svg'),
+                onClick: () => {
+                    AudioPlayer.getInstance().MoveToNextBar();
                 },
             },
         ],

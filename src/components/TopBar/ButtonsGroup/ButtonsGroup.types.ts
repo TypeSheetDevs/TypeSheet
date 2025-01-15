@@ -5,4 +5,5 @@ type ButtonsGroupProps = {
 
 type ButtonsGroupButtonType =
     | ({ type: 'button' } & ButtonType)
-    | ({ type: 'multiselect' } & MultiSelectProps);
+    | ({ type: 'multiselect' } & MultiSelectProps)
+    | ({ type: 'toggle' } & ToggleProps);
