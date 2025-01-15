@@ -20,6 +20,12 @@ const api = {
     ): Promise<{ success: boolean; error?: string }> => {
         return ipcRenderer.invoke('save-file', { filePath, content });
     },
+    readFileDialog: (): Promise<{ success: boolean; filePath?: string; error?: string }> => {
+        return ipcRenderer.invoke('read-file-dialog');
+    },
+    saveFileDialog: (): Promise<{ success: boolean; filePath?: string; error?: string }> => {
+        return ipcRenderer.invoke('save-file-dialog');
+    },
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

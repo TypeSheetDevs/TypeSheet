@@ -1,10 +1,17 @@
 // noinspection ExceptionCaughtLocallyJS
 
-import { AppConfig, SavedParameter, ValueOf } from '@services/ConfigService/ConfigService.types';
+import {
+    AppConfig,
+    SavedParameter,
+    SavedParameterName,
+    ValueOf,
+} from '@services/ConfigService/ConfigService.types';
 import DefaultConfig from '@services/ConfigService/DefaultConfig';
+import { FileService } from '@services/FileService/FileService';
 
 export class ConfigService {
     private static _instance: ConfigService | null = null;
+    private _fileService: FileService = FileService.getInstance();
     private _configFilePath = '';
     private _appConfig: AppConfig | null = null;
 
@@ -28,22 +35,28 @@ export class ConfigService {
 
             this._configFilePath = globalPathResponse.path;
 
-            const readFileResponse = await window.api.readFile(this._configFilePath);
-
-            if (!readFileResponse.success || !readFileResponse.content) {
-                throw new Error(
-                    `Failed to read config file: ${readFileResponse.error || 'Unknown error'}`,
-                );
-            }
+            const fileContent = await this._fileService.ReadFile(this._configFilePath);
 
             try {
-                this._appConfig = JSON.parse(readFileResponse.content) as AppConfig;
+                this._appConfig = JSON.parse(fileContent) as AppConfig;
             } catch (error) {
                 throw new Error(`Failed to parse config file: ${(error as Error).message}`);
             }
         } catch (error) {
+            await this.CreateConfigFile();
             console.error('Error loading config:', error);
         }
+    }
+
+    private async CreateConfigFile(): Promise<void> {
+        const appConfig: AppConfig = {
+            configs: Object.entries(DefaultConfig).map(([name, value]) => ({
+                name: name as SavedParameterName,
+                value,
+            })) as SavedParameter[],
+        };
+
+        await this._fileService.SaveFile(this._configFilePath, JSON.stringify(appConfig, null, 2));
     }
 
     public getValue<T extends SavedParameter['name']>(name: T): ValueOf<T> {
@@ -95,11 +108,7 @@ export class ConfigService {
             }
 
             const content = JSON.stringify(this._appConfig, null, 2);
-            const result = await window.api.saveFile(this._configFilePath, content);
-            if (!result.success) {
-                throw new Error(result.error || 'Unknown error occurred while saving the config');
-            }
-
+            await this._fileService.SaveFile(this._configFilePath, content);
             console.log('Configuration saved successfully.');
         } catch (error) {
             console.error('Error saving configuration:', error);

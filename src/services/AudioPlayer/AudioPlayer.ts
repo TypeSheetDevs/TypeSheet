@@ -35,24 +35,22 @@ export class AudioPlayer {
             this.InitPosition();
         }
 
-        await this.playVoices();
+        await this.PlayVoices();
+    }
+
+    public Pause(): void {
+        this.ResetSynths();
+        this.playbackState.isStopped = true;
     }
 
     public Stop(): void {
         this.ResetSynths();
-        this.playbackState.isStopped = true;
-        console.log('Playback stopped.');
-    }
-
-    public Reset(): void {
-        this.ResetSynths();
         this.InitPosition();
         this.playbackState.isStopped = true;
-        console.log('Playback reset.');
     }
 
     // Private Playback Methods
-    private async playVoices(): Promise<void> {
+    private async PlayVoices(): Promise<void> {
         if (!this.position?.bar || this.playbackState.isPlaying) {
             console.warn('Invalid playback state or already playing.');
             return;
@@ -64,11 +62,12 @@ export class AudioPlayer {
             await this.PlayCurrentBar();
 
             if (this.playbackState.isStopped) {
-                this.HandlePlaybackStop();
+                this.playbackState.isStopped = false;
                 break;
             }
 
             if (this.MoveToNextBar()) {
+                this.playbackState.isPlaying = false;
                 break;
             }
         }
@@ -120,22 +119,22 @@ export class AudioPlayer {
         return false;
     }
 
-    // private MoveToPreviousBar(): boolean {
-    //     if (!this.position) return true;
-    //
-    //     if (this.IsFirstPosition) {
-    //         this.MoveToLastPosition();
-    //         return true;
-    //     }
-    //
-    //     if (this.IsFirstBarInStave) {
-    //         this.MoveToPreviousStave();
-    //         return false;
-    //     }
-    //
-    //     this.MoveToPreviousBarInStave();
-    //     return false;
-    // }
+    private MoveToPreviousBar(): boolean {
+        if (!this.position) return true;
+
+        if (this.IsFirstPosition) {
+            this.MoveToLastPosition();
+            return true;
+        }
+
+        if (this.IsFirstBarInStave) {
+            this.MoveToPreviousStave();
+            return false;
+        }
+
+        this.MoveToPreviousBarInStave();
+        return false;
+    }
 
     // Position Helpers
     private get IsLastPosition(): boolean {
@@ -237,9 +236,5 @@ export class AudioPlayer {
         this.playbackState.isPlaying = false;
         this.activeSynths.forEach(synth => synth.dispose());
         this.activeSynths.clear();
-    }
-
-    private HandlePlaybackStop(): void {
-        this.playbackState.isStopped = false;
     }
 }

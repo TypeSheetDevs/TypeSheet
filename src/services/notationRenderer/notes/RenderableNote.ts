@@ -4,25 +4,28 @@ import {
     NoteDuration,
     NoteDurationValues,
     NoteModifier,
+    ParseNoteDuration,
+    ParseNoteModifier,
     Rests,
 } from '@services/notationRenderer/notes/Notes.enums';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import * as Tone from 'tone';
 import { PolySynth } from 'tone';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
-export class RenderableNote {
-    private readonly keys: Key[];
-    private duration: NoteDuration;
-    private modifiers: NoteModifier[];
-    private dotted: boolean;
-
-    private absoluteX: number = 0;
-    private color?: string;
-
+export class RenderableNote implements IRecoverable<RenderableNoteData> {
     private cachedStaveNote: StaveNote | null = null;
     private isNoteDirty: boolean = true;
+
+    private readonly keys: Key[];
+    private readonly modifiers: NoteModifier[];
+    private duration: NoteDuration;
+    private dotted: boolean;
+    private color?: string;
+    private absoluteX: number = 0;
 
     constructor(
         duration: NoteDuration,
@@ -150,12 +153,43 @@ export class RenderableNote {
         return this.keys.every(key => !this.IsHighPitch(key.Pitch)) ? 1 : -1;
     }
 
-    private GetModifierPosition(): number {
+    GetModifierPosition(): number {
         return this.keys.some(key => this.IsHighPitch(key.Pitch)) ? POSITION_ABOVE : POSITION_BELOW;
     }
 
     private IsHighPitch(pitch: string): boolean {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
+    }
+
+    ToData(): RenderableNoteData {
+        return {
+            keysData: this.keys.map(k => k.ToData()),
+            duration: this.duration,
+            dotted: this.dotted,
+            modifiers: this.modifiers.map(modifier => modifier.toString()),
+            color: this.color,
+        };
+    }
+
+    static FromData(data: RenderableNoteData): RenderableNote {
+        const duration = ParseNoteDuration(data.duration);
+        if (!duration) {
+            throw new Error('Duration not set');
+        }
+        const keys = (data.keysData ?? []).map(key => Key.FromData(key)).filter(key => key);
+        if (keys.length === 0) {
+            throw new Error('Note has no keys.');
+        }
+
+        return new RenderableNote(
+            duration,
+            keys,
+            (data.modifiers ?? [])
+                .map(modifier => ParseNoteModifier(modifier))
+                .filter(modifier => modifier) as NoteModifier[],
+            data.dotted,
+            data.color,
+        );
     }
 
     Play(startTime: number): Tone.PolySynth {

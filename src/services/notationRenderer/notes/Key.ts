@@ -1,11 +1,13 @@
-import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { KeyModifier, ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { KeyData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-export class Key {
+export class Key implements IRecoverable<KeyData> {
     private pitch: string;
-    private modifier: KeyModifier | null = null;
+    private modifier?: KeyModifier;
     private isKeyDirty: boolean = false;
 
-    constructor(pitch: string, modifier: KeyModifier | null = null) {
+    constructor(pitch: string, modifier?: KeyModifier) {
         this.pitch = pitch;
         this.modifier = modifier;
     }
@@ -17,10 +19,6 @@ export class Key {
     set Pitch(value: string) {
         this.pitch = value;
         this.isKeyDirty = true;
-    }
-
-    get Modifier(): KeyModifier | null {
-        return this.modifier;
     }
 
     set Modifier(modifier: KeyModifier) {
@@ -36,5 +34,13 @@ export class Key {
 
     SetNotDirty() {
         this.isKeyDirty = false;
+    }
+
+    ToData(): KeyData {
+        return { pitch: this.pitch, modifier: this.modifier };
+    }
+
+    static FromData(data: KeyData): Key {
+        return new Key(data.pitch, ParseKeyModifier(data.modifier));
     }
 }

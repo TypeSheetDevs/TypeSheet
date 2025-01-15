@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron';
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron';
 import path, { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
@@ -111,6 +111,8 @@ ipcMain.handle(
     'save-file',
     async (_, { filePath, content }: { filePath: string; content: string }) => {
         try {
+            const dir = path.dirname(filePath);
+            fs.mkdirSync(dir, { recursive: true });
             fs.writeFileSync(filePath, content, 'utf8');
             return { success: true };
         } catch (error) {
@@ -118,3 +120,41 @@ ipcMain.handle(
         }
     },
 );
+
+// IPC handler for opening a file dialog
+ipcMain.handle('read-file-dialog', async () => {
+    try {
+        const result = await dialog.showOpenDialog({
+            title: 'Select a File',
+            buttonLabel: 'Open',
+            properties: ['openFile'], // Allow only single file selection
+            filters: [{ name: 'JSON Files', extensions: ['json'] }],
+        });
+
+        if (result.canceled) {
+            return { success: false, error: 'File selection was canceled' };
+        }
+
+        return { success: true, filePath: result.filePaths[0] };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+});
+
+ipcMain.handle('save-file-dialog', async () => {
+    try {
+        const result = await dialog.showSaveDialog({
+            title: 'Save File',
+            buttonLabel: 'Save',
+            filters: [{ name: 'JSON File', extensions: ['json'] }],
+        });
+
+        if (result.canceled) {
+            return { success: false, error: 'Save operation was canceled' };
+        }
+
+        return { success: true, filePath: result.filePath };
+    } catch (error) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+});

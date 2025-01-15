@@ -4,6 +4,9 @@
     border: none;
     border-radius: 10%;
     background-color: transparent;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
 }
 
 .button:hover {

@@ -6,8 +6,10 @@ import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote'
 import { Key } from '@services/notationRenderer/notes/Key';
 import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 
-class RenderableBar implements IRenderable {
+class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
     private currentPosY = 0;
     private currentWidth = 0;
@@ -17,18 +19,24 @@ class RenderableBar implements IRenderable {
     voices: RenderableVoice[] = [];
 
     constructor(ratio?: number) {
+        const notes = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
         this.ratio = ratio ?? 1;
         const voice1 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Eighth, [new Key('c/4')]),
-        ]);
-        const voice2 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Half, [new Key('a/3')]),
-            new RenderableNote(NoteDuration.Half, [new Key('a/3')]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
+            new RenderableNote(NoteDuration.Quarter, [
+                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
+            ]),
         ]);
 
         this.addVoice(voice1);
-        // this.addVoice(voice2);
-        // this.voices[0].AddTie(0, 1);
     }
 
     get NextPositionX(): number {
@@ -109,6 +117,18 @@ class RenderableBar implements IRenderable {
             throw new Error('Index out of bounds.');
         }
         this.voices.splice(index, 1);
+    }
+
+    ToData(): RenderableBarData {
+        return { ratio: this.ratio, voicesData: this.voices.map(voice => voice.ToData()) };
+    }
+
+    static FromData(data: RenderableBarData): RenderableBar {
+        const bar = new RenderableBar(data.ratio);
+        bar.voices = (data.voicesData ?? [])
+            .map(voiceData => RenderableVoice.FromData(voiceData))
+            .filter(voice => voice);
+        return bar;
     }
 }
 
