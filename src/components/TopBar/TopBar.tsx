@@ -5,6 +5,7 @@ import ButtonsGroup from '@components/ButtonsGroup/ButtonsGroup';
 import getButtonIcon from '@assets/icons/getIcon';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
 
 function TopBar() {
   const [buttonsGroups, setButtonsGroups] = useState<ButtonsGroupType[]>([
@@ -28,14 +29,14 @@ function TopBar() {
         },
         {
           iconPath: getButtonIcon('play_arrow.svg'),
-          onClick: () => {
-            console.log('play');
+          onClick: async () => {
+            await AudioPlayer.getInstance().Play();
           },
         },
         {
           iconPath: getButtonIcon('skip_next.svg'),
           onClick: () => {
-            console.log('skip next');
+            AudioPlayer.getInstance().Stop();
           },
         },
       ],

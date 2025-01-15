@@ -19,18 +19,18 @@ class RenderableBar implements IRenderable {
     constructor(ratio?: number) {
         this.ratio = ratio ?? 1;
         const voice1 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Quarter, [new Key('e/4')]),
-            new RenderableNote(NoteDuration.Quarter, [new Key('g/4')]),
-            new RenderableNote(NoteDuration.Eighth, [new Key('c/5')], [], true),
-            new RenderableNote(NoteDuration.SixteenthRest, [new Key('a/4')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('c/4')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('d/4')]),
+            new RenderableNote(NoteDuration.QuarterRest, [new Key('e/4')]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('f/4')]),
         ]);
         const voice2 = new RenderableVoice(4, [
             new RenderableNote(NoteDuration.Half, [new Key('a/3')]),
-            new RenderableNote(NoteDuration.HalfRest, [new Key('a/3')]),
+            new RenderableNote(NoteDuration.Half, [new Key('a/3')]),
         ]);
 
         this.addVoice(voice1);
-        this.addVoice(voice2);
+        // this.addVoice(voice2);
         this.voices[0].AddTie(0, 1);
     }
 

@@ -4,7 +4,10 @@ import {
     NoteDuration,
     NoteDurationValues,
     NoteModifier,
+    Rests,
 } from '@services/notationRenderer/notes/Notes.enums';
+import * as Tone from 'tone';
+import { PolySynth } from 'tone';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -153,5 +156,28 @@ export class RenderableNote {
 
     private IsHighPitch(pitch: string): boolean {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
+    }
+
+    async Play(startTime: number): Promise<Tone.PolySynth> {
+        if (!this.keys.length) {
+            console.warn('No keys to play.');
+            return new PolySynth();
+        }
+
+        if (Rests.includes(this.duration)) {
+            console.log('sraka');
+            return new PolySynth();
+        }
+
+        const synth = new Tone.PolySynth().toDestination();
+
+        const pitches = this.keys.map(key => {
+            const [pitch, octave] = key.Pitch.split('/');
+            return `${pitch}${octave}`;
+        });
+
+        synth.triggerAttackRelease(pitches, this.DurationValue, startTime);
+
+        return synth;
     }
 }
