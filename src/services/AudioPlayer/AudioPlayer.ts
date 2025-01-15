@@ -10,7 +10,8 @@ export class AudioPlayer {
     private currentStave: RenderableStave | null = null;
     private currentBar: RenderableBar | null = null;
     private activeSynths: Tone.PolySynth[] = [];
-    private isPlaying: boolean = true;
+    private isPlaying: boolean = false;
+    private isStopped: boolean = false;
 
     static getInstance() {
         if (!this._instance) {
@@ -34,6 +35,11 @@ export class AudioPlayer {
             console.warn('No current bar to play.');
             return;
         }
+        if (this.isPlaying) {
+            return;
+        }
+        this.ResetSynths();
+
         this.isPlaying = true;
 
         while (this.isPlaying) {
@@ -46,11 +52,23 @@ export class AudioPlayer {
                 }
             });
             await delay(this.currentBar.BarDuration);
+            if (this.isStopped) {
+                this.isStopped = false;
+                return;
+            }
+
+            console.log(this.IsLastBarInStave);
+            console.log(this.IsLastStaveInNotation);
+
             if (this.IsLastBarInStave && this.IsLastStaveInNotation) {
+                console.log('jeden');
                 this.isPlaying = false;
-                continue;
+                this.SetStaveToIndex(0);
+                this.SetBarToIndex(0);
+                return;
             }
             if (this.IsLastBarInStave) {
+                console.log('dwa');
                 this.SetStaveToIndex(this.notation.getStaves().indexOf(this.currentStave!) + 1);
                 this.SetBarToIndex(0);
                 continue;
@@ -60,11 +78,23 @@ export class AudioPlayer {
     }
 
     Stop() {
+        this.ResetSynths();
+        console.log('Playback stopped.');
+    }
+
+    Reset() {
+        this.ResetSynths();
+        this.SetStaveToIndex(0);
+        this.SetBarToIndex(0);
+
+        console.log('Playback reset.');
+    }
+
+    private ResetSynths() {
         this.isPlaying = false;
         this.activeSynths.forEach(synth => synth.dispose());
         this.activeSynths = [];
-
-        console.log('Playback stopped.');
+        this.isStopped = true;
     }
 
     private SetStaveToIndex(index: number) {
