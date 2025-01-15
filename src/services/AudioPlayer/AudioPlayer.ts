@@ -12,7 +12,7 @@ interface PlaybackPosition {
 
 export class AudioPlayer {
     private static _instance: AudioPlayer | null = null;
-    private notation: Notation;
+    private notation: Notation = null!;
     private position: PlaybackPosition | null = null;
     private activeSynths: Set<Tone.PolySynth> = new Set();
     private playbackState = {
@@ -20,7 +20,7 @@ export class AudioPlayer {
         isStopped: false,
     };
 
-    static getInstance(): AudioPlayer {
+    public static getInstance(): AudioPlayer {
         if (!this._instance) {
             this._instance = new AudioPlayer();
             this._instance.notation = Notation.getInstance();
@@ -28,7 +28,7 @@ export class AudioPlayer {
         return this._instance;
     }
 
-    async Play(): Promise<void> {
+    public async Play(): Promise<void> {
         await Tone.start();
 
         if (!this.position) {
@@ -38,13 +38,13 @@ export class AudioPlayer {
         await this.playVoices();
     }
 
-    Stop(): void {
+    public Stop(): void {
         this.ResetSynths();
         this.playbackState.isStopped = true;
         console.log('Playback stopped.');
     }
 
-    Reset(): void {
+    public Reset(): void {
         this.ResetSynths();
         this.InitPosition();
         this.playbackState.isStopped = true;
@@ -120,22 +120,22 @@ export class AudioPlayer {
         return false;
     }
 
-    private MoveToPreviousBar(): boolean {
-        if (!this.position) return true;
-
-        if (this.IsFirstPosition) {
-            this.MoveToLastPosition();
-            return true;
-        }
-
-        if (this.IsFirstBarInStave) {
-            this.MoveToPreviousStave();
-            return false;
-        }
-
-        this.MoveToPreviousBarInStave();
-        return false;
-    }
+    // private MoveToPreviousBar(): boolean {
+    //     if (!this.position) return true;
+    //
+    //     if (this.IsFirstPosition) {
+    //         this.MoveToLastPosition();
+    //         return true;
+    //     }
+    //
+    //     if (this.IsFirstBarInStave) {
+    //         this.MoveToPreviousStave();
+    //         return false;
+    //     }
+    //
+    //     this.MoveToPreviousBarInStave();
+    //     return false;
+    // }
 
     // Position Helpers
     private get IsLastPosition(): boolean {
