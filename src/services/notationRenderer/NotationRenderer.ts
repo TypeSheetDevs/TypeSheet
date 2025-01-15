@@ -2,7 +2,6 @@ import { RenderContext, Stave } from 'vexflow';
 import { Notation } from './Notation';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
@@ -22,7 +21,7 @@ export class NotationRenderer {
 
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
-    private selectedBar: RenderableBar | null = null;
+    private selectedBarIndex: number = -1;
     private selectedStaveIndex: number = -1;
     private state: NotationRendererState = NotationRendererState.Idle;
 
@@ -41,41 +40,32 @@ export class NotationRenderer {
     }
 
     private AddNewBar(params: EventParams<'addNewBar'>) {
-        if (!this.selectedBar || this.selectedStaveIndex < 0) {
+        if (this.selectedBarIndex < 0 || this.selectedStaveIndex < 0) {
             this.notation.AddNewBar(params.newStave, this.notation.getStaves().length);
             return;
         }
 
-        this.notation.AddNewBar(
-            params.newStave,
-            this.selectedStaveIndex,
-            this.notation
-                .getStaves()
-                [this.selectedStaveIndex].bars.findIndex(b => b === this.selectedBar),
-        );
+        this.notation.AddNewBar(params.newStave, this.selectedStaveIndex, this.selectedBarIndex);
     }
     //TODO: check for state
     private RemoveStave() {
         if (this.selectedStaveIndex < 0) return;
-        this.notation.RemoveStave(this.selectedStaveIndex);
-        this.selectedStaveIndex = this.selectedStaveIndex === 0 ? 0 : this.selectedStaveIndex - 1;
-        this.selectedBar = null;
+        this.selectedStaveIndex = this.notation.RemoveStave(this.selectedStaveIndex);
+        this.selectedBarIndex = -1;
+        this.OnRender();
     }
 
     //TODO: check for state
     private RemoveBar() {
-        // if (this.selectedStaveIndex < 0 || !this.selectedBar) return;
-        // const selectedBarIndex = this.notation
-        //     .getStaves()
-        //     [this.selectedStaveIndex].bars.findIndex(b => b === this.selectedBar);
-        // this.notation.RemoveBar(this.selectedStaveIndex, selectedBarIndex);
-        // this.selectedBar = selectedBarIndex === 0 ? 0 : this.selectedStaveIndex - 1;
+        if (this.selectedStaveIndex < 0 || this.selectedBarIndex < 0) return;
+        [this.selectedStaveIndex, this.selectedBarIndex] = this.notation.RemoveBar(
+            this.selectedStaveIndex,
+            this.selectedBarIndex,
+        );
+        this.OnRender();
     }
 
-    private FindBarByPosition(
-        positionX: number,
-        positionY: number,
-    ): [RenderableBar | null, number] {
+    private FindBarIndexByPosition(positionX: number, positionY: number): [number, number] {
         const staves = this.notation.getStaves();
         for (
             let i = this.viewport.startingStaveIndex;
@@ -84,10 +74,10 @@ export class NotationRenderer {
         ) {
             const foundBarIndex = staves[i].GetClickedBar(positionX, positionY);
             if (foundBarIndex != -1) {
-                return [staves[i].bars[foundBarIndex], i];
+                return [i, foundBarIndex];
             }
         }
-        return [null, -1];
+        return [-1, -1];
     }
 
     private DrawVisibleBars() {
@@ -106,6 +96,10 @@ export class NotationRenderer {
             );
     }
 
+    get SelectedBar() {
+        return this.notation.GetBar(this.selectedStaveIndex, this.selectedBarIndex);
+    }
+
     get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
         return (
@@ -115,8 +109,8 @@ export class NotationRenderer {
         );
     }
 
-    ClearSelectedBar(): void {
-        this.selectedBar = null;
+    ClearBarSelection(): void {
+        this.selectedBarIndex = -1;
         this.selectedStaveIndex = -1;
         this.OnRender();
     }
@@ -143,14 +137,14 @@ export class NotationRenderer {
     private OnClick(params: EventParams<'clickedInsideRenderer'>) {
         switch (this.state) {
             case NotationRendererState.Idle: {
-                [this.selectedBar, this.selectedStaveIndex] = this.FindBarByPosition(
+                [this.selectedStaveIndex, this.selectedBarIndex] = this.FindBarIndexByPosition(
                     params.positionX,
                     params.positionY,
                 );
                 break;
             }
             case NotationRendererState.RemovingNote:
-                this.selectedBar?.removeClickedNote(params.positionX);
+                this.SelectedBar?.removeClickedNote(params.positionX);
                 break;
         }
 
@@ -163,9 +157,9 @@ export class NotationRenderer {
         this.context.clear();
         this.DrawVisibleBars();
 
-        if (!this.selectedBar) return;
+        if (!this.SelectedBar) return;
 
-        const selectedRect = this.selectedBar.Rect;
+        const selectedRect = this.SelectedBar.Rect;
         this.context
             .setStrokeStyle('')
             .rect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height)
