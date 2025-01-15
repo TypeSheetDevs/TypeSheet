@@ -16,6 +16,16 @@ class EventNotifier {
         window.dispatchEvent(eventToSend);
     }
 
+    static NotifyAction<N extends NotationEventName>(
+        name: N,
+        ...[params]: Extract<NotationEvent, { name: N }> extends { params: infer P } ? [P] : []
+    ) {
+        return () => {
+            const eventToSend = new CustomEvent(name, { detail: params ?? null });
+            window.dispatchEvent(eventToSend);
+        };
+    }
+
     static AddListener<T extends NotationEventName>(eventName: T, handler: Handlers[T]): void {
         const key = EventNotifier.CreateKey(eventName, handler);
 

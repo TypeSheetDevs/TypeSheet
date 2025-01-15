@@ -1,8 +1,17 @@
 type NotationEvent =
     | { name: 'needsRender' }
+    | { name: 'toggleConfigManager' }
+    | { name: 'removeBar' }
+    | { name: 'removeStave' }
     | { name: 'numberOfStavesChanged'; params: number }
-    | { name: 'resized'; params: { width: number; height: number } }
     | { name: 'viewportChanged'; params: RenderArguments }
+    | {
+          name: 'resized';
+          params: {
+              width: number;
+              height: number;
+          };
+      }
     | {
           name: 'clickedInsideRenderer';
           params: {
@@ -17,4 +26,9 @@ type NotationEvent =
               positionY: number;
           };
       }
-    | { name: 'toggleConfigManager' };
+    | {
+          name: 'addNewBar';
+          params: {
+              newStave: boolean;
+          };
+      };

@@ -18,6 +18,22 @@ class RenderableStave implements IRenderable, IRecoverable<RenderableStaveData> 
         }
     }
 
+    AddNewBar(barIndex?: number) {
+        if (!barIndex || barIndex >= this.bars.length) {
+            this.bars.push(new RenderableBar());
+            return;
+        }
+
+        this.bars.splice(barIndex + 1, 0, new RenderableBar());
+    }
+
+    RemoveBar(barIndex: number) {
+        if (barIndex >= this.bars.length) return false;
+        if (this.bars.length === 1) return true;
+        this.bars.splice(barIndex, 1);
+        return false;
+    }
+
     GetRatioValue(width: number) {
         let acc = 0;
         this.bars.forEach(v => (acc += v.ratio));

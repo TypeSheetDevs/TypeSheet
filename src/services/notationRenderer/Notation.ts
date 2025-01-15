@@ -3,6 +3,7 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
+import RenderableBar from '@services/notationRenderer/RenderableBar';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -21,14 +22,58 @@ export class Notation implements IRecoverable<NotationData> {
             return this;
         } else return Notation._instance;
     }
+    AddNewBar(newLine: boolean, staveIndex: number, barIndex?: number) {
+        if (staveIndex >= this.staves.length) {
+            this.staves.push(new RenderableStave(1));
+            EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+            return;
+        }
 
-    AddNewStave(numberOfBars?: number) {
-        this.staves.push(new RenderableStave(numberOfBars));
+        if (newLine) {
+            this.staves.splice(staveIndex + 1, 0, new RenderableStave(1));
+            EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+            return;
+        }
+
+        this.staves[staveIndex].AddNewBar(barIndex);
+        EventNotifier.Notify('needsRender');
+    }
+
+    RemoveStave(staveIndex: number) {
+        if (staveIndex < 0 || staveIndex >= this.staves.length) return -1;
+        this.staves.splice(staveIndex, 1);
         EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+        return staveIndex === 0 ? 0 : staveIndex - 1;
+    }
+
+    RemoveBar(staveIndex: number, barIndex: number) {
+        if (staveIndex < 0 || staveIndex >= this.staves.length) return [-1, -1];
+
+        const shouldRemoveStave = this.staves[staveIndex].RemoveBar(barIndex);
+
+        if (shouldRemoveStave) {
+            const nextStaveIndex = this.RemoveStave(staveIndex);
+            EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
+            return [nextStaveIndex, this.staves[nextStaveIndex].bars.length];
+        }
+
+        EventNotifier.Notify('needsRender');
+        return [staveIndex, barIndex === 0 ? 0 : barIndex - 1];
     }
 
     getStaves(): RenderableStave[] {
         return this.staves;
+    }
+
+    GetBar(staveIndex: number, barIndex: number): RenderableBar | null {
+        if (
+            staveIndex < 0 ||
+            staveIndex >= this.staves.length ||
+            barIndex < 0 ||
+            barIndex >= this.staves[staveIndex].bars.length
+        )
+            return null;
+        return this.staves[staveIndex].bars[barIndex];
     }
 
     get Title(): string {

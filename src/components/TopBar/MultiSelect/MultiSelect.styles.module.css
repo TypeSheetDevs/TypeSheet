@@ -1,0 +1,80 @@
+.button {
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.2s ease;
+    border: none;
+    border-radius: 10%;
+    background-color: transparent;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.button:hover {
+    /* TODO: config extraction */
+    background-color: rgba(0, 186, 199, 0.7);
+}
+.button:hover .card {
+    display: flex;
+}
+
+.card {
+    top: 1.5rem;
+    left: 0;
+    position: absolute;
+    font-family: sans-serif;
+    width: 200px;
+
+    background-color: rgba(36, 40, 50, 1);
+
+    border-radius: 10px;
+    padding: 15px 0px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card .separator {
+    border-top: 1.5px solid #42434a;
+}
+
+.card .list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0px 10px;
+}
+
+.card .list .element {
+    user-select: none;
+    display: flex;
+    align-items: center;
+    color: #7e8590;
+    gap: 10px;
+    transition: all 0.3s ease-out;
+    padding: 4px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.card .list .element svg {
+    width: 19px;
+    height: 19px;
+    transition: all 0.3s ease-out;
+}
+
+.card .list .element .label {
+    font-weight: 600;
+}
+
+.card .list .element:hover {
+    background-color: rgba(0, 186, 199, 0.7);
+    color: #ffffff;
+    transform: translate(1px, -1px);
+}
+
+.card .list .element:active {
+    transform: scale(0.99);
+}

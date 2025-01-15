@@ -14,7 +14,7 @@ function usePages(currentPageDefault: number) {
     const changeViewport = (page: number, clearSelected: boolean = true) => {
         const startingStaveIndex = page * stavesPerPage - stavesPerPage;
         const lastStaveIndex = startingStaveIndex + stavesPerPage - 1;
-        if (clearSelected) NotationRenderer.getInstance().ClearSelectedBar();
+        if (clearSelected) NotationRenderer.getInstance().ClearBarSelection();
         EventNotifier.Notify('viewportChanged', {
             lastStaveIndex: lastStaveIndex,
             startingStaveIndex: startingStaveIndex,

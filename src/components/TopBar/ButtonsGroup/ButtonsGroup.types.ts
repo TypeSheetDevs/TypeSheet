@@ -1,4 +1,8 @@
 type ButtonsGroupProps = {
-    buttons: ButtonType[];
+    buttons: ButtonsGroupButtonType[];
     isLast: boolean;
 };
+
+type ButtonsGroupButtonType =
+    | ({ type: 'button' } & ButtonType)
+    | ({ type: 'multiselect' } & MultiSelectProps);
