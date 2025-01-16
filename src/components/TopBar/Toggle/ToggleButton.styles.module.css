@@ -1,0 +1,15 @@
+.toggle-button {
+    display: flex;
+    transition: background-color 0.2s ease;
+    border: none;
+    border-radius: 10%;
+    background-color: transparent;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggle-button:hover {
+    /* TODO: config extraction */
+    background-color: rgba(0, 186, 199, 0.7);
+}

@@ -19,6 +19,7 @@ export class AudioPlayer {
         isPlaying: false,
         isStopped: false,
     };
+    private stateChanged = false;
 
     public static getInstance(): AudioPlayer {
         if (!this._instance) {
@@ -28,8 +29,8 @@ export class AudioPlayer {
         return this._instance;
     }
 
-    public get IsPlaying(): boolean {
-        return this.playbackState.isPlaying;
+    public get StateChanged(): boolean {
+        return this.stateChanged;
     }
 
     public async Play(): Promise<void> {

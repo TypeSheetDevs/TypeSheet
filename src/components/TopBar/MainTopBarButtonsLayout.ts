@@ -24,11 +24,12 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                 },
             },
             {
-                type: 'button',
-                iconPath: getButtonIcon('play.svg'),
-                onClick: async () => {
-                    await AudioPlayer.getInstance().Play();
-                },
+                type: 'toggle',
+                iconPath1: getButtonIcon('play.svg'),
+                iconPath2: getButtonIcon('pause.svg'),
+                onClick1: () => AudioPlayer.getInstance().Play(),
+                onClick2: () => AudioPlayer.getInstance().Pause(),
+                toggleFunction: () => AudioPlayer.getInstance().StateChanged,
             },
             {
                 type: 'button',
