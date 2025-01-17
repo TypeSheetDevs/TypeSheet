@@ -21,7 +21,7 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                 type: 'button',
                 iconPath: getButtonIcon('chevron_left.svg'),
                 onClick: () => {
-                    AudioPlayer.getInstance().MoveToNextBar();
+                    AudioPlayer.getInstance().MoveToPreviousBar();
                 },
             },
             {

@@ -15,6 +15,7 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosY = 0;
     private currentWidth = 0;
     private currentHeight = 0;
+    private fillColor: string | undefined;
 
     ratio: number;
     voices: RenderableVoice[] = [];
@@ -70,6 +71,14 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         };
     }
 
+    set FillColor(value: string) {
+        this.fillColor = value;
+    }
+
+    ResetColor(): void {
+        this.fillColor = undefined;
+    }
+
     isClicked(mousePosX: number, mousePosY: number): boolean {
         return (
             mousePosX >= this.currentPosX &&
@@ -94,6 +103,9 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
 
     Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
         const bar = new Stave(positionX, positionY, length);
+        if (this.fillColor) {
+            bar.setStyle({ strokeStyle: this.fillColor });
+        }
         bar.setContext(context).draw();
         this.currentPosX = bar.getX();
         this.currentPosY = bar.getY();
