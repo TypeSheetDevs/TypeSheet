@@ -24,6 +24,17 @@ export function ParseNoteDuration(durationString: string): NoteDuration | undefi
     return undefined;
 }
 
+export const Rests = [
+    NoteDuration.WholeRest,
+    NoteDuration.HalfRest,
+    NoteDuration.QuarterRest,
+    NoteDuration.EighthRest,
+    NoteDuration.SixteenthRest,
+    NoteDuration.ThirtySecondRest,
+    NoteDuration.SixtyFourthRest,
+    NoteDuration.OneTwentyEighthRest,
+];
+
 export const NoteDurationValues = {
     [NoteDuration.Whole]: 4,
     [NoteDuration.Half]: 2,

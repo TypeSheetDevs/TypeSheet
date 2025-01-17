@@ -59,6 +59,10 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
         return !this.cachedVoice || this.isVoiceDirty || this.notes.some(k => k.IsDirty);
     }
 
+    get NotesLength(): number {
+        return this.notes.length;
+    }
+
     GetAsVexFlowVoice(): Voice {
         if (!this.isVoiceDirty) {
             return this.cachedVoice!;

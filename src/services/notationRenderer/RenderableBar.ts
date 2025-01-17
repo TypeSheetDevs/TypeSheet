@@ -8,6 +8,7 @@ import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
+import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private currentPosX = 0;
@@ -22,12 +23,8 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         const notes = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
         this.ratio = ratio ?? 1;
         const voice1 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Quarter, [
-                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
-            ]),
-            new RenderableNote(NoteDuration.Quarter, [
-                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
-            ]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('C/4', KeyModifier.Sharp)]),
+            new RenderableNote(NoteDuration.Quarter, [new Key('C/4')]),
             new RenderableNote(NoteDuration.Quarter, [
                 new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
             ]),
@@ -41,6 +38,19 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
 
     get NextPositionX(): number {
         return this.currentPosX + this.currentWidth;
+    }
+
+    get BarDuration(): number {
+        const voiceDurations = this.voices.map(voice => {
+            let totalDuration = 0;
+            for (let i = 0; i < voice.NotesLength; i++) {
+                const note = voice.GetNote(i);
+                totalDuration += note.DurationValue;
+            }
+            return totalDuration;
+        });
+
+        return Math.max(...voiceDurations) * 1000;
     }
 
     get NextPositionY(): number {

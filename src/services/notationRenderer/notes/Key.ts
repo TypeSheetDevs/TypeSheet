@@ -28,8 +28,17 @@ export class Key implements IRecoverable<KeyData> {
         }
     }
 
+    get Modifier(): KeyModifier | undefined {
+        return this.modifier;
+    }
+
     get IsKeyDirty() {
         return this.isKeyDirty;
+    }
+
+    get TonePitch() {
+        const [pitch, octave] = this.pitch.split('/');
+        return `${pitch}${this.modifier ?? ''}${octave}`;
     }
 
     SetNotDirty() {

@@ -1,5 +1,7 @@
 import getButtonIcon from '@assets/icons/getIcon';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
+import { Notation } from '@services/notationRenderer/Notation';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
     {
@@ -17,23 +19,26 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         buttons: [
             {
                 type: 'button',
-                iconPath: getButtonIcon('skip_previous.svg'),
+                iconPath: getButtonIcon('chevron_left.svg'),
                 onClick: () => {
-                    console.log('skip previous');
+                    AudioPlayer.getInstance().MoveToNextBar();
                 },
             },
             {
                 type: 'button',
-                iconPath: getButtonIcon('play_arrow.svg'),
-                onClick: () => {
-                    console.log('play');
-                },
+                iconPath: getButtonIcon('play.svg'),
+                onClick: async () => AudioPlayer.getInstance().Play(),
             },
             {
                 type: 'button',
-                iconPath: getButtonIcon('skip_next.svg'),
+                iconPath: getButtonIcon('pause.svg'),
+                onClick: async () => AudioPlayer.getInstance().Pause(),
+            },
+            {
+                type: 'button',
+                iconPath: getButtonIcon('chevron_right.svg'),
                 onClick: () => {
-                    console.log('skip next');
+                    AudioPlayer.getInstance().MoveToNextBar();
                 },
             },
         ],
@@ -93,12 +98,12 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
             {
                 type: 'button',
                 iconPath: getButtonIcon('save.svg'),
-                onClick: () => {},
+                onClick: async () => await Notation.getInstance().SaveToJson(),
             },
             {
                 type: 'button',
                 iconPath: getButtonIcon('load.svg'),
-                onClick: () => {},
+                onClick: async () => await Notation.getInstance().ReadFromJson(),
             },
         ],
     },

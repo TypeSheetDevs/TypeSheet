@@ -6,9 +6,12 @@ import {
     NoteModifier,
     ParseNoteDuration,
     ParseNoteModifier,
+    Rests,
 } from '@services/notationRenderer/notes/Notes.enums';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
+import * as Tone from 'tone';
+import { PolySynth } from 'tone';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -187,5 +190,24 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
             data.dotted,
             data.color,
         );
+    }
+
+    Play(startTime: number): Tone.PolySynth {
+        if (!this.keys.length) {
+            console.warn('No keys to play.');
+            return new PolySynth();
+        }
+
+        if (Rests.includes(this.duration)) {
+            return new PolySynth();
+        }
+
+        const synth = new Tone.PolySynth().toDestination();
+
+        const pitches = this.keys.map(key => key.TonePitch);
+
+        synth.triggerAttackRelease(pitches, this.DurationValue, startTime);
+
+        return synth;
     }
 }
