@@ -5,8 +5,11 @@ import getButtonIcon from '@assets/icons/getIcon';
 
 function MidiSelector() {
   const midiService = MidiService.getInstance();
+  console.log('first');
   const [ports, setPorts] = useState(midiService.GetPorts());
+  console.log('second');
   const [selectedPortName, setSelectedPortName] = useState<string | null>(getSelectedPortName());
+  console.log('third');
 
   function getSelectedPortName(): string | null {
     return ports.find(port => port.connected)?.name ?? null;

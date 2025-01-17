@@ -2,6 +2,7 @@ import getButtonIcon from '@assets/icons/getIcon';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
 import { Notation } from '@services/notationRenderer/Notation';
+import MidiSelector from '@components/MidiSelector/MidiSelector';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
     {
@@ -104,6 +105,15 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                 type: 'button',
                 iconPath: getButtonIcon('load.svg'),
                 onClick: async () => await Notation.getInstance().ReadFromJson(),
+            },
+        ],
+    },
+    {
+        buttons: [
+            {
+                type: 'tooltip',
+                iconPath: getButtonIcon('piano.svg'),
+                content: MidiSelector,
             },
         ],
     },

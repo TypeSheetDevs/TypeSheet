@@ -1,6 +1,7 @@
 import Button from '@components/TopBar/Button/Button';
 import styles from './ButtonsGroup.styles.module.css';
 import MultiSelect from '@components/TopBar/MultiSelect/MultiSelect';
+import Tooltip from '@components/TopBar/ContentTooltip/Tooltip';
 
 function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
   switch (button.type) {
@@ -18,6 +19,14 @@ function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
           key={index}
           iconPath={button.iconPath}
           groups={button.groups}
+        />
+      );
+    case 'tooltip':
+      return (
+        <Tooltip
+          key={index}
+          iconPath={button.iconPath}
+          content={button.content}
         />
       );
   }
