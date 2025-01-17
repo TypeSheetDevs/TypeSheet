@@ -204,10 +204,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
         const synth = new Tone.PolySynth().toDestination();
 
-        const pitches = this.keys.map(key => {
-            const [pitch, octave] = key.Pitch.split('/');
-            return `${pitch}${octave}`;
-        });
+        const pitches = this.keys.map(key => key.TonePitch);
 
         synth.triggerAttackRelease(pitches, this.DurationValue, startTime);
 

@@ -1,6 +1,7 @@
 import getButtonIcon from '@assets/icons/getIcon';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
+import { Notation } from '@services/notationRenderer/Notation';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
     {
@@ -24,19 +25,14 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                 },
             },
             {
-                type: 'toggle',
-                iconPath1: getButtonIcon('play.svg'),
-                iconPath2: getButtonIcon('pause.svg'),
-                onClick1: () => AudioPlayer.getInstance().Play(),
-                onClick2: () => AudioPlayer.getInstance().Pause(),
-                toggleFunction: () => AudioPlayer.getInstance().StateChanged,
+                type: 'button',
+                iconPath: getButtonIcon('play.svg'),
+                onClick: async () => AudioPlayer.getInstance().Play(),
             },
             {
                 type: 'button',
-                iconPath: getButtonIcon('stop.svg'),
-                onClick: () => {
-                    AudioPlayer.getInstance().Stop();
-                },
+                iconPath: getButtonIcon('pause.svg'),
+                onClick: async () => AudioPlayer.getInstance().Pause(),
             },
             {
                 type: 'button',
@@ -102,12 +98,12 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
             {
                 type: 'button',
                 iconPath: getButtonIcon('save.svg'),
-                onClick: () => {},
+                onClick: async () => await Notation.getInstance().SaveToJson(),
             },
             {
                 type: 'button',
                 iconPath: getButtonIcon('load.svg'),
-                onClick: () => {},
+                onClick: async () => await Notation.getInstance().ReadFromJson(),
             },
         ],
     },
