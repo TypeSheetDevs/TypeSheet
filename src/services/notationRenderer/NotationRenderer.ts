@@ -96,6 +96,37 @@ export class NotationRenderer {
             );
     }
 
+    private DrawHeader() {
+        if (!this.context || this.viewport.startingStaveIndex !== 0) return;
+
+        const title = this.notation.Title;
+        const author = this.notation.Author;
+
+        const titleFontSize = 20;
+        const authorFontSize = 14;
+        let padding = 0;
+        if (title.length > 0) {
+            this.context.setFont('Arial', titleFontSize, '').setFillStyle('#000');
+            this.context.fillText(
+                title,
+                (this.width - this.context.measureText(title).width) / 2,
+                titleFontSize,
+            );
+            padding += titleFontSize + 5;
+        }
+
+        if (author.length > 0) {
+            padding += authorFontSize;
+            this.context.setFont('Arial', authorFontSize, '');
+            this.context.fillText(
+                author,
+                (this.width - this.context.measureText(author).width) / 2,
+                padding,
+            );
+            padding += 5;
+        }
+    }
+
     get SelectedBar() {
         return this.notation.GetBar(this.selectedStaveIndex, this.selectedBarIndex);
     }
@@ -155,6 +186,7 @@ export class NotationRenderer {
         if (!this.context) return;
 
         this.context.clear();
+        this.DrawHeader();
         this.DrawVisibleBars();
 
         if (!this.SelectedBar) return;

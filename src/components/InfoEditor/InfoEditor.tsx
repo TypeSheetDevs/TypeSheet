@@ -8,6 +8,7 @@ function SongInput() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     setFormData({ ...formData, [id]: value });
+    console.log(id, value);
   };
 
   const handleSubmit = (event: React.FormEvent) => {

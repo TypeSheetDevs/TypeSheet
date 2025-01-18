@@ -22,6 +22,7 @@ export class Notation implements IRecoverable<NotationData> {
             return this;
         } else return Notation._instance;
     }
+
     AddNewBar(newLine: boolean, staveIndex: number, barIndex?: number) {
         if (staveIndex >= this.staves.length) {
             this.staves.push(new RenderableStave(1));
