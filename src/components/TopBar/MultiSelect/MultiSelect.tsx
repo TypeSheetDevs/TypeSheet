@@ -15,10 +15,8 @@ function MultiSelect({ iconPath, groups }: MultiSelectProps) {
           backgroundColor: ConfigService.getInstance().getValue(SavedParameterName.TopBarColor),
         }}>
         {groups.map((group, index, array) => (
-          <>
-            <ul
-              className={styles.list}
-              key={index}>
+          <div key={index}>
+            <ul className={styles.list}>
               {group.options.map((option, index) => (
                 <li
                   className={styles.element}
@@ -29,7 +27,7 @@ function MultiSelect({ iconPath, groups }: MultiSelectProps) {
               ))}
             </ul>
             {array.length - 1 !== index ? <div className={styles.separator}></div> : <></>}
-          </>
+          </div>
         ))}
       </div>
     </div>
