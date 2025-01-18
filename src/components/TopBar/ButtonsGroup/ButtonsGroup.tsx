@@ -1,7 +1,7 @@
 import Button from '@components/TopBar/Button/Button';
 import styles from './ButtonsGroup.styles.module.css';
 import MultiSelect from '@components/TopBar/MultiSelect/MultiSelect';
-import Tooltip from '@components/TopBar/ContentTooltip/Tooltip';
+import Tooltip from '@components/TopBar/Tooltip/Tooltip';
 
 function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
   switch (button.type) {

@@ -5,15 +5,15 @@
     border: none;
     border-radius: 10%;
     background-color: transparent;
-    cursor: pointer;
     justify-content: center;
     align-items: center;
     position: relative;
+    cursor: pointer;
 }
 
 .button:hover {
     background-color: rgba(0, 186, 199, 0.7);
-    cursor: default;
+    cursor: pointer;
 }
 
 .tooltip {
@@ -26,6 +26,7 @@
     padding: 4px;
     border-radius: 10px;
     z-index: 10;
+    cursor: default;
 }
 
 .button:hover .tooltip {

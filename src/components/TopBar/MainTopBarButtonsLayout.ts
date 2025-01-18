@@ -3,6 +3,7 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
 import { Notation } from '@services/notationRenderer/Notation';
 import MidiSelector from '@components/MidiSelector/MidiSelector';
+import InfoEditor from '@components/InfoEditor/InfoEditor';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
     {
@@ -41,6 +42,15 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                 onClick: () => {
                     AudioPlayer.getInstance().MoveToNextBar();
                 },
+            },
+        ],
+    },
+    {
+        buttons: [
+            {
+                type: 'tooltip',
+                iconPath: getButtonIcon('edit_pen.svg'),
+                content: InfoEditor,
             },
         ],
     },
