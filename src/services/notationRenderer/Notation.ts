@@ -82,6 +82,7 @@ export class Notation implements IRecoverable<NotationData> {
 
     set Title(value: string) {
         this.title = value;
+        this.Redraw();
     }
 
     get Author(): string {
@@ -89,6 +90,7 @@ export class Notation implements IRecoverable<NotationData> {
     }
 
     set Author(value: string) {
+        this.Redraw();
         this.author = value;
     }
 
@@ -109,7 +111,7 @@ export class Notation implements IRecoverable<NotationData> {
             }
             const notationData = await this._fileService.ReadJsonFile<NotationData>(filePath);
             this.FromData(notationData);
-            EventNotifier.Notify('needsRender');
+            this.Redraw();
         } catch (error) {
             console.warn(`Error reading from JSON: ${(error as Error).message}`);
         }
@@ -128,5 +130,10 @@ export class Notation implements IRecoverable<NotationData> {
             author: this.author,
             stavesData: this.staves.map(stave => stave.ToData()),
         };
+    }
+
+    private Redraw() {
+        EventNotifier.Notify('needsRender');
+        EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
     }
 }
