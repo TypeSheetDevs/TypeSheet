@@ -1,15 +1,16 @@
 .container {
     border: 1px solid lightgray;
     border-radius: 5px;
-    margin: 10px auto;
     display: flex;
     flex-direction: column;
-    padding: 6px 12px;
+    padding: 6px;
     align-items: center;
+    font-family: sans-serif;
+    min-width: 200px;
 }
 
 .header {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-bottom: 0.5rem;
     color: black;
 }
@@ -53,7 +54,7 @@
 }
 
 .disconnect-button {
-    background-color: #dc3545;
+    background-color: #bb1a2a;
 }
 
 .disconnect-button:hover {

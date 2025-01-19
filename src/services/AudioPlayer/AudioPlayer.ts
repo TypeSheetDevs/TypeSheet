@@ -4,6 +4,7 @@ import RenderableBar from '@services/notationRenderer/RenderableBar';
 import RenderableStave from '@services/notationRenderer/RenderableStave';
 import { delay } from '@utils/delay';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 interface PlaybackPosition {
     stave: RenderableStave;
@@ -19,7 +20,6 @@ export class AudioPlayer {
         isPlaying: false,
         isStopped: false,
     };
-    private stateChanged = false;
 
     public static getInstance(): AudioPlayer {
         if (!this._instance) {
@@ -29,8 +29,23 @@ export class AudioPlayer {
         return this._instance;
     }
 
-    public get StateChanged(): boolean {
-        return this.stateChanged;
+    private set CurrentBar(value: RenderableBar) {
+        if (!this.position) return;
+        if (this.position.bar) {
+            this.position.bar.ResetColor();
+        }
+        this.position.bar = value;
+        this.position.bar.FillColor = 'blue';
+        EventNotifier.Notify('needsRender');
+    }
+
+    private set Position(value: PlaybackPosition) {
+        if (this.position?.bar) {
+            this.position.bar.ResetColor();
+        }
+        this.position = value;
+        this.position.bar.FillColor = 'blue';
+        EventNotifier.Notify('needsRender');
     }
 
     public async Play(): Promise<void> {
@@ -54,38 +69,34 @@ export class AudioPlayer {
         this.playbackState.isStopped = true;
     }
 
+    // true indicates that we moved to the beginning of the piece
     MoveToNextBar(): boolean {
         if (!this.position) return true;
 
+        let result = false;
         if (this.IsLastPosition) {
             this.InitPosition();
-            return true;
-        }
-
-        if (this.IsLastBarInStave) {
+            result = true;
+        } else if (this.IsLastBarInStave) {
             this.MoveToNextStave();
-            return false;
-        }
+        } else this.MoveToNextBarInStave();
 
-        this.MoveToNextBarInStave();
-        return false;
+        return result;
     }
 
+    // true indicates that we moved to the end of the piece
     MoveToPreviousBar(): boolean {
         if (!this.position) return true;
 
+        let result = false;
         if (this.IsFirstPosition) {
             this.MoveToLastPosition();
-            return true;
-        }
-
-        if (this.IsFirstBarInStave) {
+            result = true;
+        } else if (this.IsFirstBarInStave) {
             this.MoveToPreviousStave();
-            return false;
-        }
+        } else this.MoveToPreviousBarInStave();
 
-        this.MoveToPreviousBarInStave();
-        return false;
+        return result;
     }
 
     // Private Playback Methods
@@ -134,7 +145,7 @@ export class AudioPlayer {
     private InitPosition(): void {
         const firstStave = this.GetStaveAt(0);
         if (firstStave) {
-            this.position = {
+            this.Position = {
                 stave: firstStave,
                 bar: this.GetBarAt(firstStave, 0) ?? null!,
             };
@@ -179,7 +190,7 @@ export class AudioPlayer {
         const nextStaveIndex = this.notation.getStaves().indexOf(this.position.stave) + 1;
         const nextStave = this.GetStaveAt(nextStaveIndex);
         if (nextStave) {
-            this.position = {
+            this.Position = {
                 stave: nextStave,
                 bar: this.GetBarAt(nextStave, 0) ?? null!,
             };
@@ -191,7 +202,7 @@ export class AudioPlayer {
         const currentBarIndex = this.position.stave.bars.indexOf(this.position.bar);
         const nextBar = this.GetBarAt(this.position.stave, currentBarIndex + 1);
         if (nextBar) {
-            this.position.bar = nextBar;
+            this.CurrentBar = nextBar;
         }
     }
 
@@ -200,7 +211,7 @@ export class AudioPlayer {
         const prevStaveIndex = this.notation.getStaves().indexOf(this.position.stave) - 1;
         const prevStave = this.GetStaveAt(prevStaveIndex);
         if (prevStave) {
-            this.position = {
+            this.Position = {
                 stave: prevStave,
                 bar: this.GetBarAt(prevStave, prevStave.bars.length - 1) ?? null!,
             };
@@ -212,7 +223,7 @@ export class AudioPlayer {
         const currentBarIndex = this.position.stave.bars.indexOf(this.position.bar);
         const prevBar = this.GetBarAt(this.position.stave, currentBarIndex - 1);
         if (prevBar) {
-            this.position.bar = prevBar;
+            this.CurrentBar = prevBar;
         }
     }
 
@@ -220,7 +231,7 @@ export class AudioPlayer {
         const staves = this.notation.getStaves();
         const lastStave = staves[staves.length - 1];
         if (lastStave) {
-            this.position = {
+            this.Position = {
                 stave: lastStave,
                 bar: this.GetBarAt(lastStave, lastStave.bars.length - 1) ?? null!,
             };

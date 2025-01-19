@@ -1,0 +1,34 @@
+.button {
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.2s ease;
+    border: none;
+    border-radius: 10%;
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgba(0, 186, 199, 0.7);
+    cursor: pointer;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 4px;
+    border-radius: 10px;
+    z-index: 10;
+    cursor: default;
+}
+
+.button:hover .tooltip {
+    display: block;
+}

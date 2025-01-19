@@ -22,6 +22,7 @@ export class Notation implements IRecoverable<NotationData> {
             return this;
         } else return Notation._instance;
     }
+
     AddNewBar(newLine: boolean, staveIndex: number, barIndex?: number) {
         if (staveIndex >= this.staves.length) {
             this.staves.push(new RenderableStave(1));
@@ -82,6 +83,7 @@ export class Notation implements IRecoverable<NotationData> {
 
     set Title(value: string) {
         this.title = value;
+        this.Redraw();
     }
 
     get Author(): string {
@@ -90,6 +92,13 @@ export class Notation implements IRecoverable<NotationData> {
 
     set Author(value: string) {
         this.author = value;
+        this.Redraw();
+    }
+
+    setMetaData(title: string, author: string) {
+        this.title = title;
+        this.author = author;
+        this.Redraw();
     }
 
     public async SaveToJson(): Promise<void> {
@@ -109,7 +118,7 @@ export class Notation implements IRecoverable<NotationData> {
             }
             const notationData = await this._fileService.ReadJsonFile<NotationData>(filePath);
             this.FromData(notationData);
-            EventNotifier.Notify('needsRender');
+            this.Redraw();
         } catch (error) {
             console.warn(`Error reading from JSON: ${(error as Error).message}`);
         }
@@ -128,5 +137,10 @@ export class Notation implements IRecoverable<NotationData> {
             author: this.author,
             stavesData: this.staves.map(stave => stave.ToData()),
         };
+    }
+
+    private Redraw() {
+        EventNotifier.Notify('needsRender');
+        EventNotifier.Notify('numberOfStavesChanged', this.staves.length);
     }
 }
