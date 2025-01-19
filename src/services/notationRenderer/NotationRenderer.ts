@@ -18,6 +18,7 @@ export class NotationRenderer {
         startingStaveIndex: 0,
         lastStaveIndex: 0,
     };
+    private metaDataPadding: number = 0;
 
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
@@ -91,7 +92,8 @@ export class NotationRenderer {
                 this.context!,
                 this.width - 1,
                 i == this.viewport.startingStaveIndex
-                    ? this.viewport.startingHeight
+                    ? this.viewport.startingHeight +
+                          (this.viewport.startingStaveIndex === 0 ? this.metaDataPadding : 0)
                     : staves[i - 1].currentPositionY,
             );
     }
@@ -125,6 +127,8 @@ export class NotationRenderer {
             );
             padding += 5;
         }
+
+        this.metaDataPadding = padding;
     }
 
     get SelectedBar() {

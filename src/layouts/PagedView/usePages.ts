@@ -34,7 +34,7 @@ function usePages(currentPageDefault: number) {
         return () => {
             EventNotifier.RemoveListener('numberOfStavesChanged', setPages);
         };
-    }, []);
+    }, [currentPage]);
 
     const nextPage = () => {
         if (currentPage < maxPages) {
