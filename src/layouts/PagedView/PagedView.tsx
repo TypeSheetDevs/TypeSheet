@@ -4,7 +4,7 @@ import styles from './PagedView.styles.module.css';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { getRendererEngine } from '@utils/getRendererEngine';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import NumericInput from '@components/NumericInput/NumericInput';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import ArrowButton from '@components/ArrowButton/ArrowButton';
@@ -15,6 +15,9 @@ function PagedView() {
   const [stavesPerPage, setStavesPerPage] = useState(
     ConfigService.getInstance().getValue(SavedParameterName.StavesPerPage),
   );
+  const [containerHeight, setContainerHeight] = useState(
+    NotationRenderer.getInstance().StaveHeight * stavesPerPage,
+  );
 
   const onChangeStaves = (staves: number) => {
     ConfigService.getInstance().updateValue(SavedParameterName.StavesPerPage, staves);
@@ -22,7 +25,16 @@ function PagedView() {
     EventNotifier.Notify('needsRender');
   };
 
-  const containerHeight = NotationRenderer.getInstance().StaveHeight * stavesPerPage;
+  const handleHeightChange = useCallback((params: number) => {
+    setContainerHeight(NotationRenderer.getInstance().StaveHeight * stavesPerPage + params);
+  }, []);
+
+  useEffect(() => {
+    EventNotifier.AddListener('metaDataSet', handleHeightChange);
+    return () => {
+      EventNotifier.RemoveListener('metaDataSet', handleHeightChange);
+    };
+  }, []);
 
   return (
     <>

@@ -129,6 +129,7 @@ export class NotationRenderer {
         }
 
         this.metaDataPadding = padding;
+        EventNotifier.Notify('metaDataSet', padding);
     }
 
     get SelectedBar() {

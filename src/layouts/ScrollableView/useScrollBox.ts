@@ -44,6 +44,17 @@ function useScrollBox(container: React.RefObject<HTMLDivElement>) {
         };
     }, []);
 
+    const handleHeightChange = useCallback((params: number) => {
+        setContainerHeight(prevHeight => prevHeight + params);
+    }, []);
+
+    useEffect(() => {
+        EventNotifier.AddListener('metaDataSet', handleHeightChange);
+        return () => {
+            EventNotifier.RemoveListener('metaDataSet', handleHeightChange);
+        };
+    });
+
     return containerHeight;
 }
 

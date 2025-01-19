@@ -4,6 +4,7 @@ type NotationEvent =
     | { name: 'removeBar' }
     | { name: 'removeStave' }
     | { name: 'numberOfStavesChanged'; params: number }
+    | { name: 'metaDataSet'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }
     | {
           name: 'resized';
