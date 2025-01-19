@@ -91,8 +91,14 @@ export class Notation implements IRecoverable<NotationData> {
     }
 
     set Author(value: string) {
-        this.Redraw();
         this.author = value;
+        this.Redraw();
+    }
+
+    setMetaData(title: string, author: string) {
+        this.title = title;
+        this.author = author;
+        this.Redraw();
     }
 
     public async SaveToJson(): Promise<void> {
