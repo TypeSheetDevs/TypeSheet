@@ -46,7 +46,7 @@ export class Notation implements IRecoverable<NotationData> {
         return staveIndex === 0 ? 0 : staveIndex - 1;
     }
 
-    RemoveBar(staveIndex: number, barIndex: number) {
+    RemoveBar(staveIndex: number, barIndex: number): [number, number] {
         if (staveIndex < 0 || staveIndex >= this.staves.length) return [-1, -1];
 
         const shouldRemoveStave = this.staves[staveIndex].RemoveBar(barIndex);
