@@ -1,4 +1,4 @@
 type TooltipProps = {
     iconPath: string;
-    content: React.ComponentType;
+    content: React.ReactNode;
 };
