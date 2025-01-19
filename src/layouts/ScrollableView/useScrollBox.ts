@@ -29,20 +29,29 @@ function useScrollBox(container: React.RefObject<HTMLDivElement>) {
         setContainerHeight(staveHeight * Notation.getInstance().staves.length);
     }, [container]);
 
+    const handleHeightChange = useCallback((params: number) => {
+        const staveHeight = NotationRenderer.getInstance().StaveHeight;
+        const totalHeight = staveHeight * Notation.getInstance().staves.length + params;
+        setContainerHeight(totalHeight);
+    }, []);
+
     useEffect(() => {
         if (container.current) {
             handleScroll();
             container.current.addEventListener('scroll', handleScroll);
         }
+
         EventNotifier.AddListener('numberOfStavesChanged', handleScroll);
+        EventNotifier.AddListener('metaDataSet', handleHeightChange);
 
         return () => {
             if (container.current) {
                 container.current.removeEventListener('scroll', handleScroll);
             }
             EventNotifier.RemoveListener('numberOfStavesChanged', handleScroll);
+            EventNotifier.RemoveListener('metaDataSet', handleHeightChange);
         };
-    }, []);
+    }, [handleScroll, handleHeightChange]);
 
     return containerHeight;
 }
