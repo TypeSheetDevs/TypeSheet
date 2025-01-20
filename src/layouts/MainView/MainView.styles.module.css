@@ -10,3 +10,34 @@
     background-color: var(--main-view-background-color);
     scrollbar-color: white var(--main-view-background-color);
 }
+
+.additionalBar {
+    position: absolute;
+    font-family: 'BravuraText';
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    align-self: flex-start;
+    border-radius: 0 0 1rem 0;
+
+    background-color: #0E0B52;
+}
+
+.note {
+    display: flex;
+    cursor: pointer;
+    user-select: none;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: 30px;
+    background-color: white;
+    width: 1em;
+    height: 1em;
+    border-radius: 0.2em;
+}
+
+.note:hover {
+    outline: 5px solid red;
+}

@@ -8,8 +8,10 @@ import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
+import { Notes } from '@services/HarmonicsService/Harmonics.types';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
+    private StartingPitch = 46;
     private currentPosX = 0;
     private currentPosY = 0;
     private currentWidth = 0;
@@ -97,6 +99,21 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         }
 
         return this.voices[voiceIndex].GetNoteIndexByPositionX(mousePosX);
+    }
+
+    getKeyByPositionY(positionY: number) {
+        const stave = new Stave(this.currentPosX, this.currentPosY, positionY);
+        const spacing = stave.getSpacingBetweenLines() / 2;
+        const relativePosition = Math.min(
+            Math.max(positionY - this.currentPosY, 0),
+            this.currentHeight,
+        );
+        const positionInPitches = this.StartingPitch - Math.floor(relativePosition / spacing);
+
+        const keyNumberValue = positionInPitches % Notes.length;
+        const keyOctave = (positionInPitches - keyNumberValue) / Notes.length;
+
+        return new Key(Notes[keyNumberValue] + '/' + keyOctave);
     }
 
     removeClickedNote(mousePosX: number): void {

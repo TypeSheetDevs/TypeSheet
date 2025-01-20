@@ -3,6 +3,8 @@ type NotationEvent =
     | { name: 'toggleConfigManager' }
     | { name: 'removeBar' }
     | { name: 'removeStave' }
+    | { name: 'startAddingNotes' }
+    | { name: 'startRemovingNotes' }
     | { name: 'numberOfStavesChanged'; params: number }
     | { name: 'metaDataSet'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }

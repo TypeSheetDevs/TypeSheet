@@ -4,12 +4,16 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
+import { NoteIndicator } from '@services/notationRenderer/NoteIndicator';
+import { NoteDuration } from './notes/Notes.enums';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
     static getInstance() {
         return NotationRenderer._instance || new NotationRenderer();
     }
+
     private context: RenderContext | null = null;
     private width: number = 0;
     private height: number = 0;
@@ -22,48 +26,86 @@ export class NotationRenderer {
 
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
-    private selectedBarIndex: number = -1;
-    private selectedStaveIndex: number = -1;
-    private state: NotationRendererState = NotationRendererState.Idle;
+    private focusedEntities: ChosenEntityData = null!;
+    private addingNoteIndicator: NoteIndicator = null!;
+    private state: NotationRendererState = null!;
+
+    private _AddEventListeners() {
+        EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
+        EventNotifier.AddListener('resized', this.OnResize.bind(this));
+        EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
+        EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
+        EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
+        EventNotifier.AddListener('removeBar', this.RemoveFocusedBar.bind(this));
+        EventNotifier.AddListener('removeStave', this.RemoveFocusedStave.bind(this));
+        EventNotifier.AddListener('startAddingNotes', this.StartAddingNotes.bind(this));
+        EventNotifier.AddListener('startRemovingNotes', this.StartRemovingNotes.bind(this));
+        EventNotifier.AddListener('movedInsideRenderer', this.OnMouseMove.bind(this));
+    }
 
     constructor() {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
-            EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
-            EventNotifier.AddListener('resized', this.OnResize.bind(this));
-            EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
-            EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
-            EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
-            EventNotifier.AddListener('removeBar', this.RemoveBar.bind(this));
-            EventNotifier.AddListener('removeStave', this.RemoveStave.bind(this));
+            this.focusedEntities = new ChosenEntityData(this.notation);
+            this.addingNoteIndicator = new NoteIndicator(this.notation);
+            this.state = NotationRendererState.Idle;
+
+            this._AddEventListeners();
             return this;
         } else return NotationRenderer._instance;
     }
 
+    private ChangeState(state: NotationRendererState): void {
+        if (state === this.state) return;
+        switch (this.state) {
+            case NotationRendererState.AddingNote:
+                this.addingNoteIndicator.Visible = false;
+        }
+
+        this.state = state;
+
+        switch (this.state) {
+            case NotationRendererState.AddingNote:
+                this.addingNoteIndicator.Visible = true;
+        }
+
+        this.OnRender();
+    }
+
     private AddNewBar(params: EventParams<'addNewBar'>) {
-        if (this.selectedBarIndex < 0 || this.selectedStaveIndex < 0) {
+        if (!this.focusedEntities.Bar) {
             this.notation.AddNewBar(params.newStave, this.notation.getStaves().length);
             return;
         }
 
-        this.notation.AddNewBar(params.newStave, this.selectedStaveIndex, this.selectedBarIndex);
+        this.notation.AddNewBar(
+            params.newStave,
+            this.focusedEntities.StaveIndex,
+            this.focusedEntities.BarIndex,
+        );
     }
-    //TODO: check for state
-    private RemoveStave() {
-        if (this.selectedStaveIndex < 0) return;
-        this.selectedStaveIndex = this.notation.RemoveStave(this.selectedStaveIndex);
-        this.selectedBarIndex = -1;
+
+    private RemoveFocusedStave() {
+        if (!this.focusedEntities.Stave) return;
+        this.focusedEntities.StaveIndex = this.notation.RemoveStave(
+            this.focusedEntities.StaveIndex,
+        );
         this.OnRender();
     }
 
-    //TODO: check for state
-    private RemoveBar() {
-        if (this.selectedStaveIndex < 0 || this.selectedBarIndex < 0) return;
-        [this.selectedStaveIndex, this.selectedBarIndex] = this.notation.RemoveBar(
-            this.selectedStaveIndex,
-            this.selectedBarIndex,
+    private RemoveFocusedBar() {
+        if (!this.focusedEntities.Bar) return;
+        this.focusedEntities.SetBarIndex(
+            ...this.notation.RemoveBar(
+                this.focusedEntities.StaveIndex,
+                this.focusedEntities.BarIndex,
+            ),
         );
         this.OnRender();
+    }
+
+    private SetFocusBasedOnPosition(positionX: number, positionY: number) {
+        this.focusedEntities.SetBarIndex(...this.FindBarIndexByPosition(positionX, positionY));
     }
 
     private FindBarIndexByPosition(positionX: number, positionY: number): [number, number] {
@@ -132,10 +174,6 @@ export class NotationRenderer {
         EventNotifier.Notify('metaDataSet', padding);
     }
 
-    get SelectedBar() {
-        return this.notation.GetBar(this.selectedStaveIndex, this.selectedBarIndex);
-    }
-
     get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
         return (
@@ -145,15 +183,26 @@ export class NotationRenderer {
         );
     }
 
-    ClearBarSelection(): void {
-        this.selectedBarIndex = -1;
-        this.selectedStaveIndex = -1;
+    set AddedDurationNote(value: NoteDuration) {
+        this.addingNoteIndicator.SetNoteDuration(value);
+    }
+
+    ClearFocus(): void {
+        this.focusedEntities.StaveIndex = -1;
         this.OnRender();
     }
 
     SetContext(context: RenderContext): void {
         this.context = context;
         this.OnRender();
+    }
+
+    private StartAddingNotes() {
+        this.ChangeState(NotationRendererState.AddingNote);
+    }
+
+    private StartRemovingNotes() {
+        this.ChangeState(NotationRendererState.RemovingNote);
     }
 
     private OnResize(params: EventParams<'resized'>): void {
@@ -171,20 +220,57 @@ export class NotationRenderer {
     }
 
     private OnClick(params: EventParams<'clickedInsideRenderer'>) {
+        this.SetFocusBasedOnPosition(params.positionX, params.positionY);
         switch (this.state) {
-            case NotationRendererState.Idle: {
-                [this.selectedStaveIndex, this.selectedBarIndex] = this.FindBarIndexByPosition(
-                    params.positionX,
-                    params.positionY,
-                );
-                break;
-            }
             case NotationRendererState.RemovingNote:
-                this.SelectedBar?.removeClickedNote(params.positionX);
+                this.focusedEntities.Bar?.removeClickedNote(params.positionX);
                 break;
+            case NotationRendererState.AddingNote: {
+                this.addingNoteIndicator.SaveToNotation();
+            }
         }
 
         this.OnRender();
+    }
+
+    private OnMouseMove(params: EventParams<'movedInsideRenderer'>): void {
+        if (this.state !== NotationRendererState.AddingNote) {
+            return;
+        }
+
+        this.SetFocusBasedOnPosition(params.positionX, params.positionY);
+
+        const newNoteIndicatorIndex =
+            this.focusedEntities.Voice?.GetNoteIndexByPositionX(params.positionX) ?? -1;
+
+        if (newNoteIndicatorIndex == -1) {
+            return;
+        }
+
+        const note = this.focusedEntities.Voice?.GetNote(newNoteIndicatorIndex);
+
+        if (note?.IsInRect(params.positionX)) {
+            this.addingNoteIndicator.MoveIndicator(
+                this.focusedEntities.StaveIndex,
+                this.focusedEntities.BarIndex,
+                newNoteIndicatorIndex,
+            );
+        }
+
+        this.addingNoteIndicator.AdjustPitch(params.positionY);
+
+        this.OnRender();
+    }
+
+    private DrawFocusedBarIndication(context: RenderContext): void {
+        const focusedBar = this.focusedEntities.Bar;
+        if (!focusedBar) return;
+
+        const focusedRect = focusedBar.Rect;
+        context
+            .setStrokeStyle('')
+            .rect(focusedRect.x, focusedRect.y, focusedRect.width, focusedRect.height)
+            .stroke();
     }
 
     private OnRender() {
@@ -193,13 +279,6 @@ export class NotationRenderer {
         this.context.clear();
         this.DrawHeader();
         this.DrawVisibleBars();
-
-        if (!this.SelectedBar) return;
-
-        const selectedRect = this.SelectedBar.Rect;
-        this.context
-            .setStrokeStyle('')
-            .rect(selectedRect.x, selectedRect.y, selectedRect.width, selectedRect.height)
-            .stroke();
+        this.DrawFocusedBarIndication(this.context);
     }
 }
