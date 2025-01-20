@@ -36,8 +36,8 @@ export class NotationRenderer {
         EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
         EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
         EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
-        EventNotifier.AddListener('removeBar', this.RemoveBar.bind(this));
-        EventNotifier.AddListener('removeStave', this.RemoveStave.bind(this));
+        EventNotifier.AddListener('removeBar', this.RemoveFocusedBar.bind(this));
+        EventNotifier.AddListener('removeStave', this.RemoveFocusedStave.bind(this));
         EventNotifier.AddListener('startAddingNotes', this.StartAddingNotes.bind(this));
         EventNotifier.AddListener('startRemovingNotes', this.StartRemovingNotes.bind(this));
         EventNotifier.AddListener('movedInsideRenderer', this.OnMouseMove.bind(this));
@@ -75,7 +75,6 @@ export class NotationRenderer {
     private AddNewBar(params: EventParams<'addNewBar'>) {
         if (!this.focusedEntities.Bar) {
             this.notation.AddNewBar(params.newStave, this.notation.getStaves().length);
-            this.focusedEntities.NoteIndex = 0;
             return;
         }
 
@@ -86,18 +85,16 @@ export class NotationRenderer {
         );
     }
 
-    //TODO: check for state
-    private RemoveStave() {
-        if (this.focusedEntities.StaveIndex < 0) return;
+    private RemoveFocusedStave() {
+        if (!this.focusedEntities.Stave) return;
         this.focusedEntities.StaveIndex = this.notation.RemoveStave(
             this.focusedEntities.StaveIndex,
         );
         this.OnRender();
     }
 
-    //TODO: check for state
-    private RemoveBar() {
-        if (this.focusedEntities.StaveIndex < 0 || this.focusedEntities.BarIndex < 0) return;
+    private RemoveFocusedBar() {
+        if (!this.focusedEntities.Bar) return;
         this.focusedEntities.SetBarIndex(
             ...this.notation.RemoveBar(
                 this.focusedEntities.StaveIndex,
@@ -105,6 +102,10 @@ export class NotationRenderer {
             ),
         );
         this.OnRender();
+    }
+
+    private SetFocusBasedOnPosition(positionX: number, positionY: number) {
+        this.focusedEntities.SetBarIndex(...this.FindBarIndexByPosition(positionX, positionY));
     }
 
     private FindBarIndexByPosition(positionX: number, positionY: number): [number, number] {
@@ -186,7 +187,7 @@ export class NotationRenderer {
         this.addingNoteIndicator.SetNoteDuration(value);
     }
 
-    ClearBarSelection(): void {
+    ClearFocus(): void {
         this.focusedEntities.StaveIndex = -1;
         this.OnRender();
     }
@@ -219,23 +220,12 @@ export class NotationRenderer {
     }
 
     private OnClick(params: EventParams<'clickedInsideRenderer'>) {
+        this.SetFocusBasedOnPosition(params.positionX, params.positionY);
         switch (this.state) {
-            case NotationRendererState.Idle: {
-                this.focusedEntities.SetBarIndex(
-                    ...this.FindBarIndexByPosition(params.positionX, params.positionY),
-                );
-                break;
-            }
             case NotationRendererState.RemovingNote:
-                this.focusedEntities.SetBarIndex(
-                    ...this.FindBarIndexByPosition(params.positionX, params.positionY),
-                );
                 this.focusedEntities.Bar?.removeClickedNote(params.positionX);
                 break;
             case NotationRendererState.AddingNote: {
-                this.focusedEntities.SetBarIndex(
-                    ...this.FindBarIndexByPosition(params.positionX, params.positionY),
-                );
                 this.addingNoteIndicator.SaveToNotation();
             }
         }
@@ -248,9 +238,7 @@ export class NotationRenderer {
             return;
         }
 
-        this.focusedEntities.SetBarIndex(
-            ...this.FindBarIndexByPosition(params.positionX, params.positionY),
-        );
+        this.SetFocusBasedOnPosition(params.positionX, params.positionY);
 
         const newNoteIndicatorIndex =
             this.focusedEntities.Voice?.GetNoteIndexByPositionX(params.positionX) ?? -1;
@@ -274,20 +262,23 @@ export class NotationRenderer {
         this.OnRender();
     }
 
+    private DrawFocusedBarIndication(context: RenderContext): void {
+        const focusedBar = this.focusedEntities.Bar;
+        if (!focusedBar) return;
+
+        const focusedRect = focusedBar.Rect;
+        context
+            .setStrokeStyle('')
+            .rect(focusedRect.x, focusedRect.y, focusedRect.width, focusedRect.height)
+            .stroke();
+    }
+
     private OnRender() {
         if (!this.context) return;
 
         this.context.clear();
         this.DrawHeader();
         this.DrawVisibleBars();
-
-        const focusedBar = this.focusedEntities.Bar;
-        if (!focusedBar) return;
-
-        const focusedRect = focusedBar.Rect;
-        this.context
-            .setStrokeStyle('')
-            .rect(focusedRect.x, focusedRect.y, focusedRect.width, focusedRect.height)
-            .stroke();
+        this.DrawFocusedBarIndication(this.context);
     }
 }
