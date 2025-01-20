@@ -9,7 +9,6 @@ import { SavedParameterName } from '@services/ConfigService/ConfigService.types'
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { Notes } from '@services/HarmonicsService/Harmonics.types';
-import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private StartingPitch = 46;

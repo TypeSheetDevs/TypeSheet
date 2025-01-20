@@ -173,10 +173,6 @@ export class NotationRenderer {
         EventNotifier.Notify('metaDataSet', padding);
     }
 
-    get SelectedBar() {
-        return this.notation.GetBar(this.selectedStaveIndex, this.selectedBarIndex);
-    }
-
     get StaveHeight() {
         const tempStave = new Stave(0, 0, 10);
         return (
