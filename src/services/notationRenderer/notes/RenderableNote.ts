@@ -41,6 +41,15 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         this.color = color;
     }
 
+    IsInRect(positionX: number) {
+        const width = this.cachedStaveNote?.getWidth();
+        const startX = this.cachedStaveNote?.getAbsoluteX();
+
+        if (!width || !startX) return false;
+
+        return startX <= positionX && startX + width >= positionX;
+    }
+
     set Duration(value: NoteDuration) {
         this.duration = value;
     }
