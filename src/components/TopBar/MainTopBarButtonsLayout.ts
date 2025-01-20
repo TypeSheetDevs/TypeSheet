@@ -66,7 +66,12 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                         ],
                     },
                     {
-                        options: [],
+                        options: [
+                            {
+                                text: 'Add notes',
+                                onClick: EventNotifier.NotifyAction('startAddingNotes'),
+                            },
+                        ],
                     },
                 ],
             },
@@ -87,7 +92,12 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
                         ],
                     },
                     {
-                        options: [],
+                        options: [
+                            {
+                                text: 'Remove notes',
+                                onClick: EventNotifier.NotifyAction('startRemovingNotes'),
+                            },
+                        ],
                     },
                 ],
             },
