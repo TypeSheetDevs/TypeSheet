@@ -5,12 +5,15 @@ import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
+import { NoteIndicator } from '@services/notationRenderer/NoteIndicator';
+import { NoteDuration } from './notes/Notes.enums';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
     static getInstance() {
         return NotationRenderer._instance || new NotationRenderer();
     }
+
     private context: RenderContext | null = null;
     private width: number = 0;
     private height: number = 0;
@@ -24,26 +27,55 @@ export class NotationRenderer {
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
     private focusedEntities: ChosenEntityData = null!;
-    private state: NotationRendererState = NotationRendererState.Idle;
+    private addingNoteIndicator: NoteIndicator = null!;
+    private state: NotationRendererState = null!;
+
+    private _AddEventListeners() {
+        EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
+        EventNotifier.AddListener('resized', this.OnResize.bind(this));
+        EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
+        EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
+        EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
+        EventNotifier.AddListener('removeBar', this.RemoveBar.bind(this));
+        EventNotifier.AddListener('removeStave', this.RemoveStave.bind(this));
+        EventNotifier.AddListener('startAddingNotes', this.StartAddingNotes.bind(this));
+        EventNotifier.AddListener('startRemovingNotes', this.StartRemovingNotes.bind(this));
+        EventNotifier.AddListener('movedInsideRenderer', this.OnMouseMove.bind(this));
+    }
 
     constructor() {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
             this.focusedEntities = new ChosenEntityData(this.notation);
-            EventNotifier.AddListener('clickedInsideRenderer', this.OnClick.bind(this));
-            EventNotifier.AddListener('resized', this.OnResize.bind(this));
-            EventNotifier.AddListener('viewportChanged', this.OnViewportChange.bind(this));
-            EventNotifier.AddListener('needsRender', this.OnRender.bind(this));
-            EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
-            EventNotifier.AddListener('removeBar', this.RemoveBar.bind(this));
-            EventNotifier.AddListener('removeStave', this.RemoveStave.bind(this));
+            this.addingNoteIndicator = new NoteIndicator(this.notation);
+            this.state = NotationRendererState.Idle;
+
+            this._AddEventListeners();
             return this;
         } else return NotationRenderer._instance;
+    }
+
+    private ChangeState(state: NotationRendererState): void {
+        if (state === this.state) return;
+        switch (this.state) {
+            case NotationRendererState.AddingNote:
+                this.addingNoteIndicator.Visible = false;
+        }
+
+        this.state = state;
+
+        switch (this.state) {
+            case NotationRendererState.AddingNote:
+                this.addingNoteIndicator.Visible = true;
+        }
+
+        this.OnRender();
     }
 
     private AddNewBar(params: EventParams<'addNewBar'>) {
         if (!this.focusedEntities.Bar) {
             this.notation.AddNewBar(params.newStave, this.notation.getStaves().length);
+            this.focusedEntities.NoteIndex = 0;
             return;
         }
 
@@ -154,6 +186,10 @@ export class NotationRenderer {
         );
     }
 
+    set AddedDurationNote(value: NoteDuration) {
+        this.addingNoteIndicator.SetNoteDuration(value);
+    }
+
     ClearBarSelection(): void {
         this.focusedEntities.StaveIndex = -1;
         this.OnRender();
@@ -162,6 +198,14 @@ export class NotationRenderer {
     SetContext(context: RenderContext): void {
         this.context = context;
         this.OnRender();
+    }
+
+    private StartAddingNotes() {
+        this.ChangeState(NotationRendererState.AddingNote);
+    }
+
+    private StartRemovingNotes() {
+        this.ChangeState(NotationRendererState.RemovingNote);
     }
 
     private OnResize(params: EventParams<'resized'>): void {
@@ -187,9 +231,49 @@ export class NotationRenderer {
                 break;
             }
             case NotationRendererState.RemovingNote:
+                this.focusedEntities.SetBarIndex(
+                    ...this.FindBarIndexByPosition(params.positionX, params.positionY),
+                );
                 this.focusedEntities.Bar?.removeClickedNote(params.positionX);
                 break;
+            case NotationRendererState.AddingNote: {
+                this.focusedEntities.SetBarIndex(
+                    ...this.FindBarIndexByPosition(params.positionX, params.positionY),
+                );
+                this.addingNoteIndicator.SaveToNotation();
+            }
         }
+
+        this.OnRender();
+    }
+
+    private OnMouseMove(params: EventParams<'movedInsideRenderer'>): void {
+        if (this.state !== NotationRendererState.AddingNote) {
+            return;
+        }
+
+        this.focusedEntities.SetBarIndex(
+            ...this.FindBarIndexByPosition(params.positionX, params.positionY),
+        );
+
+        const newNoteIndicatorIndex =
+            this.focusedEntities.Voice?.GetNoteIndexByPositionX(params.positionX) ?? -1;
+
+        if (newNoteIndicatorIndex == -1) {
+            return;
+        }
+
+        const note = this.focusedEntities.Voice?.GetNote(newNoteIndicatorIndex);
+
+        if (note?.IsInRect(params.positionX)) {
+            this.addingNoteIndicator.MoveIndicator(
+                this.focusedEntities.StaveIndex,
+                this.focusedEntities.BarIndex,
+                newNoteIndicatorIndex,
+            );
+        }
+
+        this.addingNoteIndicator.AdjustPitch(params.positionY);
 
         this.OnRender();
     }

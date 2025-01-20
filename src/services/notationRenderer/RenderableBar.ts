@@ -105,7 +105,10 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     getKeyByPositionY(positionY: number) {
         const stave = new Stave(this.currentPosX, this.currentPosY, positionY);
         const spacing = stave.getSpacingBetweenLines() / 2;
-        const relativePosition = positionY - stave.getY();
+        const relativePosition = Math.min(
+            Math.max(positionY - this.currentPosY, 0),
+            this.currentHeight,
+        );
         const positionInPitches = this.StartingPitch - Math.floor(relativePosition / spacing);
 
         const keyNumberValue = positionInPitches % Notes.length;
