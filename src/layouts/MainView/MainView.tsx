@@ -21,14 +21,9 @@ function MainView() {
     const showAddingComponent = () => {
       setIsAddingNotesComponentVisible(true);
     };
-    const dontShowAddingComponent = () => {
-      setIsAddingNotesComponentVisible(false);
-    };
     EventNotifier.AddListener('startAddingNotes', showAddingComponent);
-    EventNotifier.AddListener('stopAddingNotes', dontShowAddingComponent);
     return () => {
       EventNotifier.RemoveListener('startAddingNotes', showAddingComponent);
-      EventNotifier.RemoveListener('stopAddingNotes', dontShowAddingComponent);
     };
   }, []);
 
