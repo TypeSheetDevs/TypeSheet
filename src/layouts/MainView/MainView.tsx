@@ -7,7 +7,7 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import LabeledToggle from '@components/LabeledToggle/LabeledToggle';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import SelectNoteComponent from '@components/SelectNoteComponent/SelectNoteComponent';
+import NoteModsTopBar from '@components/NoteModsTopBar/NoteModsTopBar';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(
@@ -28,7 +28,7 @@ function MainView() {
 
   return (
     <div className={styles.mainView}>
-      {isAddingNotesComponentVisible && <SelectNoteComponent />}
+      {isAddingNotesComponentVisible && <NoteModsTopBar />}
       <LabeledToggle
         toggled={currentView == ViewType.Paged}
         onToggle={() =>

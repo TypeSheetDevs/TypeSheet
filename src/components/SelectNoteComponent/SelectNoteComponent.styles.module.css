@@ -1,14 +1,9 @@
-.additionalBar {
-    position: absolute;
-    font-family: 'BravuraText';
-    padding: 1rem;
+.box {
     display: flex;
-    gap: 1rem;
-    align-items: center;
-    align-self: flex-start;
-    border-radius: 0 0 1rem 0;
-
-    background-color: #0E0B52;
+    gap: 6px;
+    font-family: 'BravuraText';
+    margin: 0.1rem 0;
+    margin-left: 0.1rem;
 }
 
 .note {
@@ -17,14 +12,14 @@
     user-select: none;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem;
-    font-size: 30px;
+    font-size: 24px;
     background-color: white;
     width: 1em;
     height: 1em;
     border-radius: 0.2em;
+    padding: 0.6rem 0.6rem 1rem;
 }
 
-.note:hover {
-    outline: 5px solid red;
+.note:hover, .noteSelected {
+    outline: 2px solid red;
 }

@@ -1,5 +1,5 @@
 .switch {
-    --switch-bg-clr: #70a9c5;
+    --switch-bg-clr: #0E0B52;
     --switch-padding: 4px;
     --slider-bg-clr: rgba(12, 74, 110, 0.65);
     --slider-bg-clr-on: rgba(12, 74, 110, 1);
@@ -15,7 +15,7 @@
     color: white;
     width: fit-content;
     justify-content: center;
-    border-radius: 9999px;
+    border-radius: 0 0 1rem 1rem;
     cursor: pointer;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -50,6 +50,7 @@
 }
 
 .switch::before {
+    border-radius: 9999px;
     background-color: var(--slider-bg-clr);
     inset: var(--switch-padding) 50% var(--switch-padding)
     var(--switch-padding);

@@ -1,0 +1,17 @@
+.additionalBar {
+    padding: 3px 3px;
+    display: flex;
+    gap: 6px;
+    border-top: 1px solid white;
+
+    background-color: #0E0B52;
+    font-family: 'BravuraText';
+}
+
+.separator {
+    margin: 2px 4px;
+    background-color: #ccc;
+    width: 2px;
+    height: 90%;
+    align-self: center;
+}

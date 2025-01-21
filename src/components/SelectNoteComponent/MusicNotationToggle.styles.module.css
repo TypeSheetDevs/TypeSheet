@@ -1,0 +1,26 @@
+.button {
+    display: flex;
+    transition: background-color 0.2s ease;
+    border: none;
+    border-radius: 10%;
+    background-color: transparent;
+    color: white;
+
+    cursor: pointer;
+    user-select: none;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    font-size: 30px;
+    width: 1em;
+    height: 1em;
+    padding: 0.6rem 0.6rem 1rem;
+    text-align: center;
+    line-height: 15px;
+    gap: 1px;
+}
+
+.button:hover, .buttonToggled {
+    /* TODO: config extraction */
+    background-color: rgba(0, 186, 199, 0.7);
+}
