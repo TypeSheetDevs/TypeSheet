@@ -5,19 +5,19 @@
     border-radius: 10%;
     background-color: transparent;
     color: white;
-
+    align-self: center;
     cursor: pointer;
     user-select: none;
     justify-content: center;
     align-items: baseline;
     flex-wrap: nowrap;
     font-size: 30px;
-    width: 1em;
-    height: 1em;
+    width: 0.8em;
+    height: 0.8em;
     padding: 0.6rem 0.6rem 1rem;
     text-align: center;
     line-height: 15px;
-    gap: 1px;
+    gap: 2px;
 }
 
 .button:hover, .buttonToggled {

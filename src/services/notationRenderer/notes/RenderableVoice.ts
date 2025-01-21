@@ -68,6 +68,8 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
             return this.cachedVoice!;
         }
 
+        this.CalculateNumBeats();
+
         const voice = new Voice({
             num_beats: this.numBeats,
             beat_value: this.beatValue,

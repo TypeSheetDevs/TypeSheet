@@ -3,17 +3,28 @@ import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { Key } from '@services/notationRenderer/notes/Key';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export class NoteIndicator {
     private readonly notation: Notation;
     private noteData: ChosenEntityData;
     private visible: boolean = false;
     private noteDuration: NoteDuration;
+    private isDotted: boolean = false;
 
     constructor(notation: Notation) {
         this.notation = notation;
         this.noteData = new ChosenEntityData(this.notation);
         this.noteDuration = NoteDuration.Eighth;
+    }
+
+    private RefreshIndicator() {
+        if (!this.visible) return;
+        if (this.noteData.Note) {
+            this.RemoveFromNotation();
+        }
+
+        this.AddToNotation();
     }
 
     private AddToNotation() {
@@ -22,7 +33,13 @@ export class NoteIndicator {
             return;
         }
 
-        const newNote = new RenderableNote(this.noteDuration, [new Key('C/5')], [], false, 'blue');
+        const newNote = new RenderableNote(
+            this.noteDuration,
+            [new Key('C/5')],
+            [],
+            this.isDotted,
+            'blue',
+        );
 
         if (this.noteData.NoteIndex >= voice.NotesLength) {
             voice.AddNote(newNote);
@@ -51,13 +68,15 @@ export class NoteIndicator {
         }
     }
 
-    SetNoteDuration(duration: NoteDuration) {
+    set Dotted(value: boolean) {
+        this.isDotted = value;
+        this.RefreshIndicator();
+        EventNotifier.Notify('needsRender');
+    }
+
+    set NoteDuration(duration: NoteDuration) {
         this.noteDuration = duration;
-        if (!this.visible || !this.noteData.Note) {
-            return;
-        }
-        this.RemoveFromNotation();
-        this.AddToNotation();
+        this.RefreshIndicator();
     }
 
     SaveToNotation() {
