@@ -1,19 +1,35 @@
 import { Notation } from '@services/notationRenderer/Notation';
 import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
-import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
+import { NoteDuration, toRest } from '@services/notationRenderer/notes/Notes.enums';
 import { Key } from '@services/notationRenderer/notes/Key';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 export class NoteIndicator {
     private readonly notation: Notation;
     private noteData: ChosenEntityData;
     private visible: boolean = false;
     private noteDuration: NoteDuration;
+    private isDotted: boolean = false;
+    private isRest: boolean = false;
+    private key: Key;
+    private accidental: KeyModifier | undefined;
 
     constructor(notation: Notation) {
         this.notation = notation;
         this.noteData = new ChosenEntityData(this.notation);
         this.noteDuration = NoteDuration.Eighth;
+        this.key = new Key('C/5');
+    }
+
+    private RefreshIndicator() {
+        if (!this.visible) return;
+        if (this.noteData.Note) {
+            this.RemoveFromNotation();
+        }
+
+        this.AddToNotation();
     }
 
     private AddToNotation() {
@@ -22,7 +38,13 @@ export class NoteIndicator {
             return;
         }
 
-        const newNote = new RenderableNote(this.noteDuration, [new Key('C/5')], [], false, 'blue');
+        let duration = this.noteDuration;
+        if (this.isRest) {
+            duration = toRest(this.noteDuration);
+        }
+
+        const newNote = new RenderableNote(duration, [this.key], [], this.isDotted, 'blue');
+        if (!this.isRest) this.key.Modifier = this.accidental;
 
         if (this.noteData.NoteIndex >= voice.NotesLength) {
             voice.AddNote(newNote);
@@ -51,13 +73,26 @@ export class NoteIndicator {
         }
     }
 
-    SetNoteDuration(duration: NoteDuration) {
+    set Dotted(value: boolean) {
+        this.isDotted = value;
+        this.RefreshIndicator();
+        EventNotifier.Notify('needsRender');
+    }
+
+    set NoteDuration(duration: NoteDuration) {
         this.noteDuration = duration;
-        if (!this.visible || !this.noteData.Note) {
-            return;
-        }
-        this.RemoveFromNotation();
-        this.AddToNotation();
+        this.RefreshIndicator();
+    }
+
+    set IsRest(isRest: boolean) {
+        this.isRest = isRest;
+        this.RefreshIndicator();
+    }
+
+    set Accidental(accidental: KeyModifier | undefined) {
+        this.accidental = accidental;
+        this.RefreshIndicator();
+        EventNotifier.Notify('needsRender');
     }
 
     SaveToNotation() {
@@ -68,8 +103,10 @@ export class NoteIndicator {
     AdjustPitch(positionY: number) {
         if (!this.visible || !this.noteData.Note || !this.noteData.Bar) return;
 
+        this.key = this.noteData.Bar.getKeyByPositionY(positionY);
+        if (!this.isRest) this.key.Modifier = this.accidental;
         this.noteData.Note.RemoveKey(0);
-        this.noteData.Note.AddKey(this.noteData.Bar.getKeyByPositionY(positionY));
+        this.noteData.Note.AddKey(this.key);
     }
 
     MoveIndicator(staveIndex: number, barIndex: number, noteIndex: number) {

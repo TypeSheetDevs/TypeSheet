@@ -81,3 +81,10 @@ export function ParseNoteModifier(modifierString: string): NoteModifier | undefi
     }
     return undefined;
 }
+
+export function toRest(note: NoteDuration): NoteDuration {
+    if (note.endsWith('r')) {
+        return note;
+    }
+    return `${note}r` as NoteDuration;
+}

@@ -21,7 +21,7 @@ export class Key implements IRecoverable<KeyData> {
         this.isKeyDirty = true;
     }
 
-    set Modifier(modifier: KeyModifier) {
+    set Modifier(modifier: KeyModifier | undefined) {
         if (this.modifier !== modifier) {
             this.isKeyDirty = true;
             this.modifier = modifier;

@@ -15,6 +15,7 @@ function LabeledToggle({ toggled, onToggle, unToggledText, toggledText }: Labele
       />
       <span>{unToggledText}</span>
       <span>{toggledText}</span>
+      <div></div>
     </label>
   );
 }

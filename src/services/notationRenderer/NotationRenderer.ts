@@ -6,7 +6,6 @@ import { NotationRendererState } from '@services/notationRenderer/NotationRender
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
 import { NoteIndicator } from '@services/notationRenderer/NoteIndicator';
-import { NoteDuration } from './notes/Notes.enums';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -183,8 +182,8 @@ export class NotationRenderer {
         );
     }
 
-    set AddedDurationNote(value: NoteDuration) {
-        this.addingNoteIndicator.SetNoteDuration(value);
+    get AddingNoteIndicator() {
+        return this.addingNoteIndicator;
     }
 
     ClearFocus(): void {
