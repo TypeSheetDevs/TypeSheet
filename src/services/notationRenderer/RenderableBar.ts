@@ -121,8 +121,18 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         this.voices[0].RemoveNote(idx);
     }
 
-    Draw(context: RenderContext, positionY: number, positionX: number, length: number) {
+    Draw(
+        context: RenderContext,
+        positionY: number,
+        positionX: number,
+        length: number,
+        isFirst: boolean,
+    ): void {
         const bar = new Stave(positionX, positionY, length);
+        if (isFirst) {
+            bar.addClef('treble');
+        }
+
         if (this.fillColor) {
             bar.setStyle({ strokeStyle: this.fillColor });
         }
