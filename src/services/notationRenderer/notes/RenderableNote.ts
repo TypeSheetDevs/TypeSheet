@@ -122,8 +122,10 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
             return this.cachedStaveNote!;
         }
 
+        const isRest = Rests.includes(this.duration);
+
         const staveNote = new StaveNote({
-            keys: this.keys.map(key => key.Pitch),
+            keys: isRest ? ['R/5'] : this.keys.map(key => key.Pitch),
             duration: this.DurationSymbol,
             stem_direction: this.GetStemDirection(),
         });
@@ -135,18 +137,20 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
             });
         }
 
-        this.keys.forEach((key, index) => {
-            if (key.Modifier) {
-                staveNote.addModifier(new Accidental(key.Modifier), index);
-            }
-            key.SetNotDirty();
-        });
+        if (!isRest) {
+            this.keys.forEach((key, index) => {
+                if (key.Modifier) {
+                    staveNote.addModifier(new Accidental(key.Modifier), index);
+                }
+                key.SetNotDirty();
+            });
 
-        this.modifiers.forEach(modifier => {
-            staveNote.addModifier(
-                new Articulation(modifier).setPosition(this.GetModifierPosition()),
-            );
-        });
+            this.modifiers.forEach(modifier => {
+                staveNote.addModifier(
+                    new Articulation(modifier).setPosition(this.GetModifierPosition()),
+                );
+            });
+        }
 
         if (this.dotted) {
             Dot.buildAndAttach([staveNote], { all: true });

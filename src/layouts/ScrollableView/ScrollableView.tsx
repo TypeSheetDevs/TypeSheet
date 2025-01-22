@@ -9,7 +9,7 @@ function ScrollableView() {
   const rendererEngine = ConfigService.getInstance().getValue(SavedParameterName.RendererEngine);
 
   const scrollableBox = useRef<HTMLDivElement>(null);
-  const containerHeight = useScrollBox(scrollableBox);
+  const containerHeight = useScrollBox(scrollableBox) + 30;
   return (
     <div
       className={styles.scrollableView}
