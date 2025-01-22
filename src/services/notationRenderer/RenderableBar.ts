@@ -9,6 +9,8 @@ import { SavedParameterName } from '@services/ConfigService/ConfigService.types'
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { Notes } from '@services/HarmonicsService/Harmonics.types';
+import { Notation } from '@services/notationRenderer/Notation';
+import { SignatureData } from '@services/notationRenderer/Signature';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private StartingPitch = 46;
@@ -132,6 +134,9 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         if (isFirst) {
             bar.addClef('treble');
         }
+        if (this.ShouldDrawSignature(isFirst)) {
+            this.DrawSignature(bar);
+        }
 
         if (this.fillColor) {
             bar.setStyle({ strokeStyle: this.fillColor });
@@ -149,6 +154,26 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         if (!this.voices.find(v => v === voice)) {
             this.voices.push(voice);
         }
+    }
+
+    private DrawSignature(bar: Stave): void {
+        const signature = this.GetUsedSignature();
+        bar.addKeySignature(signature.key);
+    }
+
+    private ShouldDrawSignature(isFirst?: boolean): boolean {
+        if (isFirst) {
+            return true;
+        }
+
+        const globalIndex = Notation.getInstance().GetGlobalBarIndex(this);
+        const startingIndex = this.GetUsedSignature().startingIndex;
+        return globalIndex === startingIndex;
+    }
+
+    private GetUsedSignature(): SignatureData {
+        const globalIndex = Notation.getInstance().GetGlobalBarIndex(this);
+        return Notation.getInstance().Signature.GetUsedData(globalIndex);
     }
 
     public removeVoice(index: number): void {
