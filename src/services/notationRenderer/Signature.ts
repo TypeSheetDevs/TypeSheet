@@ -13,7 +13,7 @@ export class Signature {
         if (existingIndex >= 0) {
             this.datas.splice(existingIndex, 1);
         }
-        this.datas.push(data);
+            this.datas.push(data);
         this.datas.sort((a, b) => a.startIndex - b.startIndex);
 
         for (let i = 0; i < this.datas.length - 1; i++) {
@@ -23,8 +23,8 @@ export class Signature {
                 };
                 this.datas.splice(i, 2, mergedData);
                 --i;
-            }
         }
+    }
         EventNotifier.Notify('needsRender');
     }
 
