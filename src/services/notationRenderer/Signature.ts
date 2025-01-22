@@ -42,7 +42,6 @@ export class Signature {
 
     GetUsedData(staveIndex: number): SignatureData {
         const filtered = this.datas.filter(data => data.startingIndex <= staveIndex);
-        console.log(filtered);
         return filtered[filtered.length - 1];
     }
 }

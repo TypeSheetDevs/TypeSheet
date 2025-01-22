@@ -1,6 +1,7 @@
 import styles from './SignatureSelector.styles.module.css';
 import { KeySignature } from '@services/notationRenderer/Signature';
 import React, { useState } from 'react';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 function SignatureSelector() {
   const [selectedSignature, setSelectedSignature] = useState<KeySignature>(KeySignature.C);
@@ -8,6 +9,11 @@ function SignatureSelector() {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedKey = event.target.value as KeySignature;
     setSelectedSignature(selectedKey);
+  };
+
+  const handleClick = () => {
+    EventNotifier.Notify('startAddingSignature', selectedSignature);
+    console.log(selectedSignature);
   };
 
   return (
@@ -26,6 +32,11 @@ function SignatureSelector() {
           </option>
         ))}
       </select>
+      <button
+        className={`${styles.button} ${styles.refreshButton}`}
+        onClick={handleClick}>
+        Add
+      </button>
     </div>
   );
 }
