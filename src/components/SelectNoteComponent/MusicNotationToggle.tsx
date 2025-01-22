@@ -1,7 +1,11 @@
 import styles from './MusicNotationToggle.styles.module.css';
 import { useState } from 'react';
 
-function MusicNotationToggle({ displayedText, OnToggle, lineHeight }: MusicNotationToggleProps) {
+export function MusicNotationToggle({
+  displayedText,
+  OnToggle,
+  lineHeight,
+}: MusicNotationToggleProps) {
   const [toggled, setToggled] = useState(false);
 
   return (

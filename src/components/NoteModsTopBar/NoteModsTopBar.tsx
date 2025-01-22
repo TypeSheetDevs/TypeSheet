@@ -2,6 +2,7 @@ import SelectNoteComponent from '@components/SelectNoteComponent/SelectNoteCompo
 import styles from './NoteModsTopBar.styles.module.css';
 import MusicNotationToggle from '@components/SelectNoteComponent/MusicNotationToggle';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import SelectAccidentalComponent from '@components/SelectAccidentalComponent/SelectAccidentalComponent';
 
 function Separator() {
   return <div className={styles.separator}></div>;
@@ -20,30 +21,13 @@ export default function NoteModsTopBar() {
         displayedText={'\uE1D5\uE1E7'}
       />
       <MusicNotationToggle
-        OnToggle={() => {}}
+        OnToggle={v => {
+          NotationRenderer.getInstance().AddingNoteIndicator.IsRest = v;
+        }}
         displayedText={'\uE4E5'}
       />
       <Separator />
-      <MusicNotationToggle
-        OnToggle={() => {}}
-        displayedText={'\uE260'}
-      />
-      <MusicNotationToggle
-        OnToggle={() => {}}
-        displayedText={'\uE261'}
-      />
-      <MusicNotationToggle
-        OnToggle={() => {}}
-        displayedText={'\uE262'}
-      />
-      <MusicNotationToggle
-        OnToggle={() => {}}
-        displayedText={'\uE263'}
-      />
-      <MusicNotationToggle
-        OnToggle={() => {}}
-        displayedText={'\uE264'}
-      />
+      <SelectAccidentalComponent />
       <Separator />
     </div>
   );

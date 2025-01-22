@@ -9,6 +9,7 @@ import {
     TickContext,
     Vex,
     Voice,
+    VoiceMode,
 } from 'vexflow';
 import { IRenderable } from '@services/notationRenderer/IRenderable';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
@@ -68,12 +69,11 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
             return this.cachedVoice!;
         }
 
-        this.CalculateNumBeats();
-
         const voice = new Voice({
             num_beats: this.numBeats,
             beat_value: this.beatValue,
         });
+        voice.setMode(VoiceMode.SOFT);
 
         voice.addTickables(this.notes.map(note => note.GetAsVexFlowNote()));
 
