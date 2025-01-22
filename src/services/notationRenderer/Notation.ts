@@ -4,6 +4,7 @@ import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
+import { Signature } from '@services/notationRenderer/Signature';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -13,6 +14,7 @@ export class Notation implements IRecoverable<NotationData> {
     }
 
     staves: RenderableStave[] = [];
+    private signature: Signature = new Signature();
     private title: string = '';
     private author: string = '';
 
