@@ -138,16 +138,6 @@ export class Notation implements IRecoverable<NotationData> {
         });
     }
 
-    PrintAccidentalsData() {
-        this.staves.forEach(stave =>
-            stave.bars.forEach(bar =>
-                bar.voices.forEach(voice =>
-                    voice.notes.forEach(note => console.log(note.GetAllAccidentalsData(), note)),
-                ),
-            ),
-        );
-    }
-
     public async SaveToJson(): Promise<void> {
         try {
             const notationData = this.ToData();
