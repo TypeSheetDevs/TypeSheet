@@ -2,10 +2,11 @@ import { RenderContext, Stave } from 'vexflow';
 import { Notation } from './Notation';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
-import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
 import { NoteIndicator } from '@services/notationRenderer/NoteIndicator';
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
+import { EventParams } from '@services/eventNotifier/eventNotifier.types';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -67,7 +68,7 @@ export class NotationRenderer {
             case NotationRendererState.AddingNote:
                 this.addingNoteIndicator.Visible = true;
         }
-
+        EventNotifier.Notify('rendererStateChanged', this.State);
         this.OnRender();
     }
 
@@ -184,6 +185,14 @@ export class NotationRenderer {
 
     get AddingNoteIndicator() {
         return this.addingNoteIndicator;
+    }
+
+    get State() {
+        return this.state;
+    }
+
+    ChangeStateBackToIdle() {
+        this.ChangeState(NotationRendererState.Idle);
     }
 
     ClearFocus(): void {

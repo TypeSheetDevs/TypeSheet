@@ -1,3 +1,10 @@
+import {
+    EventParams,
+    Handlers,
+    NotationEventName,
+} from '@services/eventNotifier/eventNotifier.types';
+import { NotationEvent } from '@services/eventNotifier/event.types';
+
 class EventNotifier {
     private static handlerMap = new Map<string, (e: Event) => void>();
 

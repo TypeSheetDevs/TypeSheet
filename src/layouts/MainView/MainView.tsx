@@ -8,27 +8,29 @@ import { SavedParameterName } from '@services/ConfigService/ConfigService.types'
 import LabeledToggle from '@components/LabeledToggle/LabeledToggle';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import NoteModsTopBar from '@components/NoteModsTopBar/NoteModsTopBar';
+import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 
 function MainView() {
   const [currentView, setCurrentView] = useState(
     ConfigService.getInstance().getValue(SavedParameterName.StartingView),
   );
-  const [isAddingNotesComponentVisible, setIsAddingNotesComponentVisible] =
-    useState<boolean>(false);
+  const [notationRendererState, setNotationRendererState] = useState(
+    NotationRenderer.getInstance().State,
+  );
 
   useEffect(() => {
-    const showAddingComponent = () => {
-      setIsAddingNotesComponentVisible(true);
-    };
-    EventNotifier.AddListener('startAddingNotes', showAddingComponent);
+    EventNotifier.AddListener('rendererStateChanged', state => setNotationRendererState(state));
     return () => {
-      EventNotifier.RemoveListener('startAddingNotes', showAddingComponent);
+      EventNotifier.RemoveListener('rendererStateChanged', state =>
+        setNotationRendererState(state),
+      );
     };
   }, []);
 
   return (
     <div className={styles.mainView}>
-      {isAddingNotesComponentVisible && <NoteModsTopBar />}
+      {notationRendererState === NotationRendererState.AddingNote && <NoteModsTopBar />}
       <LabeledToggle
         toggled={currentView == ViewType.Paged}
         onToggle={() =>

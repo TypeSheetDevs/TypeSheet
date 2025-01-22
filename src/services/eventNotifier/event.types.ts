@@ -1,4 +1,6 @@
-type NotationEvent =
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
+
+export type NotationEvent =
     | { name: 'needsRender' }
     | { name: 'toggleConfigManager' }
     | { name: 'removeBar' }
@@ -8,6 +10,7 @@ type NotationEvent =
     | { name: 'numberOfStavesChanged'; params: number }
     | { name: 'metaDataSet'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }
+    | { name: 'rendererStateChanged'; params: NotationRendererState }
     | {
           name: 'resized';
           params: {
