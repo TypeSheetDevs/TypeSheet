@@ -38,8 +38,6 @@ export class NotationRenderer {
         EventNotifier.AddListener('addNewBar', this.AddNewBar.bind(this));
         EventNotifier.AddListener('removeBar', this.RemoveFocusedBar.bind(this));
         EventNotifier.AddListener('removeStave', this.RemoveFocusedStave.bind(this));
-        EventNotifier.AddListener('startAddingNotes', this.StartAddingNotes.bind(this));
-        EventNotifier.AddListener('startRemovingNotes', this.StartRemovingNotes.bind(this));
         EventNotifier.AddListener('movedInsideRenderer', this.OnMouseMove.bind(this));
     }
 
@@ -74,8 +72,10 @@ export class NotationRenderer {
 
     private AddNewBar(params: EventParams<'addNewBar'>) {
         if (!this.focusedEntities.Bar) {
-            this.notation.AddNewBar(params.newStave, this.notation.getStaves().length);
-            return;
+            const newStaveIndex = this.notation.getStaves().length;
+            this.notation.AddNewBar(params.newStave, newStaveIndex);
+            this.focusedEntities.SetBarIndex(newStaveIndex, 0);
+            return this.OnRender();
         }
 
         this.notation.AddNewBar(
@@ -191,8 +191,8 @@ export class NotationRenderer {
         return this.state;
     }
 
-    ChangeStateBackToIdle() {
-        this.ChangeState(NotationRendererState.Idle);
+    ChangeStateAction(state: NotationRendererState) {
+        return () => this.ChangeState(state);
     }
 
     ClearFocus(): void {
@@ -203,14 +203,6 @@ export class NotationRenderer {
     SetContext(context: RenderContext): void {
         this.context = context;
         this.OnRender();
-    }
-
-    private StartAddingNotes() {
-        this.ChangeState(NotationRendererState.AddingNote);
-    }
-
-    private StartRemovingNotes() {
-        this.ChangeState(NotationRendererState.RemovingNote);
     }
 
     private OnResize(params: EventParams<'resized'>): void {

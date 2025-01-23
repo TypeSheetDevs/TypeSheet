@@ -2,6 +2,11 @@ import MainLayout from '@layouts/MainLayout/MainLayout';
 import { useEffect } from 'react';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
+
+function ChangeRendererState(state: NotationRendererState) {
+  NotationRenderer.getInstance().ChangeStateAction(state)();
+}
 
 function App(): JSX.Element {
   //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping');
@@ -9,13 +14,16 @@ function App(): JSX.Element {
     const OnKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case 'Escape':
-          NotationRenderer.getInstance().ChangeStateBackToIdle();
+          ChangeRendererState(NotationRendererState.Idle);
           break;
         case 'a':
-          EventNotifier.Notify('startAddingNotes');
+          ChangeRendererState(NotationRendererState.AddingNote);
           break;
         case 'r':
-          EventNotifier.Notify('startRemovingNotes');
+          ChangeRendererState(NotationRendererState.RemovingNote);
+          break;
+        case 'm':
+          ChangeRendererState(NotationRendererState.ModifyingNote);
           break;
         case 'b':
           EventNotifier.Notify('addNewBar', { newStave: false });
