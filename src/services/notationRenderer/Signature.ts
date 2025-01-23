@@ -1,3 +1,5 @@
+import EventNotifier from '@services/eventNotifier/eventNotifier';
+
 export enum KeySignature {
     C = 'C',
     G = 'G',
@@ -25,19 +27,28 @@ export class Signature {
     private datas: SignatureData[] = [];
 
     constructor() {
-        this.datas.push({ startingIndex: 0, key: KeySignature['C#'] });
-        this.datas.push({ startingIndex: 3, key: KeySignature['G'] });
+        this.datas.push({ startingIndex: 0, key: KeySignature['C'] });
     }
 
     AddNewData(data: SignatureData) {
-        if (this.datas.some(existingData => existingData.startingIndex === data.startingIndex)) {
-            this.datas.push(data);
-            this.datas.sort((a, b) => a.startingIndex - b.startingIndex);
+        const existingIndex = this.datas.findIndex(i => i.startingIndex === data.startingIndex);
+        if (existingIndex >= 0) {
+            this.datas.splice(existingIndex, 1);
         }
-    }
+        this.datas.push(data);
+        this.datas.sort((a, b) => a.startingIndex - b.startingIndex);
 
-    RemoveDataByIndex(startingIndex: number) {
-        this.datas = this.datas.filter(data => data.startingIndex !== startingIndex);
+        for (let i = 0; i < this.datas.length - 1; i++) {
+            if (this.datas[i].key === this.datas[i + 1].key) {
+                const mergedData = {
+                    ...this.datas[i],
+                };
+                this.datas.splice(i, 2, mergedData);
+                --i;
+            }
+        }
+        console.log(this.datas);
+        EventNotifier.Notify('needsRender');
     }
 
     GetUsedData(staveIndex: number): SignatureData {
