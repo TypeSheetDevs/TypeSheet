@@ -1,8 +1,8 @@
 import styles from './SignatureSelector.styles.module.css';
-import { KeySignature } from '@services/notationRenderer/Signature';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import { KeySignature } from '@services/notationRenderer/Signature.types';
 
 const sp = '\u00A0';
 const barLine = '\uE030';

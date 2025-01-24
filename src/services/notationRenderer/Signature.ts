@@ -1,4 +1,5 @@
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { KeySignature, SignatureData } from '@services/notationRenderer/Signature.types';
 
 export class Signature {
     private datas: SignatureData[] = [];
