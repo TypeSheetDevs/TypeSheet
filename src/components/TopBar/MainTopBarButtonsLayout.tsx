@@ -144,14 +144,9 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
     buttons: [
       {
         type: 'tooltip',
-        iconPath: getButtonIcon('save.svg'),
+        iconPath: getButtonIcon('signature.svg'),
         content: <SignatureSelector />,
         usedPadding: '0',
-      },
-      {
-        type: 'button',
-        iconPath: getButtonIcon('load.svg'),
-        onClick: () => Notation.getInstance().PrintAccidentalsData(),
       },
     ],
   },

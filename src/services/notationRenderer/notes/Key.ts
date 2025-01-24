@@ -36,11 +36,6 @@ export class Key implements IRecoverable<KeyData> {
         return this.isKeyDirty;
     }
 
-    get TonePitch() {
-        const [pitch, octave] = this.pitch.split('/');
-        return `${pitch}${this.modifier ?? ''}${octave}`;
-    }
-
     SetNotDirty() {
         this.isKeyDirty = false;
     }
