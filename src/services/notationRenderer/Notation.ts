@@ -79,24 +79,6 @@ export class Notation implements IRecoverable<NotationData> {
         return this.staves[staveIndex].bars[barIndex];
     }
 
-    GetGlobalBarIndex(bar: RenderableBar): number {
-        let globalIndex = 0;
-
-        for (let staveIndex = 0; staveIndex < this.staves.length; staveIndex++) {
-            const stave = this.staves[staveIndex];
-
-            const barIndex = stave.bars.indexOf(bar);
-            if (barIndex !== -1) {
-                globalIndex += barIndex;
-                break;
-            }
-
-            globalIndex += stave.bars.length;
-        }
-
-        return globalIndex;
-    }
-
     get Title(): string {
         return this.title;
     }
@@ -113,10 +95,6 @@ export class Notation implements IRecoverable<NotationData> {
     set Author(value: string) {
         this.author = value;
         this.Redraw();
-    }
-
-    get Signature(): Signature {
-        return this.signature;
     }
 
     setMetaData(title: string, author: string) {

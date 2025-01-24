@@ -16,7 +16,7 @@ export enum KeySignature {
     'Cb' = 'Cb',
 }
 
-export type SignatureData = {
+type SignatureData = {
     startingIndex: number;
     key: KeySignature;
 };
@@ -25,7 +25,7 @@ export class Signature {
     private datas: SignatureData[] = [];
 
     constructor() {
-        this.datas.push({ startingIndex: 0, key: KeySignature['C#'] });
+        this.datas.push({ startingIndex: 0, key: KeySignature.C });
     }
 
     AddNewData(data: SignatureData) {
@@ -40,8 +40,7 @@ export class Signature {
     }
 
     GetUsedData(staveIndex: number): SignatureData {
-        const filtered = this.datas.filter(data => data.startingIndex <= staveIndex);
-        console.log(filtered);
+        const filtered = this.datas.filter(data => data.startingIndex < staveIndex);
         return filtered[filtered.length - 1];
     }
 }
