@@ -6,7 +6,7 @@ import { NotationRendererState } from '@services/notationRenderer/NotationRender
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
 import { NoteIndicator } from '@services/notationRenderer/NoteIndicator';
-import { KeySignature } from '@services/notationRenderer/Signature.types';
+import { KeySignature } from '@services/notationRenderer/Signature';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;

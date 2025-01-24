@@ -12,7 +12,6 @@ import { Notes } from '@services/HarmonicsService/Harmonics.types';
 import { Notation } from '@services/notationRenderer/Notation';
 import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
 import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
-import { GetSignatureAccidentals, SignatureData } from '@services/notationRenderer/Signature.types';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private StartingPitch = 46;

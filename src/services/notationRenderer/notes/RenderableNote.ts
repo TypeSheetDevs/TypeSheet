@@ -189,7 +189,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         return data;
     }
 
-    GetExternalAccidentalsData(): AccidentalData[] {
+    GetAppliedAccidentalsData(): AccidentalData[] {
         return Notation.getInstance().GetNoteAssociatedBar(this)?.GetAccidentalsData() ?? [];
     }
 

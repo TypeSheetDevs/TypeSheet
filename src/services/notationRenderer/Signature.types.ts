@@ -1,4 +1,4 @@
-export enum KeySignature {
+enum KeySignature {
     C = 'C',
     G = 'G',
     D = 'D',
@@ -16,7 +16,7 @@ export enum KeySignature {
     'Cb' = 'Cb',
 }
 
-export type SignatureData = {
+type SignatureData = {
     startIndex: number;
     key: KeySignature;
 };
@@ -39,6 +39,6 @@ const SignatureAccidentals: Record<KeySignature, string[]> = {
     [KeySignature['Cb']]: ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb'],
 };
 
-export function GetSignatureAccidentals(signature: KeySignature) {
+function GetSignatureAccidentals(signature: KeySignature) {
     return SignatureAccidentals[signature];
 }

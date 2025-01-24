@@ -29,8 +29,7 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
     private cachedVoice: Voice | null = null;
     private isVoiceDirty: boolean = true;
 
-    // TODO: change to private later
-    readonly notes: RenderableNote[];
+    private readonly notes: RenderableNote[];
     private numBeats: number;
     private beatValue: number;
     private ties: { firstIndex: number; lastIndex: number }[] = [];

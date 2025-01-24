@@ -6,7 +6,6 @@ import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecover
 import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { Signature } from '@services/notationRenderer/Signature';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
-import { KeySignature } from '@services/notationRenderer/Signature.types';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -136,18 +135,6 @@ export class Notation implements IRecoverable<NotationData> {
             startIndex: this.GetGlobalBarIndex(selectedBar),
             key: signature,
         });
-    }
-
-    PrintAccidentalsData() {
-        this.staves.forEach(stave =>
-            stave.bars.forEach(bar =>
-                bar.voices.forEach(voice =>
-                    voice.notes.forEach(note =>
-                        console.log(note.GetExternalAccidentalsData(), note),
-                    ),
-                ),
-            ),
-        );
     }
 
     public async SaveToJson(): Promise<void> {
