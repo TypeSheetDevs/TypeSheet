@@ -27,7 +27,6 @@ function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
           key={index}
           iconPath={button.iconPath}
           content={button.content}
-          usedPadding={button.usedPadding}
         />
       );
   }
