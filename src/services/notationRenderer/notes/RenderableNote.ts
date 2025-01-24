@@ -12,6 +12,10 @@ import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecover
 import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import * as Tone from 'tone';
 import { PolySynth } from 'tone';
+import RenderableBar from '@services/notationRenderer/RenderableBar';
+import { Notation } from '@services/notationRenderer/Notation';
+import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
+import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -117,6 +121,10 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         this.isNoteDirty = true;
     }
 
+    GetAssociatedBar(): RenderableBar | null {
+        return Notation.getInstance().GetNoteAssociatedBar(this);
+    }
+
     GetAsVexFlowNote(): StaveNote {
         if (!this.IsDirty) {
             return this.cachedStaveNote!;
@@ -168,6 +176,21 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
     private IsHighPitch(pitch: string): boolean {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
+    }
+
+    GetAccidentals(): { pitch: string; accidental: KeyModifier }[] {
+        const data: { pitch: string; accidental: KeyModifier }[] = [];
+        for (const key of this.keys) {
+            if (key.Modifier) {
+                data.push({ pitch: key.Pitch, accidental: key.Modifier });
+            }
+        }
+
+        return data;
+    }
+
+    GetAppliedAccidentalsData(): AccidentalData[] {
+        return Notation.getInstance().GetNoteAssociatedBar(this)?.GetAccidentalsData() ?? [];
     }
 
     ToData(): RenderableNoteData {
