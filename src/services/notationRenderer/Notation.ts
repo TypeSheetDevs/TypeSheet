@@ -4,7 +4,7 @@ import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
-import { KeySignature, Signature } from '@services/notationRenderer/Signature';
+import { Signature } from '@services/notationRenderer/Signature';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -123,13 +123,6 @@ export class Notation implements IRecoverable<NotationData> {
         this.title = title;
         this.author = author;
         this.Redraw();
-    }
-
-    AddSignatureToBar(signature: KeySignature, selectedBar: RenderableBar): void {
-        this.signature.AddNewData({
-            startingIndex: this.GetGlobalBarIndex(selectedBar),
-            key: signature,
-        });
     }
 
     public async SaveToJson(): Promise<void> {

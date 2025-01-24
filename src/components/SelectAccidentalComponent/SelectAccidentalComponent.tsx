@@ -2,6 +2,8 @@ import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 import MusicNotationToggable from '@components/SelectNoteComponent/MusicNotationToggable';
 import { useState } from 'react';
 import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export default function SelectAccidentalComponent() {
   const [toggledIndex, setToggledIndex] = useState(-1);
