@@ -4,9 +4,11 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { ChosenEntityData } from '@services/notationRenderer/ChosenEntityData';
-import { NoteIndicator } from '@services/notationRenderer/NoteIndicator';
+import { NoteIndicator } from '@services/notationRenderer/NoteIndicator/NoteIndicator';
 import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 import { EventParams } from '@services/eventNotifier/eventNotifier.types';
+import { AddingNoteIndicator } from '@services/notationRenderer/NoteIndicator/AddingNoteIndicator';
+import { NullNoteIndicator } from '@services/notationRenderer/NoteIndicator/NullNoteIndicator';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -27,7 +29,7 @@ export class NotationRenderer {
     private configService: ConfigService = ConfigService.getInstance();
     private notation: Notation = Notation.getInstance();
     private focusedEntities: ChosenEntityData = null!;
-    private addingNoteIndicator: NoteIndicator = null!;
+    private actualNoteIndicator: NoteIndicator = null!;
     private state: NotationRendererState = null!;
 
     private _AddEventListeners() {
@@ -45,9 +47,8 @@ export class NotationRenderer {
         if (NotationRenderer._instance === null) {
             NotationRenderer._instance = this;
             this.focusedEntities = new ChosenEntityData(this.notation);
-            this.addingNoteIndicator = new NoteIndicator(this.notation);
             this.state = NotationRendererState.Idle;
-
+            this.actualNoteIndicator = new NullNoteIndicator();
             this._AddEventListeners();
             return this;
         } else return NotationRenderer._instance;
@@ -55,17 +56,21 @@ export class NotationRenderer {
 
     private ChangeState(state: NotationRendererState): void {
         if (state === this.state) return;
-        switch (this.state) {
-            case NotationRendererState.AddingNote:
-                this.addingNoteIndicator.Visible = false;
-        }
-
+        this.actualNoteIndicator.OnDestroy();
         this.state = state;
 
         switch (this.state) {
+            case NotationRendererState.Idle:
+                this.actualNoteIndicator = new NullNoteIndicator();
+                break;
             case NotationRendererState.AddingNote:
-                this.addingNoteIndicator.Visible = true;
+                this.actualNoteIndicator = new AddingNoteIndicator(this.notation);
+                break;
+            case NotationRendererState.ModifyingNote:
+                this.actualNoteIndicator = new AddingNoteIndicator(this.notation);
+                break;
         }
+        this.actualNoteIndicator.OnCreation();
         EventNotifier.Notify('rendererStateChanged', this.State);
         this.OnRender();
     }
@@ -184,7 +189,7 @@ export class NotationRenderer {
     }
 
     get AddingNoteIndicator() {
-        return this.addingNoteIndicator;
+        return this.actualNoteIndicator;
     }
 
     get State() {
@@ -225,39 +230,38 @@ export class NotationRenderer {
             case NotationRendererState.RemovingNote:
                 this.focusedEntities.Bar?.removeClickedNote(params.positionX);
                 break;
-            case NotationRendererState.AddingNote: {
-                this.addingNoteIndicator.SaveToNotation();
-            }
+            case NotationRendererState.AddingNote:
+                this.actualNoteIndicator.OnMouseClick();
+                break;
+            case NotationRendererState.ModifyingNote:
+                this.actualNoteIndicator.OnMouseClick();
+                break;
         }
 
         this.OnRender();
     }
 
-    private OnMouseMove(params: EventParams<'movedInsideRenderer'>): void {
-        if (this.state !== NotationRendererState.AddingNote) {
-            return;
-        }
-
-        this.SetFocusBasedOnPosition(params.positionX, params.positionY);
-
+    private GetNoteIndexUnderMouse(positionX: number): number {
         const newNoteIndicatorIndex =
-            this.focusedEntities.Voice?.GetNoteIndexByPositionX(params.positionX) ?? -1;
-
-        if (newNoteIndicatorIndex == -1) {
-            return;
-        }
-
+            this.focusedEntities.Voice?.GetNoteIndexByPositionX(positionX) ?? -1;
         const note = this.focusedEntities.Voice?.GetNote(newNoteIndicatorIndex);
 
-        if (note?.IsInRect(params.positionX)) {
-            this.addingNoteIndicator.MoveIndicator(
-                this.focusedEntities.StaveIndex,
-                this.focusedEntities.BarIndex,
-                newNoteIndicatorIndex,
-            );
-        }
+        if (!note?.IsInRect(positionX)) return -1;
 
-        this.addingNoteIndicator.AdjustPitch(params.positionY);
+        return newNoteIndicatorIndex;
+    }
+
+    private OnMouseMove(params: EventParams<'movedInsideRenderer'>): void {
+        this.SetFocusBasedOnPosition(params.positionX, params.positionY);
+
+        const entityUnderMouse = new ChosenEntityData(this.notation);
+        entityUnderMouse.SetNoteIndex(
+            this.focusedEntities.StaveIndex,
+            this.focusedEntities.BarIndex,
+            this.GetNoteIndexUnderMouse(params.positionX),
+        );
+
+        this.actualNoteIndicator.MovedAtNote(entityUnderMouse, params.positionY);
 
         this.OnRender();
     }
