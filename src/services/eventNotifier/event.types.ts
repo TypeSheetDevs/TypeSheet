@@ -5,7 +5,6 @@ type NotationEvent =
     | { name: 'removeStave' }
     | { name: 'startAddingNotes' }
     | { name: 'startRemovingNotes' }
-    | { name: 'startAddingSignature' }
     | { name: 'numberOfStavesChanged'; params: number }
     | { name: 'metaDataSet'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }
