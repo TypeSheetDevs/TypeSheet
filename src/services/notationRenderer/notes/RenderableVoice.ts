@@ -20,7 +20,6 @@ import {
 } from '@services/notationRenderer/notes/Voice.enums';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableVoiceData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
-import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -103,6 +102,7 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
     }
 
     private DrawTies(context: RenderContext) {
+        // if needed those could be cached
         this.ties.forEach(tie => {
             const staveTie = new StaveTie({
                 first_note: this.notes[tie.firstIndex].GetAsVexFlowNote(),
@@ -115,6 +115,7 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
     }
 
     private DrawHairpins(context: RenderContext) {
+        // if needed those could be cached
         this.hairpins.forEach(hairpin => {
             const firstNote = this.notes[hairpin.firstIndex];
             const lastNote = this.notes[hairpin.lastIndex];
@@ -315,24 +316,6 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
             const noteDurationValue = note.DurationValue;
             return totalBeats + noteDurationValue;
         }, 0);
-    }
-
-    NoteInVoice(note: RenderableNote): boolean {
-        return this.notes.includes(note);
-    }
-
-    GetAccidentalsData(): AccidentalData[] {
-        const data: AccidentalData[] = [];
-        this.notes.forEach((note, noteIndex) => {
-            const accidentals = note.GetAccidentals().map(acc => ({
-                accidental: acc.accidental,
-                pitch: acc.pitch,
-                allOctaves: false,
-                startIndex: noteIndex,
-            }));
-            data.push(...accidentals);
-        });
-        return data;
     }
 
     ToData(): RenderableVoiceData {

@@ -4,8 +4,7 @@ import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
-import { Signature } from '@services/notationRenderer/Signature';
-import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
+import { KeySignature, Signature } from '@services/notationRenderer/Signature';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -98,10 +97,6 @@ export class Notation implements IRecoverable<NotationData> {
         return globalIndex;
     }
 
-    public GetNoteAssociatedBar(note: RenderableNote): RenderableBar | null {
-        return this.staves.flatMap(stave => stave.bars).find(bar => bar.NoteInBar(note)) || null;
-    }
-
     get Title(): string {
         return this.title;
     }
@@ -132,7 +127,7 @@ export class Notation implements IRecoverable<NotationData> {
 
     AddSignatureToBar(signature: KeySignature, selectedBar: RenderableBar): void {
         this.signature.AddNewData({
-            startIndex: this.GetGlobalBarIndex(selectedBar),
+            startingIndex: this.GetGlobalBarIndex(selectedBar),
             key: signature,
         });
     }
