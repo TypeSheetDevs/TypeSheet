@@ -57,7 +57,13 @@ class RenderableStave implements IRenderable, IRecoverable<RenderableStaveData> 
     Draw(context: RenderContext, width: number, positionY: number) {
         const ratioValue = this.GetRatioValue(width);
         this.bars.forEach((bar, idx) =>
-            bar.Draw(context, positionY, this.GetBarPositionX(idx), ratioValue * bar.ratio),
+            bar.Draw(
+                context,
+                positionY,
+                this.GetBarPositionX(idx),
+                ratioValue * bar.ratio,
+                idx == 0,
+            ),
         );
         this.currentPositionY = this.bars.length != 0 ? this.bars[0].NextPositionY : 0;
     }

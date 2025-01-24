@@ -4,6 +4,7 @@ import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
 import { Notation } from '@services/notationRenderer/Notation';
 import MidiSelector from '@components/MidiSelector/MidiSelector';
 import InfoEditor from '@components/InfoEditor/InfoEditor';
+import SignatureSelector from '@components/SignatureSelector/SignatureSelector';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
   {
@@ -51,6 +52,7 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         type: 'tooltip',
         iconPath: getButtonIcon('edit_pen.svg'),
         content: <InfoEditor />,
+        usedPadding: '4px',
       },
     ],
   },
@@ -134,6 +136,22 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         type: 'tooltip',
         iconPath: getButtonIcon('piano.svg'),
         content: <MidiSelector />,
+        usedPadding: '4px',
+      },
+    ],
+  },
+  {
+    buttons: [
+      {
+        type: 'tooltip',
+        iconPath: getButtonIcon('save.svg'),
+        content: <SignatureSelector />,
+        usedPadding: '0',
+      },
+      {
+        type: 'button',
+        iconPath: getButtonIcon('load.svg'),
+        onClick: () => Notation.getInstance().PrintAccidentalsData(),
       },
     ],
   },
