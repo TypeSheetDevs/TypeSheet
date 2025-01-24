@@ -148,6 +148,11 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         content: <SignatureSelector />,
         usedPadding: '0',
       },
+      {
+        type: 'button',
+        iconPath: getButtonIcon('load.svg'),
+        onClick: () => Notation.getInstance().PrintAccidentalsData(),
+      },
     ],
   },
 ];
