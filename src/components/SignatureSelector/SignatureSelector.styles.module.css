@@ -1,52 +1,58 @@
 .container {
-    border: 1px solid lightgray;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    padding: 6px;
+    padding: 4px;
     align-items: center;
     font-family: sans-serif;
-    min-width: 180px;
+    min-width: 300px;
+    max-width: 600px;
 }
 
 .header {
     font-size: 1rem;
     margin-bottom: 0.5rem;
-    color: black;
+    color: white;
+    font-weight: bold;
 }
 
-.selector {
-    padding: 10px;
-    font-size: 16px;
-    font-weight: 400;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-    color: #333;
-    width: 80px;
-    cursor: pointer;
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
 }
 
-.selector:hover {
-    border-color: #888;
-    background-color: #f1f1f1;
+.group-label {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #dadada;
 }
 
-.selector:focus {
-    border-color: #3b82f6;
-    background-color: #e6f0ff;
-    outline: none;
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
 }
 
 .button {
-    margin-top: 8px;
-    padding: 2px 16px;
+    padding: 2px 0;
     border: black solid 1px;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    background-color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    background-color: #e8eaed;
     font-family: BravuraText;
     font-size: 32px;
     color: black;
+    min-width: 80px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #e6f0ff;
+    border-color: #3b82f6;
 }
