@@ -38,7 +38,7 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
             new RenderableNote(NoteDuration.Quarter, [
                 new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
             ]),
-            new RenderableNote(NoteDuration.QuarterRest, [
+            new RenderableNote(NoteDuration.Quarter, [
                 new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
             ]),
         ]);

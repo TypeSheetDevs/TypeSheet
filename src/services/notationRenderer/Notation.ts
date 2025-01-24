@@ -142,9 +142,7 @@ export class Notation implements IRecoverable<NotationData> {
         this.staves.forEach(stave =>
             stave.bars.forEach(bar =>
                 bar.voices.forEach(voice =>
-                    voice.notes.forEach(note =>
-                        console.log(note.GetExternalAccidentalsData(), note),
-                    ),
+                    voice.notes.forEach(note => console.log(note.GetAllAccidentalsData(), note)),
                 ),
             ),
         );
