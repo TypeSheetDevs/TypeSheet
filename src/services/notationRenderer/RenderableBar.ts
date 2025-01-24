@@ -10,7 +10,8 @@ import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecover
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { Notes } from '@services/HarmonicsService/Harmonics.types';
 import { Notation } from '@services/notationRenderer/Notation';
-import { SignatureData } from '@services/notationRenderer/Signature';
+import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
+import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     private StartingPitch = 46;
@@ -167,7 +168,7 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
         }
 
         const globalIndex = Notation.getInstance().GetGlobalBarIndex(this);
-        const startingIndex = this.GetUsedSignature().startingIndex;
+        const startingIndex = this.GetUsedSignature().startIndex;
         return globalIndex === startingIndex;
     }
 
@@ -181,6 +182,30 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
             throw new Error('Index out of bounds.');
         }
         this.voices.splice(index, 1);
+    }
+
+    public NoteInBar(note: RenderableNote): boolean {
+        return this.voices.some(voice => voice.NoteInVoice(note));
+    }
+
+    GetAccidentalsData(): AccidentalData[] {
+        const sAccidentals: AccidentalData[] = GetSignatureAccidentals(
+            this.GetUsedSignature().key,
+        ).map(acc => {
+            return {
+                accidental: ParseKeyModifier(acc[1])!,
+                pitch: acc[0],
+                allOctaves: true,
+                startIndex: 0,
+            };
+        });
+
+        const vAccidentals: AccidentalData[] = [];
+        this.voices.forEach(voice => {
+            vAccidentals.push(...voice.GetAccidentalsData());
+        });
+
+        return [...sAccidentals, ...vAccidentals];
     }
 
     ToData(): RenderableBarData {
