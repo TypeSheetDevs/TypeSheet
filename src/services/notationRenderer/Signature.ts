@@ -26,6 +26,7 @@ export class Signature {
 
     constructor() {
         this.datas.push({ startingIndex: 0, key: KeySignature['C#'] });
+        this.datas.push({ startingIndex: 3, key: KeySignature['G'] });
     }
 
     AddNewData(data: SignatureData) {
