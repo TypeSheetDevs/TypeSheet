@@ -7,19 +7,18 @@ import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote'
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export class AddingNoteIndicator extends NoteIndicator {
-    private readonly notation: Notation;
     private noteData: ChosenEntityData;
     private visible: boolean = false;
     private key: Key;
 
     constructor(notation: Notation) {
-        super();
-        this.notation = notation;
+        super(notation);
         this.noteData = new ChosenEntityData(this.notation);
         this.key = new Key('C/5');
+        this.noteData.SetNoteIndex(0, 0, 0);
     }
 
-    protected RefreshIndicator() {
+    protected override RefreshIndicator() {
         if (!this.visible) return;
         if (this.noteData.Note) {
             this.RemoveFromNotation();
@@ -108,6 +107,12 @@ export class AddingNoteIndicator extends NoteIndicator {
     override MovedAtNote(noteData: ChosenEntityData, positionY: number) {
         if (noteData.NoteIndex != -1) {
             this.Move(noteData.StaveIndex, noteData.BarIndex, noteData.NoteIndex);
+        }
+
+        if (this.noteData.Voice?.NotesLength === 0) {
+            this.Move(this.noteData.StaveIndex, this.noteData.BarIndex, 0);
+        } else if (!this.noteData.Voice || !this.noteData.Bar || !this.noteData.Stave) {
+            this.Move(0, 0, 0);
         }
 
         this.AdjustPitch(positionY);
