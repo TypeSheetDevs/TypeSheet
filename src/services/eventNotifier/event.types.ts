@@ -1,4 +1,6 @@
 import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
+import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
+import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 export type NotationEvent =
     | { name: 'needsRender' }
@@ -34,5 +36,14 @@ export type NotationEvent =
           name: 'addNewBar';
           params: {
               newStave: boolean;
+          };
+      }
+    | {
+          name: 'modifyingNoteSelectionChanged';
+          params: {
+              isRest: boolean;
+              isDotted: boolean;
+              duration: NoteDuration;
+              accidental?: KeyModifier;
           };
       };
