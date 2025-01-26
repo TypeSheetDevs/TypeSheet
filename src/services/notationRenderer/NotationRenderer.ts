@@ -10,6 +10,7 @@ import { EventParams } from '@services/eventNotifier/eventNotifier.types';
 import { AddingNoteIndicator } from '@services/notationRenderer/NoteIndicator/AddingNoteIndicator';
 import { NullNoteIndicator } from '@services/notationRenderer/NoteIndicator/NullNoteIndicator';
 import { RemovingNoteIndicator } from '@services/notationRenderer/NoteIndicator/RemovingNoteIndicator';
+import { ModiyfingNoteIndicator } from '@services/notationRenderer/NoteIndicator/ModiyfingNoteIndicator';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -71,6 +72,8 @@ export class NotationRenderer {
                 return new AddingNoteIndicator(this.notation);
             case NotationRendererState.RemovingNote:
                 return new RemovingNoteIndicator(this.notation);
+            case NotationRendererState.ModifyingNote:
+                return new ModiyfingNoteIndicator(this.notation);
         }
         return new NullNoteIndicator(this.notation);
     }
@@ -188,7 +191,7 @@ export class NotationRenderer {
         );
     }
 
-    get AddingNoteIndicator() {
+    get ActualNoteIndicator() {
         return this.actualNoteIndicator;
     }
 

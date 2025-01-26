@@ -88,3 +88,14 @@ export function toRest(note: NoteDuration): NoteDuration {
     }
     return `${note}r` as NoteDuration;
 }
+
+export function IsRest(durationString: string): boolean {
+    return Rests.includes(durationString as NoteDuration);
+}
+
+export function RestToNote(note: NoteDuration): NoteDuration {
+    if (note.endsWith('r')) {
+        return note.slice(0, -1) as NoteDuration;
+    }
+    return note;
+}
