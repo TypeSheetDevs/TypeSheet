@@ -17,7 +17,7 @@ export default function SelectNoteComponent() {
   ];
 
   useEffect(() => {
-    NotationRenderer.getInstance().AddingNoteIndicator.NoteDuration =
+    NotationRenderer.getInstance().ActualNoteIndicator.NoteDuration =
       noteValues[selectedNote].noteEnum;
   }, [selectedNote]);
 
