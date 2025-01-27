@@ -11,6 +11,7 @@ import { AddingNoteIndicator } from '@services/notationRenderer/NoteIndicator/Ad
 import { NullNoteIndicator } from '@services/notationRenderer/NoteIndicator/NullNoteIndicator';
 import { RemovingNoteIndicator } from '@services/notationRenderer/NoteIndicator/RemovingNoteIndicator';
 import { ModiyfingNoteIndicator } from '@services/notationRenderer/NoteIndicator/ModiyfingNoteIndicator';
+import { KeySignature } from '@services/notationRenderer/Signature.types';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -129,6 +130,11 @@ export class NotationRenderer {
             }
         }
         return [-1, -1];
+    }
+
+    AddSignatureToChosenBar(signature: KeySignature): void {
+        if (!this.focusedEntities.Bar) return;
+        this.notation.AddSignatureToBar(signature, this.focusedEntities.Bar);
     }
 
     private DrawVisibleBars() {

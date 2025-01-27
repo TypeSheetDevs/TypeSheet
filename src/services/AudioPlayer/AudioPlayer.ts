@@ -135,7 +135,7 @@ export class AudioPlayer {
         let currentTime = startTime;
         for (let i = 0; i < voice.NotesLength; i++) {
             const note = voice.GetNote(i);
-            const synth = note.Play(currentTime);
+            const synth = note.Play(currentTime, i);
             this.activeSynths.add(synth);
             currentTime += note.DurationValue;
         }

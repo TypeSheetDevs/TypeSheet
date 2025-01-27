@@ -12,6 +12,10 @@ import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecover
 import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import * as Tone from 'tone';
 import { PolySynth } from 'tone';
+import RenderableBar from '@services/notationRenderer/RenderableBar';
+import { Notation } from '@services/notationRenderer/Notation';
+import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
+import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -121,13 +125,19 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         this.isNoteDirty = true;
     }
 
+    GetAssociatedBar(): RenderableBar | null {
+        return Notation.getInstance().GetNoteAssociatedBar(this);
+    }
+
     GetAsVexFlowNote(): StaveNote {
         if (!this.IsDirty) {
             return this.cachedStaveNote!;
         }
 
+        const isRest = Rests.includes(this.duration);
+
         const staveNote = new StaveNote({
-            keys: this.keys.map(key => key.Pitch),
+            keys: isRest ? ['R/5'] : this.keys.map(key => key.Pitch),
             duration: this.DurationSymbol,
             stem_direction: this.GetStemDirection(),
         });
@@ -139,18 +149,20 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
             });
         }
 
-        this.keys.forEach((key, index) => {
-            if (key.Modifier) {
-                staveNote.addModifier(new Accidental(key.Modifier), index);
-            }
-            key.SetNotDirty();
-        });
+        if (!isRest) {
+            this.keys.forEach((key, index) => {
+                if (key.Modifier) {
+                    staveNote.addModifier(new Accidental(key.Modifier), index);
+                }
+                key.SetNotDirty();
+            });
 
-        this.modifiers.forEach(modifier => {
-            staveNote.addModifier(
-                new Articulation(modifier).setPosition(this.GetModifierPosition()),
-            );
-        });
+            this.modifiers.forEach(modifier => {
+                staveNote.addModifier(
+                    new Articulation(modifier).setPosition(this.GetModifierPosition()),
+                );
+            });
+        }
 
         if (this.dotted) {
             Dot.buildAndAttach([staveNote], { all: true });
@@ -172,6 +184,23 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
     private IsHighPitch(pitch: string): boolean {
         return parseInt(pitch[pitch.length - 1], 10) >= 5;
+    }
+
+    GetAccidentals(): { pitch: string; accidental: KeyModifier }[] {
+        const data: { pitch: string; accidental: KeyModifier }[] = [];
+        if (!Rests.includes(this.Duration)) {
+            for (const key of this.keys) {
+                if (key.Modifier) {
+                    data.push({ pitch: key.Pitch, accidental: key.Modifier });
+                }
+            }
+        }
+
+        return data;
+    }
+
+    GetAllAccidentalsData(): AccidentalData[] {
+        return Notation.getInstance().GetNoteAssociatedBar(this)?.GetAccidentalsData() ?? [];
     }
 
     ToData(): RenderableNoteData {
@@ -205,7 +234,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         );
     }
 
-    Play(startTime: number): Tone.PolySynth {
+    Play(startTime: number, index: number): Tone.PolySynth {
         if (!this.keys.length) {
             console.warn('No keys to play.');
             return new PolySynth();
@@ -216,11 +245,37 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         }
 
         const synth = new Tone.PolySynth().toDestination();
-
-        const pitches = this.keys.map(key => key.TonePitch);
+        const accidentals = this.GetAllAccidentalsData();
+        const pitches = this.keys.map(key =>
+            this.GetPitchWithAccidentals(key.Pitch, index, accidentals),
+        );
 
         synth.triggerAttackRelease(pitches, this.DurationValue, startTime);
 
         return synth;
+    }
+
+    GetPitchWithAccidentals(
+        keyPitch: string,
+        index: number,
+        accidentals: AccidentalData[],
+    ): string {
+        const [pitch, octave] = keyPitch.toUpperCase().split('/');
+        let appliedAcc: AccidentalData | null = null;
+        for (const acc of accidentals) {
+            if (acc.startIndex > index) break;
+            if (acc.allOctaves && acc.pitch === pitch) {
+                appliedAcc = acc;
+            } else if (acc.pitch === keyPitch) {
+                appliedAcc = acc;
+            }
+        }
+
+        const stringAccidental: string =
+            appliedAcc && appliedAcc.accidental !== KeyModifier.Natural
+                ? appliedAcc.accidental
+                : '';
+
+        return `${pitch}${stringAccidental}${octave}`;
     }
 }

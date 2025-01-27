@@ -4,6 +4,9 @@ import { FileService } from '@services/FileService/FileService';
 import { NotationData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import RenderableBar from '@services/notationRenderer/RenderableBar';
+import { Signature } from '@services/notationRenderer/Signature';
+import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
+import { KeySignature } from '@services/notationRenderer/Signature.types';
 
 export class Notation implements IRecoverable<NotationData> {
     private static _instance: Notation = null!;
@@ -13,6 +16,7 @@ export class Notation implements IRecoverable<NotationData> {
     }
 
     staves: RenderableStave[] = [];
+    private signature: Signature = new Signature();
     private title: string = '';
     private author: string = '';
 
@@ -77,6 +81,28 @@ export class Notation implements IRecoverable<NotationData> {
         return this.staves[staveIndex].bars[barIndex];
     }
 
+    GetGlobalBarIndex(bar: RenderableBar): number {
+        let globalIndex = 0;
+
+        for (let staveIndex = 0; staveIndex < this.staves.length; staveIndex++) {
+            const stave = this.staves[staveIndex];
+
+            const barIndex = stave.bars.indexOf(bar);
+            if (barIndex !== -1) {
+                globalIndex += barIndex;
+                break;
+            }
+
+            globalIndex += stave.bars.length;
+        }
+
+        return globalIndex;
+    }
+
+    public GetNoteAssociatedBar(note: RenderableNote): RenderableBar | null {
+        return this.staves.flatMap(stave => stave.bars).find(bar => bar.NoteInBar(note)) || null;
+    }
+
     get Title(): string {
         return this.title;
     }
@@ -95,10 +121,21 @@ export class Notation implements IRecoverable<NotationData> {
         this.Redraw();
     }
 
+    get Signature(): Signature {
+        return this.signature;
+    }
+
     setMetaData(title: string, author: string) {
         this.title = title;
         this.author = author;
         this.Redraw();
+    }
+
+    AddSignatureToBar(signature: KeySignature, selectedBar: RenderableBar): void {
+        this.signature.AddNewData({
+            startIndex: this.GetGlobalBarIndex(selectedBar),
+            key: signature,
+        });
     }
 
     public async SaveToJson(): Promise<void> {
