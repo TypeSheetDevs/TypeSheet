@@ -39,10 +39,10 @@ export default function SelectAccidentalComponent() {
           onClick={() => {
             if (toggledIndex === idx) {
               setToggledIndex(-1);
-              NotationRenderer.getInstance().AddingNoteIndicator.Accidental = undefined;
+              NotationRenderer.getInstance().ActualNoteIndicator.Accidental = undefined;
             } else {
               setToggledIndex(idx);
-              NotationRenderer.getInstance().AddingNoteIndicator.Accidental = value.enumValue;
+              NotationRenderer.getInstance().ActualNoteIndicator.Accidental = value.enumValue;
             }
           }}
         />

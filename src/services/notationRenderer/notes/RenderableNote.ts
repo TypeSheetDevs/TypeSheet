@@ -58,6 +58,10 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         this.duration = value;
     }
 
+    get Duration(): NoteDuration {
+        return this.duration;
+    }
+
     get AbsoluteX(): number {
         return this.absoluteX;
     }

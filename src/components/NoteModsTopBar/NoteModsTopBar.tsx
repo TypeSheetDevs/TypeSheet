@@ -16,13 +16,13 @@ export default function NoteModsTopBar() {
       <MusicNotationToggle
         lineHeight={'25px'}
         OnToggle={v => {
-          NotationRenderer.getInstance().AddingNoteIndicator.Dotted = v;
+          NotationRenderer.getInstance().ActualNoteIndicator.Dotted = v;
         }}
         displayedText={'\uE1D5\uE1E7'}
       />
       <MusicNotationToggle
         OnToggle={v => {
-          NotationRenderer.getInstance().AddingNoteIndicator.IsRest = v;
+          NotationRenderer.getInstance().ActualNoteIndicator.IsRest = v;
         }}
         displayedText={'\uE4E5'}
       />

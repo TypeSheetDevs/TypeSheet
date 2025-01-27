@@ -1,13 +1,16 @@
-type NotationEvent =
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
+import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
+import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
+
+export type NotationEvent =
     | { name: 'needsRender' }
     | { name: 'toggleConfigManager' }
     | { name: 'removeBar' }
     | { name: 'removeStave' }
-    | { name: 'startAddingNotes' }
-    | { name: 'startRemovingNotes' }
     | { name: 'numberOfStavesChanged'; params: number }
     | { name: 'metaDataSet'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }
+    | { name: 'rendererStateChanged'; params: NotationRendererState }
     | {
           name: 'resized';
           params: {
@@ -33,5 +36,14 @@ type NotationEvent =
           name: 'addNewBar';
           params: {
               newStave: boolean;
+          };
+      }
+    | {
+          name: 'modifyingNoteSelectionChanged';
+          params: {
+              isRest: boolean;
+              isDotted: boolean;
+              duration: NoteDuration;
+              accidental?: KeyModifier;
           };
       };

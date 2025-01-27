@@ -4,6 +4,8 @@ import { AudioPlayer } from '@services/AudioPlayer/AudioPlayer';
 import { Notation } from '@services/notationRenderer/Notation';
 import MidiSelector from '@components/MidiSelector/MidiSelector';
 import InfoEditor from '@components/InfoEditor/InfoEditor';
+import { NotationRenderer } from '@services/notationRenderer/NotationRenderer';
+import { NotationRendererState } from '@services/notationRenderer/NotationRendererState';
 import SignatureSelector from '@components/SignatureSelector/SignatureSelector';
 
 export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
@@ -82,7 +84,9 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
             options: [
               {
                 text: 'Add notes',
-                onClick: EventNotifier.NotifyAction('startAddingNotes'),
+                onClick: NotationRenderer.getInstance().ChangeStateAction(
+                  NotationRendererState.AddingNote,
+                ),
               },
             ],
           },
@@ -108,11 +112,20 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
             options: [
               {
                 text: 'Remove notes',
-                onClick: EventNotifier.NotifyAction('startRemovingNotes'),
+                onClick: NotationRenderer.getInstance().ChangeStateAction(
+                  NotationRendererState.RemovingNote,
+                ),
               },
             ],
           },
         ],
+      },
+      {
+        type: 'button',
+        iconPath: getButtonIcon('edit_pen.svg'),
+        onClick: NotationRenderer.getInstance().ChangeStateAction(
+          NotationRendererState.ModifyingNote,
+        ),
       },
     ],
   },
