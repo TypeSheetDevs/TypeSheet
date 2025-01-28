@@ -4,7 +4,6 @@ import { ConfigService } from '@services/ConfigService/ConfigService';
 import { RenderableVoice } from '@services/notationRenderer/notes/RenderableVoice';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { Key } from '@services/notationRenderer/notes/Key';
-import { NoteDuration } from '@services/notationRenderer/notes/Notes.enums';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecoverable';
 import { RenderableBarData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
@@ -26,24 +25,10 @@ class RenderableBar implements IRenderable, IRecoverable<RenderableBarData> {
     voices: RenderableVoice[] = [];
 
     constructor(ratio?: number) {
-        const notes = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
         this.ratio = ratio ?? 1;
-        const voice1 = new RenderableVoice(4, [
-            new RenderableNote(NoteDuration.Quarter, [
-                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
-            ]),
-            new RenderableNote(NoteDuration.Quarter, [
-                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
-            ]),
-            new RenderableNote(NoteDuration.Quarter, [
-                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
-            ]),
-            new RenderableNote(NoteDuration.Quarter, [
-                new Key(notes[Math.floor(Math.random() * notes.length)] + '/4'),
-            ]),
-        ]);
+        const voice = new RenderableVoice(4);
 
-        this.addVoice(voice1);
+        this.addVoice(voice);
     }
 
     get NextPositionX(): number {
