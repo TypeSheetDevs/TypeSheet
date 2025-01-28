@@ -232,8 +232,6 @@ export class NotationRenderer {
         this.width = params.width;
         this.height = params.height;
 
-        console.log(this.height);
-
         this.OnRender();
     }
 
@@ -274,7 +272,7 @@ export class NotationRenderer {
             this.GetNoteIndexUnderMouse(params.positionX),
         );
 
-        this.actualNoteIndicator.MovedAtNote(entityUnderMouse, params.positionY);
+        this.actualNoteIndicator.MovedAtNote(entityUnderMouse, params.positionY, this.height);
 
         this.OnRender();
     }

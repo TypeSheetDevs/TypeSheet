@@ -3,12 +3,11 @@ import styles from './MouseTooltip.styles.module.css';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 function MouseTooltip() {
-  const [visible, setVisible] = useState(false);
+  const [text, setText] = useState('');
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: -1, y: -1 });
 
-  const handleToggle = useCallback((params: { x: number; y: number; visible: boolean }) => {
-    console.log(params);
-    setVisible(params.visible);
+  const handleToggle = useCallback((params: { x: number; y: number; text: string }) => {
+    setText(params.text);
     setPosition({ x: params.x, y: params.y });
   }, []);
 
@@ -21,14 +20,14 @@ function MouseTooltip() {
 
   return (
     <>
-      {visible && (
+      {text !== '' && (
         <div
           className={styles.tooltip}
           style={{
             left: position.x,
             top: position.y,
           }}>
-          Tooltip
+          {text}
         </div>
       )}
     </>

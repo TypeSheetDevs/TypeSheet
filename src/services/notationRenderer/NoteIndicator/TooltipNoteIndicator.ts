@@ -2,6 +2,7 @@ import { NoteIndicator } from '@services/notationRenderer/NoteIndicator/NoteIndi
 import { ChosenEntityData } from '../ChosenEntityData';
 import { Notation } from '@services/notationRenderer/Notation';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { ChordTypeLength } from '@services/HarmonicsService/Harmonics.chords.enums';
 
 export class TooltipNoteIndicator extends NoteIndicator {
     private currentlyHighlightedNoteData: ChosenEntityData;
@@ -19,28 +20,70 @@ export class TooltipNoteIndicator extends NoteIndicator {
         }
     }
 
-    private RecalculateTooltipPosition(): void {
+    private RecalculateTooltipPosition(height: number): void {
         const note = this.currentlyHighlightedNoteData.Note;
         if (note) {
             const box = note.BoundingBox;
-            this.tooltipPosition = { x: box.x - box.w / 2, y: box.y + box.h };
-            console.log(note.GetChordInfo(this.currentlyHighlightedNoteData.NoteIndex));
-            this.NotifyComponent(true);
+            const chordInfo = note.GetChordInfo(this.currentlyHighlightedNoteData.NoteIndex);
+            const text = `Root pitch: ${chordInfo.rootPitch}\nChord type: ${chordInfo.chordType}`;
+            this.tooltipPosition = { x: box.x, y: box.y };
+            const chordTypeWidth = 60;
+            this.CalculateTooltipPosition(
+                ChordTypeLength[chordInfo.chordType] + chordTypeWidth,
+                box.y,
+                box.h,
+                height,
+            );
+            this.NotifyComponent(text);
         } else {
             this.tooltipPosition = { x: -1, y: -1 };
-            this.NotifyComponent(false);
+            this.NotifyComponent('');
         }
     }
 
-    private NotifyComponent(visible: boolean): void {
+    private CalculateTooltipPosition(
+        textWidth: number,
+        noteY: number,
+        noteHeight: number,
+        height: number,
+    ) {
+        const data = this.currentlyHighlightedNoteData;
+        const note = data.Note;
+        const box = note!.BoundingBox;
+
+        // calculate X
+        let tooltipNewPositionX = 0;
+        if (data.BarIndex === 0 && data.NoteIndex === 0) {
+            tooltipNewPositionX = box.x;
+        } else if (
+            data.BarIndex === data.Stave!.bars.length - 1 &&
+            data.NoteIndex === data.Voice!.NotesLength - 1
+        ) {
+            tooltipNewPositionX = box.x - textWidth - 10;
+        } else {
+            tooltipNewPositionX = box.x - textWidth / 2;
+        }
+        this.tooltipPosition.x = tooltipNewPositionX;
+
+        // calculate Y
+        let tooltipNewPositionY = 0;
+        if (noteY + noteHeight + 50 > height) {
+            tooltipNewPositionY = noteY - 40;
+        } else {
+            tooltipNewPositionY = noteY + noteHeight + 5;
+        }
+        this.tooltipPosition.y = tooltipNewPositionY;
+    }
+
+    private NotifyComponent(text: string): void {
         EventNotifier.Notify('toggleHarmonicsTooltip', {
             x: this.tooltipPosition.x,
             y: this.tooltipPosition.y,
-            visible,
+            text: text,
         });
     }
 
-    private isSameNoteData(noteData: ChosenEntityData): boolean {
+    private IsSameNoteData(noteData: ChosenEntityData): boolean {
         return (
             noteData.StaveIndex === this.currentlyHighlightedNoteData.StaveIndex &&
             noteData.BarIndex === this.currentlyHighlightedNoteData.BarIndex &&
@@ -53,16 +96,20 @@ export class TooltipNoteIndicator extends NoteIndicator {
         if (this.currentlyHighlightedNoteData.NoteIndex !== -1) {
             this.ColorCurrentlyHighlightedNote(false);
             this.currentlyHighlightedNoteData = new ChosenEntityData(this.notation);
-            EventNotifier.Notify('toggleHarmonicsTooltip', { x: -1, y: -1, visible: false });
+            EventNotifier.Notify('toggleHarmonicsTooltip', { x: -1, y: -1, text: '' });
         }
     }
 
-    public override MovedAtNote(noteData: ChosenEntityData, _positionY: number): void {
+    public override MovedAtNote(
+        noteData: ChosenEntityData,
+        _positionY: number,
+        height: number,
+    ): void {
         if (noteData.NoteIndex === -1) {
             this.HandleNoteDeselection();
             return;
         }
-        if (this.isSameNoteData(noteData)) return;
+        if (this.IsSameNoteData(noteData)) return;
 
         this.currentlyHighlightedNoteData.SetNoteIndex(
             noteData.StaveIndex,
@@ -72,7 +119,7 @@ export class TooltipNoteIndicator extends NoteIndicator {
         );
 
         this.ColorCurrentlyHighlightedNote(true);
-        this.RecalculateTooltipPosition();
+        this.RecalculateTooltipPosition(height);
     }
 
     public override RefreshIndicator(): void {}

@@ -13,7 +13,11 @@ export abstract class NoteIndicator {
     protected abstract RefreshIndicator(): void;
     public abstract OnCreation(): void;
     public abstract OnDestroy(): void;
-    public abstract MovedAtNote(noteData: ChosenEntityData, positionY: number): void;
+    public abstract MovedAtNote(
+        noteData: ChosenEntityData,
+        positionY: number,
+        height: number,
+    ): void;
     public abstract OnMouseClick(): void;
 
     public constructor(notation: Notation) {

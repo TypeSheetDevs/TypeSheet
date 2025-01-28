@@ -16,7 +16,7 @@ export type NotationEvent =
           params: {
               x: number;
               y: number;
-              visible: boolean;
+              text: string;
           };
       }
     | {

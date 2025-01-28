@@ -284,19 +284,19 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         accidentals: AccidentalData[],
     ): string {
         const [pitch, octave] = keyPitch.toUpperCase().split('/');
-        let appliedAcc: AccidentalData | null = null;
-        for (const acc of accidentals) {
-            if (acc.startIndex > index) break;
-            if (acc.allOctaves && acc.pitch === pitch) {
-                appliedAcc = acc;
-            } else if (acc.pitch === keyPitch) {
-                appliedAcc = acc;
+        let appliedAccidental: AccidentalData | null = null;
+        for (const accidental of accidentals) {
+            if (accidental.startIndex > index) break;
+            if (accidental.allOctaves && accidental.pitch === pitch) {
+                appliedAccidental = accidental;
+            } else if (accidental.pitch === keyPitch) {
+                appliedAccidental = accidental;
             }
         }
 
         const stringAccidental: string =
-            appliedAcc && appliedAcc.accidental !== KeyModifier.Natural
-                ? appliedAcc.accidental
+            appliedAccidental && appliedAccidental.accidental !== KeyModifier.Natural
+                ? appliedAccidental.accidental
                 : '';
 
         return `${pitch}${stringAccidental}${octave}`;
