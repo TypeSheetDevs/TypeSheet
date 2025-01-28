@@ -6,10 +6,12 @@ export class Key implements IRecoverable<KeyData> {
     private pitch: string;
     private modifier?: KeyModifier;
     private isKeyDirty: boolean = false;
+    private color?: string;
 
-    constructor(pitch: string, modifier?: KeyModifier) {
+    constructor(pitch: string, modifier?: KeyModifier, color?: string) {
         this.pitch = pitch;
         this.modifier = modifier;
+        this.color = color;
     }
 
     get Pitch(): string {
@@ -26,6 +28,17 @@ export class Key implements IRecoverable<KeyData> {
             this.isKeyDirty = true;
             this.modifier = modifier;
         }
+    }
+
+    set Color(color: string | undefined) {
+        if (this.color !== color) {
+            this.isKeyDirty = true;
+            this.color = color;
+        }
+    }
+
+    get Color(): string | undefined {
+        return this.color;
     }
 
     get Modifier(): KeyModifier | undefined {

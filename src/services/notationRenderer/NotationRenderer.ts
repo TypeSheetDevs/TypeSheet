@@ -12,6 +12,7 @@ import { NullNoteIndicator } from '@services/notationRenderer/NoteIndicator/Null
 import { RemovingNoteIndicator } from '@services/notationRenderer/NoteIndicator/RemovingNoteIndicator';
 import { ModiyfingNoteIndicator } from '@services/notationRenderer/NoteIndicator/ModiyfingNoteIndicator';
 import { KeySignature } from '@services/notationRenderer/Signature.types';
+import { AddingToChordNoteIndicator } from '@services/notationRenderer/NoteIndicator/AddingToChordNoteIndicator';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -75,6 +76,8 @@ export class NotationRenderer {
                 return new RemovingNoteIndicator(this.notation);
             case NotationRendererState.ModifyingNote:
                 return new ModiyfingNoteIndicator(this.notation);
+            case NotationRendererState.AddingToChord:
+                return new AddingToChordNoteIndicator(this.notation);
         }
         return new NullNoteIndicator(this.notation);
     }

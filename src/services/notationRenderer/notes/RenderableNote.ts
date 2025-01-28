@@ -12,7 +12,6 @@ import { IRecoverable } from '@services/notationRenderer/DataStructures/IRecover
 import { RenderableNoteData } from '@services/notationRenderer/DataStructures/IRecoverable.types';
 import * as Tone from 'tone';
 import { PolySynth } from 'tone';
-import RenderableBar from '@services/notationRenderer/RenderableBar';
 import { Notation } from '@services/notationRenderer/Notation';
 import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
 import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
@@ -107,14 +106,16 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         return this.keys[index];
     }
 
-    AddKey(key: Key): void {
+    AddKey(key: Key): boolean {
         if (!key || !key.Pitch) {
             throw new Error('Invalid key data provided.');
         }
         if (!this.keys.find(k => k.Pitch === key.Pitch)) {
             this.keys.push(key);
             this.isNoteDirty = true;
+            return true;
         }
+        return false;
     }
 
     RemoveKey(index: number): void {
@@ -123,10 +124,6 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         }
         this.keys.splice(index, 1);
         this.isNoteDirty = true;
-    }
-
-    GetAssociatedBar(): RenderableBar | null {
-        return Notation.getInstance().GetNoteAssociatedBar(this);
     }
 
     GetAsVexFlowNote(): StaveNote {
@@ -148,6 +145,14 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
                 strokeStyle: this.color,
             });
         }
+
+        this.keys.forEach((key, idx) => {
+            if (!key.Color) return;
+            staveNote.noteHeads[idx].setStyle({
+                fillStyle: key.Color,
+                strokeStyle: key.Color,
+            });
+        });
 
         if (!isRest) {
             this.keys.forEach((key, index) => {
