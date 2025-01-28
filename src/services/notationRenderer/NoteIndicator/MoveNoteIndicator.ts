@@ -78,14 +78,14 @@ export class MoveNoteIndicator extends NoteIndicator {
         positionX: number,
         positionY: number,
     ) {
-        if (!noteData.Note) return;
-
         this.ColorHoveredKey(false);
-        this.hoveredKeyData.SetNoteIndex(
-            noteData.StaveIndex,
-            noteData.BarIndex,
-            noteData.NoteIndex,
-        );
+        if (noteData.Note) {
+            this.hoveredKeyData.SetNoteIndex(
+                noteData.StaveIndex,
+                noteData.BarIndex,
+                noteData.NoteIndex,
+            );
+        }
         this.hoveredKeyData.KeyIndex =
             this.hoveredKeyData.Note?.GetKeyIndexByPositionY(positionX, positionY) ?? -1;
         this.ColorHoveredKey(true);
