@@ -271,7 +271,7 @@ export class NotationRenderer {
             this.GetNoteIndexUnderMouse(params.positionX),
         );
 
-        this.actualNoteIndicator.MovedAtNote(entityUnderMouse, params.positionY);
+        this.actualNoteIndicator.MovedAtNote(entityUnderMouse, params.positionY, params.positionX);
 
         this.OnRender();
     }

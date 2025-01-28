@@ -99,6 +99,46 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         return !this.cachedStaveNote || this.isNoteDirty || this.keys.some(k => k.IsKeyDirty);
     }
 
+    GetKeyIndexByPositionY(positionX: number, positionY: number): number {
+        const note = this.cachedStaveNote;
+        if (!note) return -1;
+
+        const stemPosition = note.getStemX();
+        const left = stemPosition > positionX;
+
+        const keysPositions = note.noteHeads.map((noteHead, idx) => {
+            const boundingBox = noteHead.getBoundingBox();
+            return {
+                idx: idx,
+                left: boundingBox.x < stemPosition,
+                yMin: boundingBox.y,
+                yMax: boundingBox.y + boundingBox.h,
+            };
+        });
+
+        const closestYPredicate = (
+            a: { yMin: number; yMax: number },
+            b: { yMin: number; yMax: number },
+        ) => {
+            const distanceA = Math.min(Math.abs(positionY - a.yMin), Math.abs(positionY - a.yMax));
+            const distanceB = Math.min(Math.abs(positionY - b.yMin), Math.abs(positionY - b.yMax));
+            return distanceA - distanceB;
+        };
+
+        const closestLeft = keysPositions
+            .filter(position => position.left)
+            .sort(closestYPredicate)[0];
+        const closestRight = keysPositions
+            .filter(position => !position.left)
+            .sort(closestYPredicate)[0];
+
+        if (left) {
+            return closestLeft ? closestLeft.idx : closestRight ? closestRight.idx : -1;
+        }
+
+        return closestRight ? closestRight.idx : closestLeft ? closestLeft.idx : -1;
+    }
+
     GetKey(index: number): Key {
         if (index < 0 || index >= this.keys.length) {
             throw new Error('Index out of bounds.');
