@@ -6,6 +6,7 @@ export class ChosenEntityData {
     private barIndex: number;
     private voiceIndex: number;
     private noteIndex: number;
+    private keyIndex: number;
 
     public constructor(notation: Notation) {
         this._notation = notation;
@@ -13,12 +14,14 @@ export class ChosenEntityData {
         this.barIndex = -1;
         this.voiceIndex = 0;
         this.noteIndex = -1;
+        this.keyIndex = -1;
     }
 
     public set StaveIndex(index: number) {
         this.staveIndex = index;
         this.barIndex = -1;
         this.noteIndex = -1;
+        this.keyIndex = -1;
     }
     public get StaveIndex() {
         return this.staveIndex;
@@ -39,6 +42,7 @@ export class ChosenEntityData {
     public set BarIndex(index: number) {
         this.barIndex = index;
         this.noteIndex = -1;
+        this.keyIndex = -1;
     }
     public get BarIndex() {
         return this.barIndex;
@@ -55,6 +59,7 @@ export class ChosenEntityData {
     public set VoiceIndex(index: number) {
         this.voiceIndex = index;
         this.noteIndex = -1;
+        this.keyIndex = -1;
     }
     public get VoiceIndex() {
         return this.voiceIndex;
@@ -81,6 +86,7 @@ export class ChosenEntityData {
     }
     public set NoteIndex(index: number) {
         this.noteIndex = index;
+        this.keyIndex = -1;
     }
     public get NoteIndex() {
         return this.noteIndex;
@@ -92,5 +98,21 @@ export class ChosenEntityData {
         }
 
         return voice.GetNote(this.noteIndex);
+    }
+
+    public set KeyIndex(index: number) {
+        this.keyIndex = index;
+    }
+
+    public get KeyIndex() {
+        return this.keyIndex;
+    }
+
+    public get Key() {
+        if (!this.Note || this.keyIndex < 0 || this.keyIndex >= this.Note.KeysLength) {
+            return null;
+        }
+
+        return this.Note.GetKey(this.keyIndex);
     }
 }

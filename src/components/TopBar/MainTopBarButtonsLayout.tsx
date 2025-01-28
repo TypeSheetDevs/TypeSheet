@@ -127,11 +127,26 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         ],
       },
       {
-        type: 'button',
+        type: 'multiselect',
         iconPath: getButtonIcon('edit_pen.svg'),
-        onClick: NotationRenderer.getInstance().ChangeStateAction(
-          NotationRendererState.ModifyingNote,
-        ),
+        groups: [
+          {
+            options: [
+              {
+                text: 'Modify Chord',
+                onClick: NotationRenderer.getInstance().ChangeStateAction(
+                  NotationRendererState.ModifyingNote,
+                ),
+              },
+              {
+                text: 'Move Note',
+                onClick: NotationRenderer.getInstance().ChangeStateAction(
+                  NotationRendererState.MoveNote,
+                ),
+              },
+            ],
+          },
+        ],
       },
     ],
   },
