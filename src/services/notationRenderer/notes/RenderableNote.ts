@@ -168,7 +168,8 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         if (!key || !key.Pitch) {
             throw new Error('Invalid key data provided.');
         }
-        if (!this.keys.find(k => k.Pitch === key.Pitch)) {
+        if (!this.keys.find(k => k.Pitch.toLowerCase() === key.Pitch.toLowerCase())) {
+            console.log('added', key);
             this.keys.push(key);
             this.isNoteDirty = true;
             return true;
@@ -191,8 +192,13 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
         const isRest = Rests.includes(this.duration);
 
+        const uniqueKeys = this.keys.filter(
+            (key, index, self) =>
+                index === self.findIndex(k => k.Pitch === key.Pitch && k.Modifier === key.Modifier),
+        );
+
         const staveNote = new StaveNote({
-            keys: isRest ? ['R/5'] : this.keys.map(key => key.Pitch),
+            keys: isRest ? ['R/5'] : uniqueKeys.map(key => key.Pitch),
             duration: this.DurationSymbol,
             stem_direction: this.GetStemDirection(),
         });
@@ -204,7 +210,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
             });
         }
 
-        this.keys.forEach((key, idx) => {
+        uniqueKeys.forEach((key, idx) => {
             if (!key.Color) return;
             staveNote.noteHeads[idx].setStyle({
                 fillStyle: key.Color,
@@ -213,7 +219,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         });
 
         if (!isRest) {
-            this.keys.forEach((key, index) => {
+            uniqueKeys.forEach((key, index) => {
                 if (key.Modifier) {
                     staveNote.addModifier(new Accidental(key.Modifier), index);
                 }

@@ -122,8 +122,16 @@ export class TooltipNoteIndicator extends NoteIndicator {
         this.RecalculateTooltipPosition(height);
     }
 
+    public override OnDestroy(): void {
+        EventNotifier.Notify('toggleHarmonicsTooltip', {
+            x: 0,
+            y: 0,
+            text: '',
+        });
+        this.ColorCurrentlyHighlightedNote(false);
+    }
+
     public override RefreshIndicator(): void {}
     public override OnCreation(): void {}
-    public override OnDestroy(): void {}
     public override OnMouseClick(): void {}
 }
