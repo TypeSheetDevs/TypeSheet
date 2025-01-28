@@ -20,6 +20,8 @@ function createWindow(): void {
         },
     });
 
+    mainWindow.setMenu(null);
+
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
         if (is.dev) {
