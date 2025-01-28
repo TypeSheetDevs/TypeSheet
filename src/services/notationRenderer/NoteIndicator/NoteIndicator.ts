@@ -16,6 +16,7 @@ export abstract class NoteIndicator {
     public abstract MovedAtNote(
         noteData: ChosenEntityData,
         positionY: number,
+        positionX: number,
         height: number,
     ): void;
     public abstract OnMouseClick(): void;
