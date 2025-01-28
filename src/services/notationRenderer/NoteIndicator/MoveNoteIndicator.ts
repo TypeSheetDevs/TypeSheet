@@ -37,7 +37,23 @@ export class MoveNoteIndicator extends NoteIndicator {
         this.hoveredKeyData.Key.Color = isColored ? 'blue' : 'black';
     }
 
-    private MovedWhileSelectedKey(noteData: ChosenEntityData, positionY: number) {}
+    private MovedWhileSelectedKey(noteData: ChosenEntityData, positionY: number) {
+        if (!this.selectedKeyData.Key) return;
+        this.selectedKeyData.Key.Pitch =
+            this.selectedKeyData.Bar!.getKeyByPositionY(positionY).Pitch;
+        if (!noteData.Note) return;
+        const actualKey = this.selectedKeyData.Key;
+        this.selectedKeyData.Note?.RemoveKey(this.selectedKeyData.KeyIndex);
+        this.selectedKeyData.SetNoteIndex(
+            noteData.StaveIndex,
+            noteData.BarIndex,
+            noteData.NoteIndex,
+        );
+        this.selectedKeyData.KeyIndex = this.selectedKeyData.Note!.KeysLength;
+        const added = this.selectedKeyData.Note!.AddKey(actualKey);
+        if (!added) this.RemoveSelection();
+    }
+
     private MovedWithoutSelectedKey(
         noteData: ChosenEntityData,
         positionX: number,
@@ -57,6 +73,7 @@ export class MoveNoteIndicator extends NoteIndicator {
     }
 
     protected RefreshIndicator(): void {
+        if (this.selectedKeyData.Key) this.selectedKeyData.Key.Modifier = this.accidental;
         EventNotifier.Notify('needsRender');
     }
 
@@ -73,7 +90,7 @@ export class MoveNoteIndicator extends NoteIndicator {
         }
     }
 
-    private ClickedWhileSelectedKey(): void {
+    private RemoveSelection(): void {
         this.ColorSelectedKey(false);
         this.selectedKeyData.SetNoteIndex(-1, -1, -1);
         this.ColorHoveredKey(true);
@@ -92,7 +109,7 @@ export class MoveNoteIndicator extends NoteIndicator {
 
     public OnMouseClick(): void {
         if (this.selectedKeyData.Key) {
-            this.ClickedWhileSelectedKey();
+            this.RemoveSelection();
         } else {
             this.ClickedWithoutSelectedKey();
         }
