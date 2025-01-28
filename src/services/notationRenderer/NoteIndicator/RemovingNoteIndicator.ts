@@ -4,16 +4,16 @@ import { Notation } from '@services/notationRenderer/Notation';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export class RemovingNoteIndicator extends NoteIndicator {
-    private currentlyHighlightedNoteData: ChosenEntityData;
+    private currentlyHighlightedKeyData: ChosenEntityData;
 
     private ColorCurrentlyHighlightedNote(isColored: boolean) {
-        if (!this.currentlyHighlightedNoteData.Note) return;
-        this.currentlyHighlightedNoteData.Note.Color = isColored ? 'blue' : 'black';
+        if (!this.currentlyHighlightedKeyData.Key) return;
+        this.currentlyHighlightedKeyData.Key.Color = isColored ? 'blue' : 'black';
     }
 
     constructor(notation: Notation) {
         super(notation);
-        this.currentlyHighlightedNoteData = new ChosenEntityData(this.notation);
+        this.currentlyHighlightedKeyData = new ChosenEntityData(this.notation);
     }
 
     protected override RefreshIndicator(): void {
@@ -22,25 +22,37 @@ export class RemovingNoteIndicator extends NoteIndicator {
     public override OnCreation(): void {}
     public override OnDestroy(): void {}
 
-    public override MovedAtNote(noteData: ChosenEntityData, _positionY: number): void {
+    public override MovedAtNote(
+        noteData: ChosenEntityData,
+        positionY: number,
+        positionX: number,
+    ): void {
         if (noteData.NoteIndex === -1) {
             return;
         }
         this.ColorCurrentlyHighlightedNote(false);
-        this.currentlyHighlightedNoteData.SetNoteIndex(
+        this.currentlyHighlightedKeyData.SetNoteIndex(
             noteData.StaveIndex,
             noteData.BarIndex,
             noteData.NoteIndex,
         );
+        this.currentlyHighlightedKeyData.KeyIndex =
+            this.currentlyHighlightedKeyData.Note?.GetKeyIndexByPositionY(positionX, positionY) ??
+            -1;
         this.ColorCurrentlyHighlightedNote(true);
     }
 
     public override OnMouseClick(): void {
         try {
-            this.currentlyHighlightedNoteData.Voice?.RemoveNote(
-                this.currentlyHighlightedNoteData.NoteIndex,
+            this.currentlyHighlightedKeyData.Note?.RemoveKey(
+                this.currentlyHighlightedKeyData.KeyIndex,
             );
-            this.currentlyHighlightedNoteData.NoteIndex = -1;
+            if (this.currentlyHighlightedKeyData.Note?.KeysLength === 0) {
+                this.currentlyHighlightedKeyData.Voice?.RemoveNote(
+                    this.currentlyHighlightedKeyData.NoteIndex,
+                );
+            }
+            this.currentlyHighlightedKeyData.KeyIndex = -1;
         } catch (error) {
             console.warn(error);
         }
