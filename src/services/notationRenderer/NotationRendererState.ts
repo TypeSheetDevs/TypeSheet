@@ -3,4 +3,5 @@ export enum NotationRendererState {
     AddingNote = 1,
     RemovingNote = 2,
     ModifyingNote = 3,
+    AddingToChord = 4,
 }

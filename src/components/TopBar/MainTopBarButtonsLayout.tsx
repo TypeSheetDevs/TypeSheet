@@ -83,9 +83,15 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
           {
             options: [
               {
-                text: 'Add notes',
+                text: 'Add new notes',
                 onClick: NotationRenderer.getInstance().ChangeStateAction(
                   NotationRendererState.AddingNote,
+                ),
+              },
+              {
+                text: 'Add notes to chords',
+                onClick: NotationRenderer.getInstance().ChangeStateAction(
+                  NotationRendererState.AddingToChord,
                 ),
               },
             ],
