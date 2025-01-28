@@ -1,58 +1,82 @@
 import { NoteIndicator } from '@services/notationRenderer/NoteIndicator/NoteIndicator';
 import { ChosenEntityData } from '../ChosenEntityData';
 import { Notation } from '@services/notationRenderer/Notation';
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export class TooltipNoteIndicator extends NoteIndicator {
     private currentlyHighlightedNoteData: ChosenEntityData;
     private tooltipPosition: { x: number; y: number } = { x: -1, y: -1 };
-
-    private ColorCurrentlyHighlightedNote(isColored: boolean) {
-        if (!this.currentlyHighlightedNoteData.Note) return;
-        this.currentlyHighlightedNoteData.Note.Color = isColored ? 'blue' : 'black';
-    }
-
-    private CalculateTooltipPosition(): void {
-        const staveIndex = this.currentlyHighlightedNoteData.StaveIndex;
-        const barIndex = this.currentlyHighlightedNoteData.BarIndex;
-        const voiceIndex = this.currentlyHighlightedNoteData.VoiceIndex;
-        const noteIndex = this.currentlyHighlightedNoteData.NoteIndex;
-
-        if (noteIndex === -1) {
-            this.tooltipPosition = { x: -1, y: -1 };
-            return;
-        }
-
-        const note = this.notation
-            .getStaves()
-            [staveIndex].bars[barIndex].voices[voiceIndex].GetNote(noteIndex);
-
-        console.log(note.BoundingBox);
-        this.tooltipPosition = { x: -1, y: -1 };
-    }
 
     constructor(notation: Notation) {
         super(notation);
         this.currentlyHighlightedNoteData = new ChosenEntityData(this.notation);
     }
 
-    protected override RefreshIndicator(): void {}
-    public override OnCreation(): void {}
-    public override OnDestroy(): void {}
+    private ColorCurrentlyHighlightedNote(isColored: boolean): void {
+        const note = this.currentlyHighlightedNoteData.Note;
+        if (note) {
+            note.Color = isColored ? 'blue' : 'black';
+        }
+    }
+
+    private RecalculateTooltipPosition(): void {
+        const note = this.currentlyHighlightedNoteData.Note;
+        if (note) {
+            const box = note.BoundingBox;
+            this.tooltipPosition = { x: box.x - box.w / 2, y: box.y + box.h };
+            console.log(note.GetChordInfo(this.currentlyHighlightedNoteData.NoteIndex));
+            this.NotifyComponent(true);
+        } else {
+            this.tooltipPosition = { x: -1, y: -1 };
+            this.NotifyComponent(false);
+        }
+    }
+
+    private NotifyComponent(visible: boolean): void {
+        EventNotifier.Notify('toggleHarmonicsTooltip', {
+            x: this.tooltipPosition.x,
+            y: this.tooltipPosition.y,
+            visible,
+        });
+    }
+
+    private isSameNoteData(noteData: ChosenEntityData): boolean {
+        return (
+            noteData.StaveIndex === this.currentlyHighlightedNoteData.StaveIndex &&
+            noteData.BarIndex === this.currentlyHighlightedNoteData.BarIndex &&
+            noteData.VoiceIndex === this.currentlyHighlightedNoteData.VoiceIndex &&
+            noteData.NoteIndex === this.currentlyHighlightedNoteData.NoteIndex
+        );
+    }
+
+    private HandleNoteDeselection(): void {
+        if (this.currentlyHighlightedNoteData.NoteIndex !== -1) {
+            this.ColorCurrentlyHighlightedNote(false);
+            this.currentlyHighlightedNoteData = new ChosenEntityData(this.notation);
+            EventNotifier.Notify('toggleHarmonicsTooltip', { x: -1, y: -1, visible: false });
+        }
+    }
 
     public override MovedAtNote(noteData: ChosenEntityData, _positionY: number): void {
         if (noteData.NoteIndex === -1) {
-            this.ColorCurrentlyHighlightedNote(false);
+            this.HandleNoteDeselection();
             return;
         }
+        if (this.isSameNoteData(noteData)) return;
+
         this.currentlyHighlightedNoteData.SetNoteIndex(
             noteData.StaveIndex,
             noteData.BarIndex,
             noteData.NoteIndex,
             noteData.VoiceIndex,
         );
+
         this.ColorCurrentlyHighlightedNote(true);
-        this.CalculateTooltipPosition();
+        this.RecalculateTooltipPosition();
     }
 
+    public override RefreshIndicator(): void {}
+    public override OnCreation(): void {}
+    public override OnDestroy(): void {}
     public override OnMouseClick(): void {}
 }

@@ -15,6 +15,8 @@ import { PolySynth } from 'tone';
 import { Notation } from '@services/notationRenderer/Notation';
 import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
 import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { HarmonicsService } from '@services/HarmonicsService/HarmonicsService';
+import { ChordInfo } from '@services/HarmonicsService/Harmonics.types';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
@@ -298,5 +300,13 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
                 : '';
 
         return `${pitch}${stringAccidental}${octave}`;
+    }
+
+    GetChordInfo(noteIndex: number): ChordInfo {
+        const accidentals = this.GetAllAccidentalsData();
+        const pitches = this.keys.map(key =>
+            this.GetPitchWithAccidentals(key.Pitch, noteIndex, accidentals),
+        );
+        return HarmonicsService.GetChordInfo(pitches);
     }
 }
