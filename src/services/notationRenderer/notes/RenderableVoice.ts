@@ -100,7 +100,9 @@ export class RenderableVoice implements IRenderable, IRecoverable<RenderableVoic
         this.DrawDynamics(context, bar, voice.getTickables()[0].checkTickContext());
 
         const absoluteXs = voice.getTickables().map(t => t.getAbsoluteX());
+        const boundingBoxes = voice.getTickables().map(t => t.getBoundingBox()!);
         this.notes.forEach((note, index) => (note.AbsoluteX = absoluteXs[index]));
+        this.notes.forEach((note, index) => (note.BoundingBox = boundingBoxes[index]));
     }
 
     private DrawTies(context: RenderContext) {

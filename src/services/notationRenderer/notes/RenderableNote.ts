@@ -19,6 +19,13 @@ import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
 
+export interface BoundingBox {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+}
+
 export class RenderableNote implements IRecoverable<RenderableNoteData> {
     private cachedStaveNote: StaveNote | null = null;
     private isNoteDirty: boolean = true;
@@ -29,6 +36,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
     private dotted: boolean;
     private color?: string;
     private absoluteX: number = 0;
+    private boundingBox: BoundingBox = { x: 0, y: 0, w: 0, h: 0 };
 
     constructor(
         duration: NoteDuration,
@@ -67,6 +75,14 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
     set AbsoluteX(value: number) {
         this.absoluteX = value;
+    }
+
+    get BoundingBox(): BoundingBox {
+        return this.boundingBox;
+    }
+
+    set BoundingBox(value: BoundingBox) {
+        this.boundingBox = value;
     }
 
     set Color(value: string) {

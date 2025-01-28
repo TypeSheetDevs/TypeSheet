@@ -4,10 +4,30 @@ import { Notation } from '@services/notationRenderer/Notation';
 
 export class TooltipNoteIndicator extends NoteIndicator {
     private currentlyHighlightedNoteData: ChosenEntityData;
+    private tooltipPosition: { x: number; y: number } = { x: -1, y: -1 };
 
     private ColorCurrentlyHighlightedNote(isColored: boolean) {
         if (!this.currentlyHighlightedNoteData.Note) return;
         this.currentlyHighlightedNoteData.Note.Color = isColored ? 'blue' : 'black';
+    }
+
+    private CalculateTooltipPosition(): void {
+        const staveIndex = this.currentlyHighlightedNoteData.StaveIndex;
+        const barIndex = this.currentlyHighlightedNoteData.BarIndex;
+        const voiceIndex = this.currentlyHighlightedNoteData.VoiceIndex;
+        const noteIndex = this.currentlyHighlightedNoteData.NoteIndex;
+
+        if (noteIndex === -1) {
+            this.tooltipPosition = { x: -1, y: -1 };
+            return;
+        }
+
+        const note = this.notation
+            .getStaves()
+            [staveIndex].bars[barIndex].voices[voiceIndex].GetNote(noteIndex);
+
+        console.log(note.BoundingBox);
+        this.tooltipPosition = { x: -1, y: -1 };
     }
 
     constructor(notation: Notation) {
@@ -28,8 +48,10 @@ export class TooltipNoteIndicator extends NoteIndicator {
             noteData.StaveIndex,
             noteData.BarIndex,
             noteData.NoteIndex,
+            noteData.VoiceIndex,
         );
         this.ColorCurrentlyHighlightedNote(true);
+        this.CalculateTooltipPosition();
     }
 
     public override OnMouseClick(): void {}

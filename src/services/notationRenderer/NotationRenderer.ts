@@ -179,7 +179,7 @@ export class NotationRenderer {
                 (this.width - this.context.measureText(title).width) / 2,
                 titleFontSize,
             );
-            padding += titleFontSize + 5;
+            padding += titleFontSize + 10;
         }
 
         if (author.length > 0) {
