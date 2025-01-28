@@ -25,7 +25,7 @@ export class MoveNoteIndicator extends NoteIndicator {
     private ColorSelectedKey(isColored: boolean) {
         if (!this.selectedKeyData.Key) return;
         if (this.hoveredKeyData.Key === this.selectedKeyData.Key) {
-            this.selectedKeyData.Key.Color = isColored ? 'red' : 'blue';
+            this.selectedKeyData.Key.Color = isColored ? 'red' : 'black';
         } else {
             this.selectedKeyData.Key.Color = isColored ? 'red' : 'black';
         }
@@ -39,22 +39,38 @@ export class MoveNoteIndicator extends NoteIndicator {
 
     private MovedWhileSelectedKey(noteData: ChosenEntityData, positionY: number) {
         if (!this.selectedKeyData.Key) return;
-        this.selectedKeyData.Key.Pitch =
-            this.selectedKeyData.Bar!.getKeyByPositionY(positionY).Pitch;
-        if (!noteData.Note) return;
-        const actualKey = this.selectedKeyData.Key;
-        this.selectedKeyData.Note?.RemoveKey(this.selectedKeyData.KeyIndex);
-        if (this.selectedKeyData.Note?.KeysLength === 0) {
-            this.selectedKeyData.Voice?.RemoveNote(this.selectedKeyData.NoteIndex);
-        }
-        this.selectedKeyData.SetNoteIndex(
-            noteData.StaveIndex,
-            noteData.BarIndex,
-            noteData.NoteIndex,
+        this.selectedKeyData.Note?.AdjustPitch(
+            this.selectedKeyData.KeyIndex,
+            this.selectedKeyData.Bar!.getKeyByPositionY(positionY).Pitch,
         );
-        this.selectedKeyData.KeyIndex = this.selectedKeyData.Note!.KeysLength;
-        const added = this.selectedKeyData.Note!.AddKey(actualKey);
-        if (!added) this.RemoveSelection();
+        if (!noteData.Note) return;
+        const added = noteData.Note!.AddKey(this.selectedKeyData.Key);
+
+        if (added) {
+            this.selectedKeyData.Note?.RemoveKey(this.selectedKeyData.KeyIndex);
+            if (
+                this.selectedKeyData.Note?.KeysLength === 0 &&
+                !this.selectedKeyData.IsNoteEqual(noteData)
+            ) {
+                this.selectedKeyData.Voice?.RemoveNote(this.selectedKeyData.NoteIndex);
+                if (
+                    this.selectedKeyData.StaveIndex === noteData.StaveIndex &&
+                    this.selectedKeyData.BarIndex === noteData.BarIndex &&
+                    this.selectedKeyData.NoteIndex < noteData.NoteIndex
+                ) {
+                    this.selectedKeyData.NoteIndex = noteData.NoteIndex - 1;
+                    this.selectedKeyData.KeyIndex = this.selectedKeyData.Note!.KeysLength - 1;
+                    return;
+                }
+            }
+
+            this.selectedKeyData.SetNoteIndex(
+                noteData.StaveIndex,
+                noteData.BarIndex,
+                noteData.NoteIndex,
+            );
+            this.selectedKeyData.KeyIndex = this.selectedKeyData.Note!.KeysLength - 1;
+        }
     }
 
     private MovedWithoutSelectedKey(

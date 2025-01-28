@@ -150,7 +150,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         if (!key || !key.Pitch) {
             throw new Error('Invalid key data provided.');
         }
-        if (!this.keys.find(k => k.Pitch === key.Pitch)) {
+        if (this.keys.findIndex(k => k.Pitch.toLowerCase() === key.Pitch.toLowerCase()) === -1) {
             this.keys.push(key);
             this.isNoteDirty = true;
             return true;
@@ -246,6 +246,18 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
     GetAllAccidentalsData(): AccidentalData[] {
         return Notation.getInstance().GetNoteAssociatedBar(this)?.GetAccidentalsData() ?? [];
+    }
+
+    AdjustPitch(keyIndex: number, toPitch: string): boolean {
+        if (
+            this.keys.find(key => key.Pitch.toLowerCase() === toPitch.toLowerCase()) ||
+            keyIndex >= this.keys.length ||
+            keyIndex < 0
+        ) {
+            return false;
+        }
+        this.keys[keyIndex].Pitch = toPitch;
+        return true;
     }
 
     ToData(): RenderableNoteData {

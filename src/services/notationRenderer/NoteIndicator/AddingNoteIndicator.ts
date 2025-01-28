@@ -109,10 +109,8 @@ export class AddingNoteIndicator extends NoteIndicator {
             this.Move(noteData.StaveIndex, noteData.BarIndex, noteData.NoteIndex);
         }
 
-        if (this.noteData.Voice?.NotesLength === 0) {
-            this.Move(this.noteData.StaveIndex, this.noteData.BarIndex, 0);
-        } else if (!this.noteData.Voice || !this.noteData.Bar || !this.noteData.Stave) {
-            this.Move(0, 0, 0);
+        if (noteData.Voice?.NotesLength === 0) {
+            this.Move(noteData.StaveIndex, noteData.BarIndex, 0);
         }
 
         this.AdjustPitch(positionY);

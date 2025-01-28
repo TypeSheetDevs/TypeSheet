@@ -17,6 +17,15 @@ export class ChosenEntityData {
         this.keyIndex = -1;
     }
 
+    public IsNoteEqual(other: ChosenEntityData): boolean {
+        return (
+            this.staveIndex === other.staveIndex &&
+            this.barIndex === other.barIndex &&
+            this.voiceIndex === other.voiceIndex &&
+            this.noteIndex === other.noteIndex
+        );
+    }
+
     public set StaveIndex(index: number) {
         this.staveIndex = index;
         this.barIndex = -1;
