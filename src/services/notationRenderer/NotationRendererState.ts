@@ -5,4 +5,5 @@ export enum NotationRendererState {
     ModifyingNote = 3,
     AddingToChord = 4,
     MoveNote = 5,
+    AnalyzeChords = 6,
 }
