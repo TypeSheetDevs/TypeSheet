@@ -44,6 +44,9 @@ export class MoveNoteIndicator extends NoteIndicator {
         if (!noteData.Note) return;
         const actualKey = this.selectedKeyData.Key;
         this.selectedKeyData.Note?.RemoveKey(this.selectedKeyData.KeyIndex);
+        if (this.selectedKeyData.Note?.KeysLength === 0) {
+            this.selectedKeyData.Voice?.RemoveNote(this.selectedKeyData.NoteIndex);
+        }
         this.selectedKeyData.SetNoteIndex(
             noteData.StaveIndex,
             noteData.BarIndex,
