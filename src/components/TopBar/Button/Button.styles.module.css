@@ -13,3 +13,7 @@
     /* TODO: config extraction */
     background-color: rgba(0, 186, 199, 0.7);
 }
+
+.button:focus {
+    outline: none;
+}

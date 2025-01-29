@@ -15,9 +15,18 @@ import { PolySynth } from 'tone';
 import { Notation } from '@services/notationRenderer/Notation';
 import { AccidentalData } from '@services/notationRenderer/notes/Notes.types';
 import { KeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { HarmonicsService } from '@services/HarmonicsService/HarmonicsService';
+import { ChordInfo } from '@services/HarmonicsService/Harmonics.types';
 
 const POSITION_ABOVE = Vex.Flow.Articulation.Position.ABOVE;
 const POSITION_BELOW = Vex.Flow.Articulation.Position.BELOW;
+
+export interface BoundingBox {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+}
 
 export class RenderableNote implements IRecoverable<RenderableNoteData> {
     private cachedStaveNote: StaveNote | null = null;
@@ -29,6 +38,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
     private dotted: boolean;
     private color?: string;
     private absoluteX: number = 0;
+    private boundingBox: BoundingBox = { x: 0, y: 0, w: 0, h: 0 };
 
     constructor(
         duration: NoteDuration,
@@ -67,6 +77,14 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
     set AbsoluteX(value: number) {
         this.absoluteX = value;
+    }
+
+    get BoundingBox(): BoundingBox {
+        return this.boundingBox;
+    }
+
+    set BoundingBox(value: BoundingBox) {
+        this.boundingBox = value;
     }
 
     set Color(value: string) {
@@ -161,6 +179,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         if (!key || !key.Pitch) {
             throw new Error('Invalid key data provided.');
         }
+
         if (this.keys.findIndex(k => k.Pitch.toLowerCase() === key.Pitch.toLowerCase()) === -1) {
             this.keys.push(key);
             this.isNoteDirty = true;
@@ -184,8 +203,13 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
         const isRest = Rests.includes(this.duration);
 
+        const uniqueKeys = this.keys.filter(
+            (key, index, self) =>
+                index === self.findIndex(k => k.Pitch === key.Pitch && k.Modifier === key.Modifier),
+        );
+
         const staveNote = new StaveNote({
-            keys: isRest ? ['R/5'] : this.keys.map(key => key.Pitch),
+            keys: isRest ? ['R/5'] : uniqueKeys.map(key => key.Pitch),
             duration: this.DurationSymbol,
             stem_direction: this.GetStemDirection(),
         });
@@ -197,7 +221,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
             });
         }
 
-        this.keys.forEach((key, idx) => {
+        uniqueKeys.forEach((key, idx) => {
             if (!key.Color) return;
             staveNote.noteHeads[idx].setStyle({
                 fillStyle: key.Color,
@@ -206,7 +230,7 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         });
 
         if (!isRest) {
-            this.keys.forEach((key, index) => {
+            uniqueKeys.forEach((key, index) => {
                 if (key.Modifier) {
                     staveNote.addModifier(new Accidental(key.Modifier), index);
                 }
@@ -329,21 +353,29 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         accidentals: AccidentalData[],
     ): string {
         const [pitch, octave] = keyPitch.toUpperCase().split('/');
-        let appliedAcc: AccidentalData | null = null;
-        for (const acc of accidentals) {
-            if (acc.startIndex > index) break;
-            if (acc.allOctaves && acc.pitch === pitch) {
-                appliedAcc = acc;
-            } else if (acc.pitch === keyPitch) {
-                appliedAcc = acc;
+        let appliedAccidental: AccidentalData | null = null;
+        for (const accidental of accidentals) {
+            if (accidental.startIndex > index) break;
+            if (accidental.allOctaves && accidental.pitch === pitch) {
+                appliedAccidental = accidental;
+            } else if (accidental.pitch === keyPitch) {
+                appliedAccidental = accidental;
             }
         }
 
         const stringAccidental: string =
-            appliedAcc && appliedAcc.accidental !== KeyModifier.Natural
-                ? appliedAcc.accidental
+            appliedAccidental && appliedAccidental.accidental !== KeyModifier.Natural
+                ? appliedAccidental.accidental
                 : '';
 
         return `${pitch}${stringAccidental}${octave}`;
+    }
+
+    GetChordInfo(noteIndex: number): ChordInfo {
+        const accidentals = this.GetAllAccidentalsData();
+        const pitches = this.keys.map(key =>
+            this.GetPitchWithAccidentals(key.Pitch, noteIndex, accidentals),
+        );
+        return HarmonicsService.GetChordInfo(pitches);
     }
 }

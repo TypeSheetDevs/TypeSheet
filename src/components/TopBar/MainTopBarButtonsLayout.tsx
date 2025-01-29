@@ -184,4 +184,15 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
       },
     ],
   },
+  {
+    buttons: [
+      {
+        type: 'button',
+        iconPath: getButtonIcon('sharp.svg'),
+        onClick: NotationRenderer.getInstance().ChangeStateAction(
+          NotationRendererState.AnalyzeChords,
+        ),
+      },
+    ],
+  },
 ];

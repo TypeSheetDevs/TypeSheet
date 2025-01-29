@@ -11,6 +11,19 @@ export enum ChordType {
     Other = 'Other',
 }
 
+export const ChordTypeLength: { [key in ChordType]: number } = {
+    [ChordType.MajorTriad]: 70,
+    [ChordType.MinorTriad]: 70,
+    [ChordType.DiminishedTriad]: 90,
+    [ChordType.AugmentedTriad]: 100,
+    [ChordType.MajorSeventhChord]: 120,
+    [ChordType.MinorSeventhChord]: 120,
+    [ChordType.DiminishedSeventhChord]: 140,
+    [ChordType.DominantSeventhChord]: 130,
+    [ChordType.HalfDiminishedSeventhChord]: 160,
+    [ChordType.Other]: 48,
+};
+
 export const ChordTypeMusic21: { [key in ChordType]: string } = {
     [ChordType.MajorTriad]: 'major triad',
     [ChordType.MinorTriad]: 'minor triad',

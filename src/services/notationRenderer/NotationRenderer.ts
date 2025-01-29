@@ -14,6 +14,7 @@ import { ModiyfingNoteIndicator } from '@services/notationRenderer/NoteIndicator
 import { KeySignature } from '@services/notationRenderer/Signature.types';
 import { AddingToChordNoteIndicator } from '@services/notationRenderer/NoteIndicator/AddingToChordNoteIndicator';
 import { MoveNoteIndicator } from '@services/notationRenderer/NoteIndicator/MoveNoteIndicator';
+import { TooltipNoteIndicator } from '@services/notationRenderer/NoteIndicator/TooltipNoteIndicator';
 
 export class NotationRenderer {
     private static _instance: NotationRenderer = null!;
@@ -81,6 +82,8 @@ export class NotationRenderer {
                 return new AddingToChordNoteIndicator(this.notation);
             case NotationRendererState.MoveNote:
                 return new MoveNoteIndicator(this.notation);
+            case NotationRendererState.AnalyzeChords:
+                return new TooltipNoteIndicator(this.notation);
         }
         return new NullNoteIndicator(this.notation);
     }
@@ -176,7 +179,7 @@ export class NotationRenderer {
                 (this.width - this.context.measureText(title).width) / 2,
                 titleFontSize,
             );
-            padding += titleFontSize + 5;
+            padding += titleFontSize + 10;
         }
 
         if (author.length > 0) {
@@ -229,8 +232,6 @@ export class NotationRenderer {
         this.width = params.width;
         this.height = params.height;
 
-        console.log(this.height);
-
         this.OnRender();
     }
 
@@ -271,7 +272,12 @@ export class NotationRenderer {
             this.GetNoteIndexUnderMouse(params.positionX),
         );
 
-        this.actualNoteIndicator.MovedAtNote(entityUnderMouse, params.positionY, params.positionX);
+        this.actualNoteIndicator.MovedAtNote(
+            entityUnderMouse,
+            params.positionY,
+            params.positionX,
+            this.height,
+        );
 
         this.OnRender();
     }

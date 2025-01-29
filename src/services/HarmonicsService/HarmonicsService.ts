@@ -15,18 +15,19 @@ import { Mode, ScalePatterns } from '@services/HarmonicsService/Harmonics.scales
 export class HarmonicsService {
     // Chords
     public static GetChordInfo(keys: string[]): ChordInfo {
-        const c = new chord.Chord(keys);
+        const c = new chord.Chord(keys.map(key => key.replace('b', '-')));
 
         const rootInfo = c.root().stringInfo();
-        const [rootPitch, octaveString] = rootInfo.match(/^([A-G#b]+)(\d+)$/)!.slice(1);
+
+        const [rootPitch, octaveString] = rootInfo.match(/^([A-G#-]+)(\d+)$/)!.slice(1);
         const octave = parseInt(octaveString, 10);
 
         const chordType = this.MapChordCommonName(c.commonName);
 
         return {
-            rootPitch,
-            octave,
-            chordType,
+            rootPitch: rootPitch.replace('-', 'b'),
+            octave: octave,
+            chordType: chordType,
             canBeTonic: c.canBeTonic(),
         };
     }

@@ -17,6 +17,7 @@ export abstract class NoteIndicator {
         noteData: ChosenEntityData,
         positionY: number,
         positionX: number,
+        height: number,
     ): void;
     public abstract OnMouseClick(): void;
 

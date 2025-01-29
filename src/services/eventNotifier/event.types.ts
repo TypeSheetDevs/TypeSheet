@@ -12,6 +12,14 @@ export type NotationEvent =
     | { name: 'viewportChanged'; params: RenderArguments }
     | { name: 'rendererStateChanged'; params: NotationRendererState }
     | {
+          name: 'toggleHarmonicsTooltip';
+          params: {
+              x: number;
+              y: number;
+              text: string;
+          };
+      }
+    | {
           name: 'resized';
           params: {
               width: number;
