@@ -3,6 +3,9 @@ import { ChosenEntityData } from '../ChosenEntityData';
 import { Notation } from '@services/notationRenderer/Notation';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { IsRest, RestToNote, toRest } from '@services/notationRenderer/notes/Notes.enums';
+import { Key } from '@services/notationRenderer/notes/Key';
+import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
+import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 export class ModiyfingNoteIndicator extends NoteIndicator {
     private hoveredNoteData: ChosenEntityData;
@@ -12,6 +15,27 @@ export class ModiyfingNoteIndicator extends NoteIndicator {
         super(notation);
         this.hoveredNoteData = new ChosenEntityData(this.notation);
         this.selectedNoteData = new ChosenEntityData(this.notation);
+        EventNotifier.AddListener('midiPlayed', this.HandlePlayedMidi.bind(this));
+    }
+
+    private HandlePlayedMidi(keys: string[]) {
+        if (!this.selectedNoteData.Note) {
+            return;
+        }
+
+        this.selectedNoteData.Voice!.RemoveNote(this.selectedNoteData.NoteIndex);
+        this.selectedNoteData.Voice!.AddNote(
+            new RenderableNote(
+                this.noteDuration,
+                keys.map(k => {
+                    return new Key(k, ParseKeyModifier(k[1]));
+                }),
+                [],
+                this.isDotted,
+            ),
+            this.selectedNoteData.NoteIndex++,
+        );
+        this.RefreshIndicator();
     }
 
     private ClearColors() {

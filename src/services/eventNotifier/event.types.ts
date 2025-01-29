@@ -11,6 +11,7 @@ export type NotationEvent =
     | { name: 'metaDataSet'; params: number }
     | { name: 'viewportChanged'; params: RenderArguments }
     | { name: 'rendererStateChanged'; params: NotationRendererState }
+    | { name: 'midiPlayed'; params: string[] }
     | {
           name: 'toggleHarmonicsTooltip';
           params: {
