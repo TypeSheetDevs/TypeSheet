@@ -13,7 +13,7 @@ function createWindow(): void {
         minWidth: 600,
         show: false,
         autoHideMenuBar: true,
-        ...(process.platform === 'linux' ? { icon } : {}),
+        ...{ icon },
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false,
@@ -21,12 +21,12 @@ function createWindow(): void {
     });
 
     mainWindow.setMenu(null);
+    // mainWindow.webContents.on('devtools-opened', () => {
+    //     mainWindow.webContents.closeDevTools();
+    // });
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
-        if (is.dev) {
-            mainWindow.webContents.openDevTools();
-        }
     });
 
     mainWindow.webContents.setWindowOpenHandler(details => {

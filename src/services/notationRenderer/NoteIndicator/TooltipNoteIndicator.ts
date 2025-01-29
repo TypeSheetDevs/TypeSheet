@@ -3,6 +3,8 @@ import { ChosenEntityData } from '../ChosenEntityData';
 import { Notation } from '@services/notationRenderer/Notation';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { ChordTypeLength } from '@services/HarmonicsService/Harmonics.chords.enums';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export class TooltipNoteIndicator extends NoteIndicator {
     private currentlyHighlightedNoteData: ChosenEntityData;
@@ -16,7 +18,9 @@ export class TooltipNoteIndicator extends NoteIndicator {
     private ColorCurrentlyHighlightedNote(isColored: boolean): void {
         const note = this.currentlyHighlightedNoteData.Note;
         if (note) {
-            note.Color = isColored ? 'blue' : 'black';
+            note.Color = isColored
+                ? ConfigService.getInstance().getValue(SavedParameterName.HoveredNoteColor)
+                : 'black';
         }
     }
 

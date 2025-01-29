@@ -128,7 +128,7 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
       },
       {
         type: 'multiselect',
-        iconPath: getButtonIcon('edit_pen.svg'),
+        iconPath: getButtonIcon('brush.svg'),
         groups: [
           {
             options: [

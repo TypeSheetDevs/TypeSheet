@@ -4,6 +4,8 @@ import { Key } from '@services/notationRenderer/notes/Key';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { Notation } from '@services/notationRenderer/Notation';
 import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export class AddingToChordNoteIndicator extends NoteIndicator {
     private noteData: ChosenEntityData;
@@ -16,7 +18,9 @@ export class AddingToChordNoteIndicator extends NoteIndicator {
         this.noteData = new ChosenEntityData(notation);
         this.actualKey = new Key('c/5');
         this.actualKey.Modifier = this.Accidental;
-        this.actualKey.Color = 'blue';
+        this.actualKey.Color = ConfigService.getInstance().getValue(
+            SavedParameterName.HoveredNoteColor,
+        );
         EventNotifier.AddListener('midiPlayed', this.HandlePlayedMidi.bind(this));
     }
 

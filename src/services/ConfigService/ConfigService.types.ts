@@ -11,8 +11,13 @@ export enum SavedParameterName {
     StaveMinimumHeightDistance = 'StaveMinimumHeightDistance',
     MainViewMargin = 'MainViewMargin',
     StavesPerPage = 'StavesPerPage',
-    TopBarColor = 'TopBarColor',
     RendererEngine = 'RendererEngine',
+    TopBarColor = 'TopBarColor',
+    ToggleBubbleColor = 'ToggleBubbleColor',
+    TopBarTextColor = 'TopBarTextColor',
+    SelectedNoteColor = 'SelectedNoteColor',
+    HoveredNoteColor = 'HoveredNoteColor',
+    TopBarHighlightColor = 'TopBarHighlightColor',
 }
 
 export type SavedParameter =
@@ -21,8 +26,13 @@ export type SavedParameter =
     | { name: SavedParameterName.StaveMinimumHeightDistance; value: number }
     | { name: SavedParameterName.MainViewMargin; value: number }
     | { name: SavedParameterName.StavesPerPage; value: number }
+    | { name: SavedParameterName.RendererEngine; value: NotationRenderEngine }
     | { name: SavedParameterName.TopBarColor; value: string }
-    | { name: SavedParameterName.RendererEngine; value: NotationRenderEngine };
+    | { name: SavedParameterName.ToggleBubbleColor; value: string }
+    | { name: SavedParameterName.TopBarTextColor; value: string }
+    | { name: SavedParameterName.SelectedNoteColor; value: string }
+    | { name: SavedParameterName.HoveredNoteColor; value: string }
+    | { name: SavedParameterName.TopBarHighlightColor; value: string };
 
 export type ValueOf<T extends SavedParameter['name']> = Extract<
     SavedParameter,

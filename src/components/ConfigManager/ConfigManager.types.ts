@@ -61,6 +61,21 @@ export const EditorConfigMap: EditorConfigMapType = {
     [SavedParameterName.TopBarColor]: {
         editorType: EditorType.Color,
     },
+    [SavedParameterName.TopBarHighlightColor]: {
+        editorType: EditorType.Color,
+    },
+    [SavedParameterName.TopBarTextColor]: {
+        editorType: EditorType.Color,
+    },
+    [SavedParameterName.SelectedNoteColor]: {
+        editorType: EditorType.Color,
+    },
+    [SavedParameterName.HoveredNoteColor]: {
+        editorType: EditorType.Color,
+    },
+    [SavedParameterName.ToggleBubbleColor]: {
+        editorType: EditorType.Color,
+    },
     [SavedParameterName.RendererEngine]: {
         editorType: EditorType.Enum,
         extraParams: {

@@ -2,6 +2,8 @@ import { NoteIndicator } from '@services/notationRenderer/NoteIndicator/NoteIndi
 import { ChosenEntityData } from '../ChosenEntityData';
 import { Notation } from '@services/notationRenderer/Notation';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export class MoveNoteIndicator extends NoteIndicator {
     private selectedKeyData: ChosenEntityData;
@@ -24,17 +26,17 @@ export class MoveNoteIndicator extends NoteIndicator {
 
     private ColorSelectedKey(isColored: boolean) {
         if (!this.selectedKeyData.Key) return;
-        if (this.hoveredKeyData.Key === this.selectedKeyData.Key) {
-            this.selectedKeyData.Key.Color = isColored ? 'red' : 'black';
-        } else {
-            this.selectedKeyData.Key.Color = isColored ? 'red' : 'black';
-        }
+        this.selectedKeyData.Key.Color = isColored
+            ? ConfigService.getInstance().getValue(SavedParameterName.SelectedNoteColor)
+            : 'black';
     }
 
     private ColorHoveredKey(isColored: boolean) {
         if (!this.hoveredKeyData.Key || this.selectedKeyData.Key === this.hoveredKeyData.Key)
             return;
-        this.hoveredKeyData.Key.Color = isColored ? 'blue' : 'black';
+        this.hoveredKeyData.Key.Color = isColored
+            ? ConfigService.getInstance().getValue(SavedParameterName.HoveredNoteColor)
+            : 'black';
     }
 
     private MovedWhileSelectedKey(noteData: ChosenEntityData, positionY: number) {

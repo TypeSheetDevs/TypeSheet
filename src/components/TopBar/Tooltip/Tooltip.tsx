@@ -1,4 +1,6 @@
 import styles from './Tooltip.styles.module.css';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { ConfigService } from '@services/ConfigService/ConfigService';
 
 function Tooltip({ iconPath, content, usedPadding }: TooltipProps) {
   return (
@@ -6,6 +8,9 @@ function Tooltip({ iconPath, content, usedPadding }: TooltipProps) {
       <img
         draggable={false}
         src={iconPath}
+        style={{
+          color: ConfigService.getInstance().getValue(SavedParameterName.TopBarTextColor),
+        }}
       />
       <div
         className={styles.tooltip}

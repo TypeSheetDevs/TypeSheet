@@ -2,6 +2,8 @@ import Button from '@components/TopBar/Button/Button';
 import styles from './ButtonsGroup.styles.module.css';
 import MultiSelect from '@components/TopBar/MultiSelect/MultiSelect';
 import Tooltip from '@components/TopBar/Tooltip/Tooltip';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import { ConfigService } from '@services/ConfigService/ConfigService';
 
 function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
   switch (button.type) {
@@ -39,7 +41,14 @@ function ButtonsGroup({ buttons, isLast }: ButtonsGroupProps) {
       <div className={styles.buttonsGroup}>
         {buttons.map((button, index) => getButtonFromType(button, index))}
       </div>
-      {isLast && <div className={styles.separator} />}
+      {isLast && (
+        <div
+          className={styles.separator}
+          style={{
+            background: ConfigService.getInstance().getValue(SavedParameterName.TopBarTextColor),
+          }}
+        />
+      )}
     </>
   );
 }

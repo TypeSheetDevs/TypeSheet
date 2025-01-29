@@ -6,6 +6,8 @@ import { toRest } from '@services/notationRenderer/notes/Notes.enums';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export class AddingNoteIndicator extends NoteIndicator {
     private noteData: ChosenEntityData;
@@ -56,7 +58,13 @@ export class AddingNoteIndicator extends NoteIndicator {
             duration = toRest(this.noteDuration);
         }
 
-        const newNote = new RenderableNote(duration, [this.key], [], this.isDotted, 'blue');
+        const newNote = new RenderableNote(
+            duration,
+            [this.key],
+            [],
+            this.isDotted,
+            ConfigService.getInstance().getValue(SavedParameterName.HoveredNoteColor),
+        );
         if (!this.isRest) this.key.Modifier = this.accidental;
 
         if (this.noteData.NoteIndex >= voice.NotesLength) {
