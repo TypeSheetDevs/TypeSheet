@@ -90,8 +90,6 @@ const signatures = [
 ];
 
 function SignatureSelector() {
-  const color = ConfigService.getInstance().getValue(SavedParameterName.TopBarColor);
-
   const handleClick = (signature: KeySignature) => {
     NotationRenderer.getInstance().AddSignatureToChosenBar(signature);
   };
@@ -111,7 +109,9 @@ function SignatureSelector() {
   return (
     <div
       className={styles.container}
-      style={{ backgroundColor: color }}>
+      style={{
+        backgroundColor: ConfigService.getInstance().getValue(SavedParameterName.TopBarColor),
+      }}>
       <label className={styles.header}>Select Key Signature</label>
       {Object.entries(groupedSignatures).map(([groupName, groupSignatures]) => (
         <div

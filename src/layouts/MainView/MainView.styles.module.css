@@ -8,5 +8,5 @@
     font-size: var(--main-view-font-size);
     font-family: sans-serif;
     background-color: var(--main-view-background-color);
-    scrollbar-color: white var(--main-view-background-color);
+    scrollbar-color: gray var(--main-view-background-color);
 }

@@ -1,13 +1,29 @@
 import styles from './MultiSelect.styles.module.css';
 import { ConfigService } from '@services/ConfigService/ConfigService';
 import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
+import CssFilterConverter from 'css-filter-converter';
+import { CSSProperties } from 'react';
 
 function MultiSelect({ iconPath, groups }: MultiSelectProps) {
   return (
-    <div className={styles.button}>
+    <div
+      className={styles.button}
+      style={
+        {
+          '--hover-color': ConfigService.getInstance().getValue(
+            SavedParameterName.TopBarHighlightColor,
+          ),
+        } as CSSProperties
+      }>
       <img
         draggable={false}
         src={iconPath}
+        style={{
+          filter:
+            CssFilterConverter.hexToFilter(
+              ConfigService.getInstance().getValue(SavedParameterName.TopBarTextColor),
+            ).color ?? '',
+        }}
       />
       <div
         className={styles.card}
@@ -22,7 +38,15 @@ function MultiSelect({ iconPath, groups }: MultiSelectProps) {
                   className={styles.element}
                   key={index}
                   onClick={option.onClick}>
-                  <p className={styles.label}>{option.text}</p>
+                  <p
+                    className={styles.label}
+                    style={{
+                      color: ConfigService.getInstance().getValue(
+                        SavedParameterName.TopBarTextColor,
+                      ),
+                    }}>
+                    {option.text}
+                  </p>
                 </li>
               ))}
             </ul>

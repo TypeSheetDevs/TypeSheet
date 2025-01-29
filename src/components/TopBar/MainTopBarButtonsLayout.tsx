@@ -180,6 +180,7 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         type: 'tooltip',
         iconPath: getButtonIcon('signature.svg'),
         content: <SignatureSelector />,
+        IsSignatureSelector: true,
         usedPadding: '0',
       },
     ],

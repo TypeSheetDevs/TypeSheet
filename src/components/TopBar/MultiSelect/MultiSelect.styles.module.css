@@ -1,4 +1,5 @@
 .button {
+    --hover-color: rgba(0, 186, 199, 0.7);
     display: flex;
     flex-direction: column;
     transition: background-color 0.2s ease;
@@ -12,8 +13,7 @@
 }
 
 .button:hover {
-    /* TODO: config extraction */
-    background-color: rgba(0, 186, 199, 0.7);
+    background-color: var(--hover-color);
 }
 .button:hover .card {
     display: flex;
@@ -29,7 +29,7 @@
     background-color: rgba(36, 40, 50, 1);
 
     border-radius: 10px;
-    padding: 15px 0px;
+    padding: 15px 0;
     display: none;
     flex-direction: column;
     gap: 10px;
@@ -44,7 +44,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 0px 10px;
+    padding: 0 10px;
 }
 
 .card .list .element {
@@ -70,7 +70,7 @@
 }
 
 .card .list .element:hover {
-    background-color: rgba(0, 186, 199, 0.7);
+    background-color: var(--hover-color);
     color: #ffffff;
     transform: translate(1px, -1px);
 }

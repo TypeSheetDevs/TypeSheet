@@ -25,6 +25,15 @@ function App(): JSX.Element {
         case 'm':
           ChangeRendererState(NotationRendererState.ModifyingNote);
           break;
+        case 'h':
+          ChangeRendererState(NotationRendererState.AnalyzeChords);
+          break;
+        case 'v':
+          ChangeRendererState(NotationRendererState.MoveNote);
+          break;
+        case 'c':
+          ChangeRendererState(NotationRendererState.AddingToChord);
+          break;
         case 'b':
           EventNotifier.Notify('addNewBar', { newStave: false });
           break;

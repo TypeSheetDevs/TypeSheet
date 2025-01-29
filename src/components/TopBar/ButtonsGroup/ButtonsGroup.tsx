@@ -30,6 +30,7 @@ function getButtonFromType(button: ButtonsGroupButtonType, index: number) {
           iconPath={button.iconPath}
           content={button.content}
           usedPadding={button.usedPadding}
+          IsSignatureSelector={button.IsSignatureSelector}
         />
       );
   }

@@ -1,5 +1,7 @@
 import styles from './OpenCloseButton.styles.module.css';
 import React from 'react';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 function OpenCloseButton(props: {
   onToggle: () => void;
@@ -16,7 +18,14 @@ function OpenCloseButton(props: {
       <label
         htmlFor={styles.checkbox}
         className={`${styles.toggle} ${props.className}`}
-        style={props.style}>
+        style={
+          {
+            ...props.style,
+            '--button-color': ConfigService.getInstance().getValue(
+              SavedParameterName.TopBarTextColor,
+            ),
+          } as React.CSSProperties
+        }>
         <div
           className={styles.bar}
           id={styles.bar1}></div>
