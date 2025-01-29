@@ -3,6 +3,7 @@ import { ChosenEntityData } from '../ChosenEntityData';
 import { Key } from '@services/notationRenderer/notes/Key';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
 import { Notation } from '@services/notationRenderer/Notation';
+import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 export class AddingToChordNoteIndicator extends NoteIndicator {
     private noteData: ChosenEntityData;
@@ -16,6 +17,16 @@ export class AddingToChordNoteIndicator extends NoteIndicator {
         this.actualKey = new Key('c/5');
         this.actualKey.Modifier = this.Accidental;
         this.actualKey.Color = 'blue';
+        EventNotifier.AddListener('midiPlayed', this.HandlePlayedMidi.bind(this));
+    }
+
+    private HandlePlayedMidi(keys: string[]) {
+        if (!this.noteData.Note) return;
+
+        keys.forEach((key: string) => {
+            this.noteData.Note?.AddKey(new Key(key, ParseKeyModifier(key[1])));
+        });
+        this.RefreshIndicator();
     }
 
     private AdjustPitch(positionY: number) {
@@ -61,6 +72,7 @@ export class AddingToChordNoteIndicator extends NoteIndicator {
 
     public OnDestroy(): void {
         this.RemoveActualKeyIfVisible();
+        EventNotifier.RemoveListener('midiPlayed', this.HandlePlayedMidi.bind(this));
     }
     public MovedAtNote(noteData: ChosenEntityData, positionY: number): void {
         if (noteData.Note) {

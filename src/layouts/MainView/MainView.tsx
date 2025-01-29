@@ -32,6 +32,8 @@ function MainView() {
     <div className={styles.mainView}>
       {notationRendererState === NotationRendererState.AddingNote && <NoteModsTopBar />}
       {notationRendererState === NotationRendererState.ModifyingNote && <NoteModsTopBar />}
+      {notationRendererState === NotationRendererState.MoveNote && <NoteModsTopBar />}
+      {notationRendererState === NotationRendererState.AddingToChord && <NoteModsTopBar />}
       <LabeledToggle
         toggled={currentView == ViewType.Paged}
         onToggle={() =>

@@ -30,10 +30,10 @@ export class Key implements IRecoverable<KeyData> {
         }
     }
 
-    set Color(color: string | undefined) {
-        if (this.color !== color) {
+    set Color(value: string | undefined) {
+        if (this.color !== value) {
             this.isKeyDirty = true;
-            this.color = color;
+            this.color = value === 'black' ? undefined : value;
         }
     }
 

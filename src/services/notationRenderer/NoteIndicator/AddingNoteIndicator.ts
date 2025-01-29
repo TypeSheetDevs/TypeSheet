@@ -5,6 +5,7 @@ import { Key } from '@services/notationRenderer/notes/Key';
 import { toRest } from '@services/notationRenderer/notes/Notes.enums';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
 
 export class AddingNoteIndicator extends NoteIndicator {
     private noteData: ChosenEntityData;
@@ -16,6 +17,22 @@ export class AddingNoteIndicator extends NoteIndicator {
         this.noteData = new ChosenEntityData(this.notation);
         this.key = new Key('C/5');
         this.noteData.SetNoteIndex(0, 0, 0);
+        EventNotifier.AddListener('midiPlayed', this.HandlePlayedMidi.bind(this));
+    }
+
+    private HandlePlayedMidi(keys: string[]) {
+        if (!this.noteData.Voice) return;
+
+        this.noteData.Voice.AddNote(
+            new RenderableNote(
+                this.noteDuration,
+                keys.map(k => {
+                    return new Key(k, ParseKeyModifier(k[1]));
+                }),
+            ),
+            this.noteData.NoteIndex++,
+        );
+        this.RefreshIndicator();
     }
 
     protected override RefreshIndicator() {
@@ -98,6 +115,7 @@ export class AddingNoteIndicator extends NoteIndicator {
     }
     override OnDestroy(): void {
         this.Visible = false;
+        EventNotifier.RemoveListener('midiPlayed', this.HandlePlayedMidi.bind(this));
     }
 
     override OnMouseClick() {

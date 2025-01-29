@@ -1,6 +1,7 @@
 import { MidiPort } from '@components/MidiSelector/MidiSelector.types';
 import MIDIAccess = WebMidi.MIDIAccess;
 import MIDIInput = WebMidi.MIDIInput;
+import EventNotifier from '@services/eventNotifier/eventNotifier';
 
 export const ChromaticScale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -9,6 +10,7 @@ export class MidiService {
     private access: MIDIAccess | null = null;
     private inputs: MIDIInput[] = [];
     private connectedInput: MIDIInput | null = null;
+    private lastPlayedKeys: string[] = [];
 
     private noteStartTimes: Map<number, number> = new Map();
 
@@ -90,21 +92,34 @@ export class MidiService {
         }
     }
 
+    private AddToLastPlayedKeys(key: string): void {
+        if (key !== '' && this.lastPlayedKeys.findIndex(k => k === key) < 0) {
+            this.lastPlayedKeys.push(key);
+        }
+    }
+
+    private NotifyComponents() {
+        EventNotifier.Notify('midiPlayed', this.lastPlayedKeys);
+        this.lastPlayedKeys = [];
+    }
+
     private HandleMidiMessage(message: WebMidi.MIDIMessageEvent): void {
         const [status, note, velocity] = message.data;
 
         if (status === 144 && velocity > 0) {
             this.noteStartTimes.set(note, performance.now());
-            console.log(`Note On: ${note} at ${this.noteStartTimes.get(note)} ms`);
         }
 
         if (status === 128 || (status === 144 && velocity === 0)) {
             const startTime = this.noteStartTimes.get(note);
             if (startTime) {
                 // const duration = performance.now() - startTime;
-                // console.log(`Note Off: ${note}. Duration: ${duration.toFixed(2)} ms`);
-                console.log(this.MapMidiToStringNote(note));
+                this.AddToLastPlayedKeys(this.MapMidiToStringNote(note));
                 this.noteStartTimes.delete(note);
+                if (this.noteStartTimes.size === 0) {
+                    console.log(this.lastPlayedKeys);
+                    this.NotifyComponents();
+                }
             } else {
                 console.warn(`Note Off received for ${note}, but no start time found.`);
             }
@@ -112,7 +127,7 @@ export class MidiService {
     }
 
     private MapMidiToStringNote(note: number): string {
-        if (note < 21 || note > 108) {
+        if (note < 47 || note > 91) {
             console.warn('Note not in piano range.');
             return '';
         }
