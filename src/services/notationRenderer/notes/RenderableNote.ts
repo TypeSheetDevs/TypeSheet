@@ -55,11 +55,11 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
     }
 
     IsInRect(positionX: number) {
-        const width = this.cachedStaveNote?.getWidth();
-        const startX = this.cachedStaveNote?.getAbsoluteX();
+        const box = this.cachedStaveNote?.getBoundingBox();
+        const width = box?.w;
+        const startX = box?.x;
 
         if (!width || !startX) return false;
-
         return startX <= positionX && startX + width >= positionX;
     }
 
@@ -122,17 +122,28 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         if (!note) return -1;
 
         const stemPosition = note.getStemX();
-        const left = stemPosition > positionX;
+        const left = positionX < stemPosition;
+        let toReturn = -1;
 
         const keysPositions = note.noteHeads.map((noteHead, idx) => {
             const boundingBox = noteHead.getBoundingBox();
+            if (
+                positionX > boundingBox.x &&
+                positionX < boundingBox.x + boundingBox.w &&
+                positionY > boundingBox.y &&
+                positionY < boundingBox.y + boundingBox.h
+            ) {
+                toReturn = idx;
+            }
             return {
                 idx: idx,
-                left: boundingBox.x < stemPosition,
+                left: boundingBox.x + boundingBox.w / 2 < stemPosition,
                 yMin: boundingBox.y,
                 yMax: boundingBox.y + boundingBox.h,
             };
         });
+
+        if (toReturn !== -1) return toReturn;
 
         const closestYPredicate = (
             a: { yMin: number; yMax: number },
@@ -168,8 +179,8 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
         if (!key || !key.Pitch) {
             throw new Error('Invalid key data provided.');
         }
-        if (!this.keys.find(k => k.Pitch.toLowerCase() === key.Pitch.toLowerCase())) {
-            console.log('added', key);
+
+        if (this.keys.findIndex(k => k.Pitch.toLowerCase() === key.Pitch.toLowerCase()) === -1) {
             this.keys.push(key);
             this.isNoteDirty = true;
             return true;
@@ -270,6 +281,18 @@ export class RenderableNote implements IRecoverable<RenderableNoteData> {
 
     GetAllAccidentalsData(): AccidentalData[] {
         return Notation.getInstance().GetNoteAssociatedBar(this)?.GetAccidentalsData() ?? [];
+    }
+
+    AdjustPitch(keyIndex: number, toPitch: string): boolean {
+        if (
+            this.keys.find(key => key.Pitch.toLowerCase() === toPitch.toLowerCase()) ||
+            keyIndex >= this.keys.length ||
+            keyIndex < 0
+        ) {
+            return false;
+        }
+        this.keys[keyIndex].Pitch = toPitch;
+        return true;
     }
 
     ToData(): RenderableNoteData {
