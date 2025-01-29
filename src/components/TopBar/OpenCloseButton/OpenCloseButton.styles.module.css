@@ -3,6 +3,7 @@
 }
 
 .toggle {
+    --button-color: lightblue;
     position: relative;
     aspect-ratio: 1;
     height: 100%;
@@ -18,7 +19,7 @@
 .bar {
     width: 90%;
     height: 2px;
-    background-color: lightblue;
+    background-color: var(--button-color);
     border-radius: 1px;
 }
 

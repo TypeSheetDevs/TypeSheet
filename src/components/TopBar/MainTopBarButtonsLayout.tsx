@@ -128,7 +128,7 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
       },
       {
         type: 'multiselect',
-        iconPath: getButtonIcon('edit_pen.svg'),
+        iconPath: getButtonIcon('brush.svg'),
         groups: [
           {
             options: [
@@ -180,6 +180,7 @@ export const MainTopBarButtonsLayout: Omit<ButtonsGroupProps, 'isLast'>[] = [
         type: 'tooltip',
         iconPath: getButtonIcon('signature.svg'),
         content: <SignatureSelector />,
+        IsSignatureSelector: true,
         usedPadding: '0',
       },
     ],

@@ -6,6 +6,8 @@ import { IsRest, RestToNote, toRest } from '@services/notationRenderer/notes/Not
 import { Key } from '@services/notationRenderer/notes/Key';
 import { RenderableNote } from '@services/notationRenderer/notes/RenderableNote';
 import { ParseKeyModifier } from '@services/notationRenderer/notes/Key.enums';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export class ModiyfingNoteIndicator extends NoteIndicator {
     private hoveredNoteData: ChosenEntityData;
@@ -50,16 +52,22 @@ export class ModiyfingNoteIndicator extends NoteIndicator {
     private ColorSelectedNote(isColored: boolean) {
         if (!this.selectedNoteData.Note) return;
         if (this.hoveredNoteData.Note === this.selectedNoteData.Note) {
-            this.selectedNoteData.Note.Color = isColored ? 'red' : 'blue';
+            this.selectedNoteData.Note.Color = isColored
+                ? ConfigService.getInstance().getValue(SavedParameterName.SelectedNoteColor)
+                : ConfigService.getInstance().getValue(SavedParameterName.HoveredNoteColor);
         } else {
-            this.selectedNoteData.Note.Color = isColored ? 'red' : 'black';
+            this.selectedNoteData.Note.Color = isColored
+                ? ConfigService.getInstance().getValue(SavedParameterName.SelectedNoteColor)
+                : 'black';
         }
     }
 
     private ColorHoveredNote(isColored: boolean) {
         if (!this.hoveredNoteData.Note || this.selectedNoteData.Note === this.hoveredNoteData.Note)
             return;
-        this.hoveredNoteData.Note.Color = isColored ? 'blue' : 'black';
+        this.hoveredNoteData.Note.Color = isColored
+            ? ConfigService.getInstance().getValue(SavedParameterName.HoveredNoteColor)
+            : 'black';
     }
 
     private OnSelectingNote() {

@@ -1,4 +1,5 @@
 .button {
+    --hover-color: rgba(0, 186, 199, 0.7);
     display: flex;
     transition: background-color 0.2s ease;
     border: none;
@@ -10,8 +11,7 @@
 }
 
 .button:hover {
-    /* TODO: config extraction */
-    background-color: rgba(0, 186, 199, 0.7);
+    background-color: var(--hover-color);
 }
 
 .button:focus {

@@ -2,13 +2,17 @@ import { NoteIndicator } from '@services/notationRenderer/NoteIndicator/NoteIndi
 import { ChosenEntityData } from '../ChosenEntityData';
 import { Notation } from '@services/notationRenderer/Notation';
 import EventNotifier from '@services/eventNotifier/eventNotifier';
+import { ConfigService } from '@services/ConfigService/ConfigService';
+import { SavedParameterName } from '@services/ConfigService/ConfigService.types';
 
 export class RemovingNoteIndicator extends NoteIndicator {
     private currentlyHighlightedKeyData: ChosenEntityData;
 
     private ColorCurrentlyHighlightedNote(isColored: boolean) {
         if (!this.currentlyHighlightedKeyData.Key) return;
-        this.currentlyHighlightedKeyData.Key.Color = isColored ? 'blue' : 'black';
+        this.currentlyHighlightedKeyData.Key.Color = isColored
+            ? ConfigService.getInstance().getValue(SavedParameterName.HoveredNoteColor)
+            : 'black';
     }
 
     constructor(notation: Notation) {

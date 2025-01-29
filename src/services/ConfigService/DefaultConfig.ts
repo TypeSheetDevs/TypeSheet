@@ -9,6 +9,11 @@ const DefaultConfig: DefaultConfigType = {
     MainViewMargin: 10,
     StavesPerPage: 4,
     TopBarColor: '#0E0B52',
+    ToggleBubbleColor: '#0C4A6E',
+    TopBarTextColor: '#e8eaed',
+    HoveredNoteColor: '#0000ff',
+    SelectedNoteColor: '#ff0000',
+    TopBarHighlightColor: '#3fc2cb',
     RendererEngine: NotationRenderEngine.Canvas,
 };
 

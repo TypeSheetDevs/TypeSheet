@@ -1,4 +1,2 @@
 @echo off
-echo Uruchamianie npm run dev...
-npm run dev
-pause
+start /B npm run dev
